@@ -16,23 +16,39 @@
 
 
     <dependencies>
+
+        <!-- ================== -->
+        <!--  MapDB  -->
+        <!-- ================== -->
+        <dependency>
+            <groupId>org.mapdb</groupId>
+            <artifactId>mapdb</artifactId>
+            <version>3.0.0-M6</version>
+        </dependency>
+
+        <!-- ================== -->
+        <!--  common  -->
+        <!-- ================== -->
+
         <dependency>
             <groupId>org.opencloudengine.garuda</groupId>
             <artifactId>iam-common</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.opencloudengine.garuda</groupId>
-            <artifactId>iam-proxy</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
+        <!-- ================== -->
+        <!--  rhino  -->
+        <!-- ================== -->
 
         <dependency>
             <groupId>org.mozilla</groupId>
             <artifactId>rhino</artifactId>
             <version>1.7R3</version>
         </dependency>
+
+        <!-- ================== -->
+        <!--  cloudant  -->
+        <!-- ================== -->
 
         <dependency>
             <groupId>com.cloudant</groupId>

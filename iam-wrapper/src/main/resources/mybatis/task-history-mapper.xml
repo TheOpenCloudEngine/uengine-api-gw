@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.opencloudengine.garuda.wrapper.history.TaskHistoryRepository">
+
+    <insert id="insert" parameterType="org.opencloudengine.garuda.web.history.TaskHistory"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO TASK_HISTORY (
+            identifier,
+            wid,
+            task_id,
+            `name`,
+            duration,
+            status,
+            stdout,
+            stderr
+        )
+        VALUES (
+            #{identifier},
+            #{wid},
+            #{task_id},
+            #{name},
+            #{duration},
+            #{status},
+            #{stdout},
+            #{stderr}
+        )
+    </insert>
+
+    <select id="selectByIdentifier" parameterType="string"
+            resultType="org.opencloudengine.garuda.web.history.TaskHistory">
+        SELECT
+            *
+        FROM TASK_HISTORY
+        WHERE identifier = #{identifier}
+        ORDER BY startDate DESC
+    </select>
+
+    <select id="selectById" parameterType="java.lang.Long"
+            resultType="org.opencloudengine.garuda.web.history.TaskHistory">
+        SELECT
+            *
+        FROM TASK_HISTORY
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByTaskIdAndIdentifier"
+            parameterType="map"
+            resultType="org.opencloudengine.garuda.web.history.TaskHistory">
+        SELECT
+        *
+        FROM TASK_HISTORY
+        WHERE identifier = #{identifier} AND task_id = #{task_id}
+    </select>
+
+    <update id="updateByTaskIdAndIdentifier"
+            parameterType="org.opencloudengine.garuda.web.history.TaskHistory">
+        UPDATE TASK_HISTORY
+        SET
+            endDate = #{endDate},
+            duration = #{duration},
+            status = #{status},
+            stdout = #{stdout},
+            stderr = #{stderr}
+        WHERE identifier = #{identifier} AND task_id = #{task_id}
+    </update>
+
+</mapper>

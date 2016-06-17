@@ -60,7 +60,7 @@
             <param-name>contextConfigLocation</param-name>
             <param-value>
                 /WEB-INF/dispatcher-servlet.xml
-                /WEB-INF/applicationContext-network.xml
+                /WEB-INF/applicationContext-reactor.xml
             </param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
@@ -68,7 +68,26 @@
 
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/service-console/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>jsp</servlet-name>
+        <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>jsp</servlet-name>
+        <url-pattern>/WEB-INF/pages/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>gateway</servlet-name>
+        <servlet-class>org.opencloudengine.garuda.gateway.GatewayServlet</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>gateway</servlet-name>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
     <!-- ================ -->
@@ -99,7 +118,7 @@
     <!-- =================== -->
 
     <welcome-file-list>
-        <welcome-file>/index.do</welcome-file>
+        <welcome-file>/service-console/index</welcome-file>
     </welcome-file-list>
 
     <!-- ================= -->

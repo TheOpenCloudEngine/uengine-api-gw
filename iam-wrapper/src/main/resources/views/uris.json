@@ -1,0 +1,26 @@
+{
+  "_id": "_design/uris",
+  "language": "javascript",
+  "views": {
+    "select": {
+      "map": "function(doc) { if(doc.docType == \"uris\"){ emit(null, doc); }}"
+    },
+    "selectById": {
+      "map": "function(doc) { if(doc.docType == \"uris\"){ emit([doc._id], doc); }}"
+    },
+    "selectLikeUri": {
+      "map": "function(doc) { if(doc.docType == \"uris\"){ var words = {}; doc.uri.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}"
+    },
+    "count": {
+      "map": "function(doc) { if(doc.docType == \"uris\"){ emit(null, null); }}",
+      "reduce": "_count"
+    },
+    "countLikeUri": {
+      "map": "function(doc) { if(doc.docType == \"uris\"){ var words = {}; doc.uri.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}",
+      "reduce": "_count"
+    },
+    "selectByUri": {
+      "map": "function(doc) {if(doc.docType == \"uris\"){emit([doc.uri],doc); }}"
+    }
+  }
+}

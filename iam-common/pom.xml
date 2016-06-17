@@ -319,6 +319,49 @@
             <version>${guava.version}</version>
         </dependency>
 
+        <!-- ========= -->
+        <!--  Reactor  -->
+        <!-- ========= -->
+
+        <dependency>
+            <groupId>org.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+            <version>${reactor.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectreactor.spring</groupId>
+            <artifactId>reactor-spring-context</artifactId>
+            <version>${reactor.spring.version}</version>
+        </dependency>
+
+        <!-- ====================== -->
+        <!--  MyBatis Dependencies  -->
+        <!-- ====================== -->
+
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>${mybatis.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>${mybatis.spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-tx</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-jdbc</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
     </dependencies>
 
     <build>
