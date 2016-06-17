@@ -3,10 +3,6 @@ package org.opencloudengine.garuda.handler;
 import org.opencloudengine.garuda.gateway.GateException;
 import org.opencloudengine.garuda.gateway.GatewayService;
 import org.opencloudengine.garuda.gateway.GatewayServlet;
-import org.opencloudengine.garuda.model.GateResponse;
-import org.opencloudengine.garuda.proxy.ProxyAction;
-import org.opencloudengine.garuda.proxy.ProxyRequest;
-import org.opencloudengine.garuda.proxy.ProxyService;
 import org.opencloudengine.garuda.web.configuration.ConfigurationHelper;
 import org.opencloudengine.garuda.web.uris.ResourceUri;
 import org.slf4j.Logger;
@@ -21,7 +17,7 @@ import java.lang.reflect.Method;
 import java.util.Properties;
 
 @Service
-public class HandlerServiceImpl implements HandlerService {
+public class HandlerServiceImpl implements HandlerServicea {
     @Autowired
     @Qualifier("config")
     private Properties config;
