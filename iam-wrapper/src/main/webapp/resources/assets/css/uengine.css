@@ -1,0 +1,60 @@
+.div-center {
+    margin:0 auto;
+}
+.col-centered{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.disable_div{
+    display: none;
+}
+
+.licenseBody{
+    background: #F8FFFF;
+}
+.licenseTable{
+    width: 100%;
+    padding: 5px;
+    border: none;
+    background: #F8FFFF;
+}
+.licenseTable td{
+    border: none;
+    background: #F8FFFF;
+    font-size: 12px;
+    padding: 5px;
+}
+.licenseTable .key_col{
+    color: #808080;
+    text-align: right;
+    padding-right: 15px;
+}
+.licenseTable .val_col{
+    padding-left: 15px;
+}
+.licenseTable .tag-box{
+
+}
+
+.btn-container-right {
+    direction: rtl;
+}
+
+.licenseKeyDiv{
+    -ms-word-break: break-all;
+    word-break: break-all;
+
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+
+    word-break: break-word;
+
+    max-height: 150px;
+
+    overflow: auto;
+}

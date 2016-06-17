@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.opencloudengine.garuda.wrapper.workflow.WorkflowRepository">
+
+    <insert id="insert" parameterType="org.opencloudengine.garuda.web.workflow.Workflow" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO WORKFLOW (
+            `name`,
+            `designer_xml`,
+            `bpmn_xml`,
+            `vars`,
+            `steps`,
+            `status`
+        )
+        VALUES (
+            #{name},
+            #{designer_xml},
+            #{bpmn_xml},
+            #{vars},
+            #{steps},
+            #{status}
+        )
+    </insert>
+
+    <select id="selectById" resultType="org.opencloudengine.garuda.web.workflow.Workflow"  parameterType="string">
+        SELECT
+        *
+        FROM WORKFLOW
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateById" parameterType="org.opencloudengine.garuda.web.workflow.Workflow">
+        UPDATE
+            WORKFLOW
+        SET
+            `name` = #{name},
+            `designer_xml` = #{designer_xml},
+            `bpmn_xml` = #{bpmn_xml},
+            `vars` = #{vars},
+            `steps` = #{steps},
+            `status` = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM WORKFLOW
+        WHERE id = #{id}
+    </delete>
+
+</mapper>

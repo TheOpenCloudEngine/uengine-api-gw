@@ -1,0 +1,9 @@
+{
+  "_id": "_design/iam",
+  "language": "javascript",
+  "views": {
+    "select": {
+      "map": "function(doc) {if(doc.docType == \"iam\"){emit(null,doc); }}"
+    }
+  }
+}
