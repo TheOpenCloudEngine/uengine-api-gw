@@ -38,13 +38,13 @@ public class IndexController {
      */
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public ModelAndView index(HttpSession session, final Locale locale) {
-        session.setAttribute("lang", locale.toString());
+        //session.setAttribute("lang", locale.toString());
         return new ModelAndView("index");
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView home(HttpSession session, final Locale locale) {
-        session.setAttribute("lang", locale.toString());
+        //session.setAttribute("lang", locale.toString());
         return new ModelAndView("index");
     }
 

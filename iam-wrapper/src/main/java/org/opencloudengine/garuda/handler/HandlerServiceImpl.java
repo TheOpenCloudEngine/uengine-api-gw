@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 import java.util.Properties;
 
 @Service
-public class HandlerServiceImpl implements HandlerService {
+public class HandlerServiceImpl implements HandlerServicea {
     @Autowired
     @Qualifier("config")
     private Properties config;

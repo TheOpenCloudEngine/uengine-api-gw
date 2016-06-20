@@ -103,7 +103,7 @@
     <div class="container content profile">
         <div class="row">
             <div class="col-md-12">
-                <div class="headline margin-bottom-10"><h4>Oauth Scopes </h4></div>
+                <div class="headline margin-bottom-10"><h4>Uri Mappings </h4></div>
 
                 <a class="btn-u btn-u-primary" href="/service-console/uris/new">Create Uri Mapping</a>
 

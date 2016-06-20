@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
+             xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+                                 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2.xsd">
+
+
+    <!-- REST 기반 인증 처리를 위한 Authentication Entry Point -->
+    <http realm="uEngine Protected Area"
+          use-expressions="true"
+          auto-config="false"
+          create-session="never"
+            >
+
+        <csrf request-matcher-ref="csrfSecurityRequestMatcher"/>
+
+        <form-login login-page="/service-console/auth/login"
+                    login-processing-url="/service-console/j_spring_security_check"
+                    default-target-url="/service-console/index"
+                    authentication-failure-url="/service-console/auth/fail"
+                    always-use-default-target="false"
+                    username-parameter="email"
+                    password-parameter="password"/>
+
+        <access-denied-handler error-page="/service-console/auth/login"/>
+
+        <logout logout-url="/service-console/auth/logout" invalidate-session="true" logout-success-url="/service-console/auth/login"/>
+
+        <intercept-url pattern="/service-console/uris/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
+        <intercept-url pattern="/service-console/workflow/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
+        <intercept-url pattern="/service-console/iam/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
+        <intercept-url pattern="/service-console/analysis/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
+        <custom-filter ref="sessionManagementFilter" before="SESSION_MANAGEMENT_FILTER"/>
+    </http>
+
+    <beans:bean id="csrfSecurityRequestMatcher"
+                class="org.opencloudengine.garuda.web.security.CsrfSecurityRequestMatcher">
+    </beans:bean>
+
+    <beans:bean id="authenticationFilter"
+                class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
+        <beans:property name="authenticationManager" ref="authenticationManager"/>
+        <beans:property name="postOnly" value="false"/>
+        <beans:property name="authenticationSuccessHandler">
+            <beans:bean
+                    class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+                <beans:property name="useReferer" value="false"/>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
+
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider ref="customAuthenticationProvider"/>
+    </authentication-manager>
+
+    <beans:bean id="customAuthenticationProvider" class="org.opencloudengine.garuda.web.security.CustomAuthenticationProvider"/>
+
+    <!-- Secure Role annotation을 활성화 -->
+    <global-method-security secured-annotations="enabled"/>
+
+
+    <!-- AjaxInvalidStrategy -->
+    <beans:bean id="sessionManagementFilter" class="org.springframework.security.web.session.SessionManagementFilter">
+        <beans:constructor-arg name="securityContextRepository" ref="httpSessionSecurityContextRepository"/>
+        <beans:property name="invalidSessionStrategy" ref="jsfRedirectStrategy"/>
+    </beans:bean>
+
+    <beans:bean id="jsfRedirectStrategy" class="org.opencloudengine.garuda.common.security.AjaxInvalidStrategy">
+        <beans:property name="invalidSessionUrl" value="/service-console/auth/login"/>
+    </beans:bean>
+
+    <beans:bean id="httpSessionSecurityContextRepository"
+                class="org.springframework.security.web.context.HttpSessionSecurityContextRepository"/>
+
+</beans:beans>

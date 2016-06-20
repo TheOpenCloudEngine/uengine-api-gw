@@ -16,11 +16,32 @@
                     <i class="fa fa-globe"></i>
                     <a>Languages</a>
                     <ul class="languages hoverSelectorBlock">
-                        <li data-language="ko_KR" data-text="힌국어" class="active"><a href="/service-console/index?lang=ko_KR"><i
+                        <li data-language="ko_KR" data-text="힌국어" class="active"><a
+                                href="/service-console/index?lang=ko_KR"><i
                                 class="fa fa-check"></i></a></li>
-                        <li data-language="en_US" data-text="English"><a href="/service-console/index?lang=en_US"></a></li>
+                        <li data-language="en_US" data-text="English"><a href="/service-console/index?lang=en_US"></a>
+                        </li>
                     </ul>
                 </li>
+                <script type="text/javascript">
+                    $(function () {
+                        if (SESSION.EMAIL) {
+                            $('.onsession').show();
+                            $('.offsession').hide();
+                        } else {
+                            $('.onsession').hide();
+                            $('.offsession').show();
+                        }
+                    });
+                </script>
+
+                <li class="topbar-devider"></li>
+
+                <li class="offsession" style="display: none"><a href="/service-console/auth/login">SIGN IN</a></li>
+                <li class="onsession" style="display: none">
+                    <a href="#" id="logoutbtn">LOG OUT</a>
+                </li>
+                <form id="logoutform" action="/service-console/auth/logout" method="post" style="display: none"></form>
             </ul>
         </div>
         <!-- End Topbar -->
@@ -73,8 +94,8 @@
         });
     };
     $(function () {
-        $('#logoutbtn').click(function(){
-           $('#logoutform').submit();
+        $('#logoutbtn').click(function () {
+            $('#logoutform').submit();
         });
         $('#messageBox').find('[name=close]').click(function () {
             $('#messageBox').find('.close').click();

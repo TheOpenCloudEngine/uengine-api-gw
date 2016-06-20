@@ -83,15 +83,8 @@
         <appender-ref ref="POOL" />
     </logger>
 
-    <logger name="jdbc.sqlonly" level="WARN"/>
-    <logger name="jdbc.sqltiming" level="WARN"/>
-    <logger name="jdbc.resultset" level="WARN"/>
-    <logger name="jdbc.resultsettable" level="WARN"/>
-    <logger name="jdbc.audit" level="WARN"/>
-    <logger name="jdbc.connection" level="WARN"/>
     <logger name="log4jdbc.debug" level="WARN"/>
     <logger name="com.cloudant" level="WARN"/>
-    <logger name="io.netty" level="${LOGGING_LEVEL:-INFO}"/>
 
     <logger name="exception" level="WARN">
         <appender-ref ref="EXCEPTION"/>

@@ -60,6 +60,7 @@
             <param-name>contextConfigLocation</param-name>
             <param-value>
                 /WEB-INF/dispatcher-servlet.xml
+                /WEB-INF/applicationContext-security.xml
                 /WEB-INF/applicationContext-reactor.xml
             </param-value>
         </init-param>
@@ -113,13 +114,54 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-	<!-- =================== -->
-    <!--  Welcome File List  -->
-    <!-- =================== -->
+    <filter>
+        <filter-name>SessionFilter</filter-name>
+        <filter-class>org.opencloudengine.garuda.web.security.SessionFilter</filter-class>
+    </filter>
 
-    <welcome-file-list>
-        <welcome-file>/service-console/index</welcome-file>
-    </welcome-file-list>
+    <filter-mapping>
+        <filter-name>SessionFilter</filter-name>
+        <servlet-name>dispatcher</servlet-name>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <!-- Error if omitted -->
+        <init-param>
+            <param-name>contextAttribute</param-name>
+            <param-value>org.springframework.web.servlet.FrameworkServlet.CONTEXT.dispatcher</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <servlet-name>dispatcher</servlet-name>
+    </filter-mapping>
+
+    <!-- ============= -->
+    <!--  Error Pages  -->
+    <!-- ============= -->
+
+    <error-page>
+        <error-code>401</error-code>
+        <location>/WEB-INF/pages/auth/error-401.jsp</location>
+    </error-page>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/pages/auth/error-404.jsp</location>
+    </error-page>
+
+    <error-page>
+        <error-code>405</error-code>
+        <location>/WEB-INF/pages/auth/error-405.jsp</location>
+    </error-page>
+
+    <error-page>
+        <error-code>500</error-code>
+        <location>/WEB-INF/pages/auth/error-500.jsp</location>
+    </error-page>
 
     <!-- ================= -->
     <!--  Session Timeout  -->
