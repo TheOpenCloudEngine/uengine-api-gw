@@ -2,7 +2,7 @@ package org.opencloudengine.garuda.authentication;
 
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
-import org.opencloudengine.garuda.handler.HandlerService;
+import org.opencloudengine.garuda.handler.GateHandlerService;
 import org.opencloudengine.garuda.model.AuthInformation;
 import org.opencloudengine.garuda.model.OauthClient;
 import org.opencloudengine.garuda.model.OauthUser;
@@ -34,7 +34,7 @@ public class AuthenticationServiceImpl implements AuthenticationService, Initial
     ProxyService proxyService;
 
     @Autowired
-    HandlerService handlerService;
+    GateHandlerService handlerService;
 
     @Autowired
     ResourceUriRepository uriRepository;

@@ -1,6 +1,6 @@
 package org.opencloudengine.garuda.gateway;
 
-import org.opencloudengine.garuda.handler.HandlerService;
+import org.opencloudengine.garuda.handler.GateHandlerService;
 import org.opencloudengine.garuda.model.GateResponse;
 import org.opencloudengine.garuda.proxy.ProxyService;
 import org.opencloudengine.garuda.util.JsonFormatterUtils;
@@ -32,7 +32,7 @@ public class GatewayServiceImpl implements GatewayService {
     ProxyService proxyService;
 
     @Autowired
-    HandlerService handlerService;
+    GateHandlerService handlerService;
 
     @Autowired
     ResourceUriRepository uriRepository;
