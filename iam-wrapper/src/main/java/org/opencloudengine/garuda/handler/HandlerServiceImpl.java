@@ -33,6 +33,8 @@ public class HandlerServiceImpl implements HandlerService {
      */
     private Logger logger = LoggerFactory.getLogger(HandlerServiceImpl.class);
 
+
+
     @Override
     public void doStart(ResourceUri resourceUri, GatewayServlet servlet, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
 
