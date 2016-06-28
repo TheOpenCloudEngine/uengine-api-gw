@@ -1,4 +1,4 @@
-package org.opencloudengine.garuda.handler.activity;
+package org.opencloudengine.garuda.handler.activity.classhandler;
 
 import org.opencloudengine.garuda.gateway.GateException;
 import org.opencloudengine.garuda.handler.AbstractHandler;
@@ -8,7 +8,7 @@ import org.opencloudengine.garuda.proxy.ProxyRequest;
 /**
  * Created by uengine on 2016. 6. 16..
  */
-public class CloudantHandler extends AbstractHandler {
+public class SwiftHandler extends AbstractHandler {
 
     @Override
     public void doAction() {
@@ -35,9 +35,9 @@ public class CloudantHandler extends AbstractHandler {
         proxyRequest.setProxyServlet(gatewayServlet);
         proxyRequest.setRequest(servletRequest);
         proxyRequest.setResponse(servletResponse);
-        proxyRequest.setHost("http://52.79.164.208:5984");
+        proxyRequest.setHost("http://52.79.125.242:9090");
 
-        proxyRequest.setPath(servletRequest.getPathInfo().replace("/cloudant", ""));
+        proxyRequest.setPath(servletRequest.getPathInfo().replace("/swift", ""));
         proxyService.doProxy(proxyRequest);
     }
 }

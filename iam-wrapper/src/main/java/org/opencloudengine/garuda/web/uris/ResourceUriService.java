@@ -11,13 +11,16 @@ public interface ResourceUriService {
                                   String method,
                                   String runWith,
                                   String wid,
-                                  String className);
+                                  String className,
+                                  String policyId);
 
     List<ResourceUri> selectAll();
 
     List<ResourceUri> select(int limit, Long skip);
 
     ResourceUri selectById(String id);
+
+    ResourceUri selectByOrder(int order);
 
     List<ResourceUri> selectLikeUri(String uri, int limit, Long skip);
 
@@ -35,7 +38,8 @@ public interface ResourceUriService {
                            String method,
                            String runWith,
                            String wid,
-                           String className);
+                           String className,
+                           String policyId);
 
     void deleteById(String id);
 }

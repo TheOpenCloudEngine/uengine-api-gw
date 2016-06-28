@@ -48,12 +48,14 @@ public class GatewayServiceImpl implements GatewayService {
         ResourceUri reourceUri = this.getReourceUri(servletRequest.getPathInfo());
         if (reourceUri == null) {
             this.errorResponse(GateException.NO_MAPPING_URI, servletRequest, servletResponse, null);
-        }
-        if (reourceUri.getRunWith().equals("workflow")) {
+        } else if (reourceUri.getRunWith().equals("workflow")) {
             this.errorResponse(GateException.WORKFLOW_NOT_SUPPORT, servletRequest, servletResponse, null);
-        }
-        if (reourceUri.getRunWith().equals("class")) {
-            handlerService.doStart(reourceUri, servlet, servletRequest, servletResponse);
+        } else if (reourceUri.getRunWith().equals("policy")) {
+            handlerService.doPolicyHandler(reourceUri, servlet, servletRequest, servletResponse);
+        } else if (reourceUri.getRunWith().equals("class")) {
+            handlerService.doClassHandler(reourceUri, servlet, servletRequest, servletResponse);
+        } else {
+            this.errorResponse(GateException.NO_MAPPING_URI, servletRequest, servletResponse, null);
         }
     }
 
@@ -194,6 +196,8 @@ public class GatewayServiceImpl implements GatewayService {
                     }
                 }
             }
+
+            //TODO 메소드 매칭 확인 절차가 필요
 
             if (match) {
                 matchUri = resourceUri;

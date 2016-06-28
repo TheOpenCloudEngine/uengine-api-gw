@@ -14,6 +14,8 @@ public class ResourceUri extends CouchDAO {
     private String wid;
     private String wName;
     private String className;
+    private String policyId;
+    private String policyName;
     private Long regDate;
     private Long updDate;
 
@@ -71,6 +73,22 @@ public class ResourceUri extends CouchDAO {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public String getPolicyId() {
+        return policyId;
+    }
+
+    public void setPolicyId(String policyId) {
+        this.policyId = policyId;
+    }
+
+    public String getPolicyName() {
+        return policyName;
+    }
+
+    public void setPolicyName(String policyName) {
+        this.policyName = policyName;
     }
 
     public Long getRegDate() {

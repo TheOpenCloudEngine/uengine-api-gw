@@ -14,7 +14,7 @@ public class AuthInformation implements Serializable {
 
     public static String LOCATION_HEADER = "header";
 
-    public static String LOCATION_PARAM = "param";
+    public static String LOCATION_PARAM = "parameter";
 
     public static String TOKEN_TYPE_JWT = "jwt";
     public static String TOKEN_TYPE_BEARER = "bearer";

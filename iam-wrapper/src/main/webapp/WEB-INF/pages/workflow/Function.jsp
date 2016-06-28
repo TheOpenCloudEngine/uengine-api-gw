@@ -16,7 +16,7 @@
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#function-1" data-toggle="tab">Label</a></li>
                         <li class=""><a href="#function-2" data-toggle="tab">Embedded</a></li>
-                        <li class=""><a href="#function-3" data-toggle="tab">Script</a></li>
+                        <li class=""><a href="#function-3" data-toggle="tab" name="scriptTab">Script</a></li>
                         <li class=""><a href="#function-4" data-toggle="tab">GoTo</a></li>
                     </ul>
                     <div class="tab-content">
@@ -79,8 +79,8 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <form name="propertyForm" action="#" class="form-horizontal" role="form">
-                                        <div class="row content-boxes-v2 margin-bottom-50">
-                                            <div class="col-md-12 md-margin-bottom-30">
+                                        <div class="row content-boxes-v2">
+                                            <div class="col-md-12 md-margin-bottom-10">
                                                 <h4>This Script must return FunctionResponse </h4>
                                                 <p>return FunctionResponse(goto,data)</p>
 
@@ -133,7 +133,7 @@
                                                         </button>
                                                     </div>
                                                 </div>
-                                                <input name="label" type="text" class="form-control" required>
+                                                <%--<input name="label" type="text" class="form-control" required>--%>
                                             </div>
                                         </div>
                                     </form>

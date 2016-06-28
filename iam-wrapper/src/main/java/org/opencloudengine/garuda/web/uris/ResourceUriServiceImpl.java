@@ -4,10 +4,13 @@ import org.opencloudengine.garuda.web.configuration.ConfigurationHelper;
 import org.opencloudengine.garuda.web.iam.Iam;
 import org.opencloudengine.garuda.web.iam.IamRepository;
 import org.opencloudengine.garuda.web.iam.IamService;
+import org.opencloudengine.garuda.web.policy.Policy;
+import org.opencloudengine.garuda.web.policy.PolicyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
@@ -22,10 +25,13 @@ public class ResourceUriServiceImpl implements ResourceUriService {
     private ResourceUriRepository uriRepository;
 
     @Autowired
+    private PolicyRepository policyRepository;
+
+    @Autowired
     ConfigurationHelper configurationHelper;
 
     @Override
-    public ResourceUri createResourceUri(int order, String uri, String method, String runWith, String wid, String className) {
+    public ResourceUri createResourceUri(int order, String uri, String method, String runWith, String wid, String className, String policyId) {
         ResourceUri resourceUri = new ResourceUri();
         resourceUri.setOrder(order);
         resourceUri.setUri(uri);
@@ -33,6 +39,7 @@ public class ResourceUriServiceImpl implements ResourceUriService {
         resourceUri.setRunWith(runWith);
         resourceUri.setWid(wid);
         resourceUri.setClassName(className);
+        resourceUri.setPolicyId(policyId);
 
         return uriRepository.insert(resourceUri);
     }
@@ -44,7 +51,25 @@ public class ResourceUriServiceImpl implements ResourceUriService {
 
     @Override
     public List<ResourceUri> select(int limit, Long skip) {
-        return uriRepository.select(limit, skip);
+        return this.joinByIds(uriRepository.select(limit, skip));
+    }
+
+    private List<ResourceUri> joinByIds(List<ResourceUri> uris) {
+        List<String> policyIds = new ArrayList<>();
+        for (ResourceUri uri : uris) {
+            if (uri.getRunWith().equals("policy")) {
+                policyIds.add(uri.getPolicyId());
+            }
+        }
+        List<Policy> policies = policyRepository.selectByIds(policyIds);
+        for (Policy policy : policies) {
+            for (ResourceUri uri : uris) {
+                if (policy.get_id().equals(uri.getPolicyId())) {
+                    uri.setPolicyName(policy.getName());
+                }
+            }
+        }
+        return uris;
     }
 
     @Override
@@ -53,8 +78,13 @@ public class ResourceUriServiceImpl implements ResourceUriService {
     }
 
     @Override
+    public ResourceUri selectByOrder(int order) {
+        return uriRepository.selectByOrder(order);
+    }
+
+    @Override
     public List<ResourceUri> selectLikeUri(String uri, int limit, Long skip) {
-        return uriRepository.selectLikeUri(uri, limit, skip);
+        return this.joinByIds(uriRepository.selectLikeUri(uri, limit, skip));
     }
 
     @Override
@@ -78,7 +108,7 @@ public class ResourceUriServiceImpl implements ResourceUriService {
     }
 
     @Override
-    public ResourceUri updateById(String id, int order, String uri, String method, String runWith, String wid, String className) {
+    public ResourceUri updateById(String id, int order, String uri, String method, String runWith, String wid, String className, String policyId) {
         ResourceUri resourceUri = new ResourceUri();
         resourceUri.setOrder(order);
         resourceUri.set_id(id);
@@ -87,6 +117,7 @@ public class ResourceUriServiceImpl implements ResourceUriService {
         resourceUri.setRunWith(runWith);
         resourceUri.setWid(wid);
         resourceUri.setClassName(className);
+        resourceUri.setPolicyId(policyId);
 
         return uriRepository.updateById(resourceUri);
     }

@@ -1,14 +1,14 @@
-package org.opencloudengine.garuda.web.uris;
+package org.opencloudengine.garuda.web.policy;
 
 import com.cloudant.client.api.model.Response;
 import com.cloudant.client.api.views.Key;
+import com.cloudant.client.api.views.UnpaginatedRequestBuilder;
 import com.cloudant.client.api.views.ViewRequestBuilder;
 import com.cloudant.client.api.views.ViewResponse;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.opencloudengine.garuda.common.repository.PersistentRepositoryImpl;
 import org.opencloudengine.garuda.couchdb.CouchServiceFactory;
 import org.opencloudengine.garuda.util.JsonUtils;
-import org.opencloudengine.garuda.web.iam.Iam;
+import org.opencloudengine.garuda.web.uris.ResourceUri;
+import org.opencloudengine.garuda.web.uris.ResourceUriRepository;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -16,17 +16,17 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 @Repository
-public class ResourceUriRepositoryImpl implements ResourceUriRepository, InitializingBean {
+public class PolicyRepositoryImpl implements PolicyRepository, InitializingBean {
 
-    private String NAMESPACE = "uris";
+    private String NAMESPACE = "policy";
 
     @Autowired
     CouchServiceFactory serviceFactory;
 
-    List<ResourceUri> cash;
+    List<Policy> cash;
 
     @Override
-    public List<ResourceUri> getCash() {
+    public List<Policy> getCash() {
         if (cash == null) {
             cash = this.selectAll();
         }
@@ -43,34 +43,33 @@ public class ResourceUriRepositoryImpl implements ResourceUriRepository, Initial
     }
 
     @Override
-    public ResourceUri insert(ResourceUri resourceUri) {
+    public Policy insert(Policy policy) {
         long time = new Date().getTime();
-        resourceUri.setDocType(NAMESPACE);
-        resourceUri.setRegDate(time);
-        resourceUri.setUpdDate(time);
+        policy.setDocType(NAMESPACE);
+        policy.setRegDate(time);
+        policy.setUpdDate(time);
 
-        Response response = serviceFactory.getDb().save(resourceUri);
-        resourceUri.set_id(response.getId());
-        resourceUri.set_rev(response.getRev());
+        Response response = serviceFactory.getDb().save(policy);
+        policy.set_id(response.getId());
+        policy.set_rev(response.getRev());
 
         this.updateCash();
-        return resourceUri;
+        return policy;
     }
 
     @Override
-    public List<ResourceUri> selectAll() {
-        List<ResourceUri> list = new ArrayList<>();
+    public List<Policy> selectAll() {
+        List<Policy> list = new ArrayList<>();
         try {
             ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "select");
             //Key.ComplexKey complex = new Key().complex(managementId);
-            List<ViewResponse.Row<Key.ComplexKey, ResourceUri>> rows = builder.newRequest(Key.Type.COMPLEX, ResourceUri.class).
+            List<ViewResponse.Row<Key.ComplexKey, Policy>> rows = builder.newRequest(Key.Type.COMPLEX, Policy.class).
                     //keys(complex).
                             build().getResponse().getRows();
 
-            for (ViewResponse.Row<Key.ComplexKey, ResourceUri> row : rows) {
+            for (ViewResponse.Row<Key.ComplexKey, Policy> row : rows) {
                 list.add(row.getValue());
             }
-            list = this.sortUris(list);
             return list;
         } catch (Exception ex) {
             return list;
@@ -78,20 +77,19 @@ public class ResourceUriRepositoryImpl implements ResourceUriRepository, Initial
     }
 
     @Override
-    public List<ResourceUri> select(int limit, Long skip) {
-        List<ResourceUri> list = new ArrayList<>();
+    public List<Policy> select(int limit, Long skip) {
+        List<Policy> list = new ArrayList<>();
         try {
             ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "select");
             //Key.ComplexKey complex = new Key().complex(managementId);
-            List<ViewResponse.Row<Key.ComplexKey, ResourceUri>> rows = builder.newRequest(Key.Type.COMPLEX, ResourceUri.class).
+            List<ViewResponse.Row<Key.ComplexKey, Policy>> rows = builder.newRequest(Key.Type.COMPLEX, Policy.class).
                     //keys(complex).
                             limit(limit).skip(skip).
                     build().getResponse().getRows();
 
-            for (ViewResponse.Row<Key.ComplexKey, ResourceUri> row : rows) {
+            for (ViewResponse.Row<Key.ComplexKey, Policy> row : rows) {
                 list.add(row.getValue());
             }
-            list = this.sortUris(list);
             return list;
 
         } catch (Exception ex) {
@@ -100,11 +98,11 @@ public class ResourceUriRepositoryImpl implements ResourceUriRepository, Initial
     }
 
     @Override
-    public ResourceUri selectById(String id) {
+    public Policy selectById(String id) {
         try {
             ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "selectById");
             Key.ComplexKey complex = new Key().complex(id);
-            return builder.newRequest(Key.Type.COMPLEX, ResourceUri.class).
+            return builder.newRequest(Key.Type.COMPLEX, Policy.class).
                     keys(complex).
                     build().getResponse().getRows().get(0).getValue();
         } catch (Exception ex) {
@@ -113,36 +111,45 @@ public class ResourceUriRepositoryImpl implements ResourceUriRepository, Initial
     }
 
     @Override
-    public ResourceUri selectByOrder(int order) {
+    public List<Policy> selectByIds(List<String> ids) {
+        List<Policy> list = new ArrayList<>();
         try {
-            ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "selectByOrder");
-            Key.ComplexKey complex = new Key().complex(order);
-            return builder.newRequest(Key.Type.COMPLEX, ResourceUri.class).
-                    keys(complex).
-                    build().getResponse().getRows().get(0).getValue();
+            ArrayList<Key.ComplexKey> complexKeyArrayList = new ArrayList<>();
+            for (String id : ids) {
+                complexKeyArrayList.add(new Key().complex(id));
+            }
+            Key.ComplexKey[] complexKeys = complexKeyArrayList.toArray(new Key.ComplexKey[complexKeyArrayList.size()]);
+
+            ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "selectById");
+            List<ViewResponse.Row<Key.ComplexKey, Policy>> rows = builder.newRequest(Key.Type.COMPLEX, Policy.class).
+                    keys(complexKeys).build().getResponse().getRows();
+
+            for (ViewResponse.Row<Key.ComplexKey, Policy> row : rows) {
+                list.add(row.getValue());
+            }
+            return list;
         } catch (Exception ex) {
-            return null;
+            return list;
         }
     }
 
     @Override
-    public List<ResourceUri> selectLikeUri(String uri, int limit, Long skip) {
-        List<ResourceUri> list = new ArrayList<>();
+    public List<Policy> selectLikeName(String name, int limit, Long skip) {
+        List<Policy> list = new ArrayList<>();
         Key.ComplexKey startKey;
         Key.ComplexKey endKey;
 
         try {
-            ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "selectLikeUri");
-            startKey = new Key().complex(uri);
-            endKey = new Key().complex(uri + "Z");
-            List<ViewResponse.Row<Key.ComplexKey, ResourceUri>> rows = builder.newRequest(Key.Type.COMPLEX, ResourceUri.class).
+            ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "selectLikeName");
+            startKey = new Key().complex(name);
+            endKey = new Key().complex(name + "Z");
+            List<ViewResponse.Row<Key.ComplexKey, Policy>> rows = builder.newRequest(Key.Type.COMPLEX, Policy.class).
                     startKey(startKey).endKey(endKey).limit(limit).skip(skip).
                     build().getResponse().getRows();
 
-            for (ViewResponse.Row<Key.ComplexKey, ResourceUri> row : rows) {
+            for (ViewResponse.Row<Key.ComplexKey, Policy> row : rows) {
                 list.add(row.getValue());
             }
-            list = this.sortUris(list);
             return list;
         } catch (Exception ex) {
             return list;
@@ -150,11 +157,11 @@ public class ResourceUriRepositoryImpl implements ResourceUriRepository, Initial
     }
 
     @Override
-    public ResourceUri selectByUri(String uri) {
+    public Policy selectByName(String uri) {
         try {
-            ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "selectByUri");
+            ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "selectByName");
             Key.ComplexKey complex = new Key().complex(uri);
-            return builder.newRequest(Key.Type.COMPLEX, ResourceUri.class).
+            return builder.newRequest(Key.Type.COMPLEX, Policy.class).
                     keys(complex).
                     build().getResponse().getRows().get(0).getValue();
 
@@ -172,7 +179,7 @@ public class ResourceUriRepositoryImpl implements ResourceUriRepository, Initial
             ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "count");
 
             count = builder.newRequest(Key.Type.COMPLEX, Long.class).
-                            reduce(true).
+                    reduce(true).
                     build().getResponse().getRows().get(0).getValue();
 
         } catch (Exception ex) {
@@ -182,13 +189,13 @@ public class ResourceUriRepositoryImpl implements ResourceUriRepository, Initial
     }
 
     @Override
-    public Long countLikeUri(String uri) {
+    public Long countLikeName(String uri) {
         Long count = null;
         Key.ComplexKey startKey;
         Key.ComplexKey endKey;
 
         try {
-            ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "countLikeUri");
+            ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "countLikeName");
             startKey = new Key().complex(uri);
             endKey = new Key().complex(uri + "Z");
             count = builder.newRequest(Key.Type.COMPLEX, Long.class).
@@ -202,36 +209,26 @@ public class ResourceUriRepositoryImpl implements ResourceUriRepository, Initial
     }
 
     @Override
-    public ResourceUri updateById(ResourceUri resourceUri) {
-        ResourceUri existUri = this.selectById(resourceUri.get_id());
+    public Policy updateById(Policy policy) {
+        Policy existPolicy = this.selectById(policy.get_id());
 
-        existUri = (ResourceUri) JsonUtils.merge(existUri, resourceUri);
+        existPolicy = (Policy) JsonUtils.merge(existPolicy, policy);
         long time = new Date().getTime();
-        existUri.setUpdDate(time);
+        existPolicy.setUpdDate(time);
 
-        Response update = serviceFactory.getDb().update(existUri);
-        existUri.set_rev(update.getRev());
+        Response update = serviceFactory.getDb().update(existPolicy);
+        existPolicy.set_rev(update.getRev());
 
         this.updateCash();
-        return existUri;
+        return existPolicy;
     }
 
     @Override
     public void deleteById(String id) {
-        ResourceUri resourceUri = this.selectById(id);
-        serviceFactory.getDb().remove(resourceUri);
+        Policy policy = this.selectById(id);
+        serviceFactory.getDb().remove(policy);
 
         this.updateCash();
     }
 
-    private List<ResourceUri> sortUris(List<ResourceUri> resourceUris){
-        Collections.sort(resourceUris, new Comparator<ResourceUri>() {
-            public int compare(ResourceUri o1, ResourceUri o2) {
-                if (o1.getOrder() == o2.getOrder())
-                    return 0;
-                return o1.getOrder() < o2.getOrder() ? -1 : 1;
-            }
-        });
-        return resourceUris;
-    }
 }

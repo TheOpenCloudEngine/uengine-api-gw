@@ -16,6 +16,8 @@ public interface ResourceUriRepository {
 
     ResourceUri selectById(String id);
 
+    ResourceUri selectByOrder(int order);
+
     List<ResourceUri> selectLikeUri(String uri, int limit, Long skip);
 
     ResourceUri selectByUri(String uri);

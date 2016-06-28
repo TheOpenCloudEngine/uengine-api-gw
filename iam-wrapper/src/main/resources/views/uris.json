@@ -8,6 +8,9 @@
     "selectById": {
       "map": "function(doc) { if(doc.docType == \"uris\"){ emit([doc._id], doc); }}"
     },
+    "selectByOrder": {
+      "map": "function(doc) { if(doc.docType == \"uris\"){ emit([doc.order], doc); }}"
+    },
     "selectLikeUri": {
       "map": "function(doc) { if(doc.docType == \"uris\"){ var words = {}; doc.uri.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}"
     },

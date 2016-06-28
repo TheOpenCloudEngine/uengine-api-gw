@@ -32,60 +32,54 @@
             var limit = tableAPI.settings()[0]._iDisplayLength
             var skip = tableAPI.settings()[0]._iDisplayStart;
 
-            tableAPI.ajax.url('/service-console/uris/list?limit=' + limit + '&skip=' + skip + '&uri=' + searchValue);
+            tableAPI.ajax.url('/service-console/policy/list?limit=' + limit + '&skip=' + skip + '&name=' + searchValue);
             tableAPI.ajax.reload();
         }
 
         $(document).ready(function () {
-            var table = $('#uris').DataTable({
+            var table = $('#policy').DataTable({
                 serverSide: true,
                 searching: false,
                 ajax: {
-                    url: '/service-console/uris/list',
-                    dataSrc: function (resourceUris) {
+                    url: '/service-console/policy/list',
+                    dataSrc: function (policies) {
                         // change init page setting (_iDisplayStart )
-                        table.settings()[0]._iDisplayStart = resourceUris.displayStart;
+                        table.settings()[0]._iDisplayStart = policies.displayStart;
 
                         // make id edit href
-                        for (var i = 0; i < resourceUris.data.length; i++) {
-                            resourceUris.data[i]._id = '<a href=/service-console/uris/edit?_id=' + resourceUris.data[i]._id + '>Edit</a>';
-                            if (resourceUris.data[i].runWith == 'workflow') {
-                                resourceUris.data[i].runWith = '' +
-                                        '<button class="btn btn-xs rounded btn-primary">workflow</button>  ' +
-                                        '<a href=/service-console/workflow/edit?_id=' + resourceUris.data[i].wid + '>' +
-                                        resourceUris.data[i].wName + '</a>';
+                        for (var i = 0; i < policies.data.length; i++) {
+                            policies.data[i].authentication = policies.data[i].authentication ? 'Y' : 'N';
+                            policies.data[i]._id = '<a href=/service-console/policy/edit?_id=' + policies.data[i]._id + '>Edit</a>';
+                            var prefixUri = policies.data[i].prefixUri;
+                            var prefixUris = prefixUri.split(',');
+                            var from = '', to = '';
+                            if (prefixUris[0]) {
+                                from = prefixUris[0];
                             }
-                            if (resourceUris.data[i].runWith == 'class') {
-                                resourceUris.data[i].runWith = '' +
-                                        '<button class="btn btn-xs rounded btn-primary">class</button>  ' +
-                                        resourceUris.data[i].className
+                            if (prefixUris[1]) {
+                                to = prefixUris[1];
                             }
-                            if (resourceUris.data[i].runWith == 'policy') {
-                                resourceUris.data[i].runWith = '' +
-                                        '<button class="btn btn-xs rounded btn-primary">policy</button>  ' +
-                                        '<a href=/service-console/policy/edit?_id=' + resourceUris.data[i].policyId + '>' +
-                                        resourceUris.data[i].policyName + '</a>';
-                            }
+                            policies.data[i].prefixUri = '"' + from + '"  to  "' + to + '"';
                         }
-                        return resourceUris.data;
+                        return policies.data;
                     }
                 },
                 columns: [
-                    {data: 'order'},
-                    {data: 'uri'},
-                    {data: 'method'},
-                    {data: 'runWith'},
+                    {data: 'name'},
+                    {data: 'authentication'},
+                    {data: 'proxyUri'},
+                    {data: 'prefixUri'},
                     {data: '_id'}
                 ]
             });
 
             // page event
-            $('#uris').on('page.dt', function () {
-                reload($('#uris').dataTable(), $('#customSearch').val().trim());
+            $('#policy').on('page.dt', function () {
+                reload($('#policy').dataTable(), $('#customSearch').val().trim());
 
                 // page length event
             }).on('length.dt', function () {
-                reload($('#uris').dataTable(), $('#customSearch').val().trim());
+                reload($('#policy').dataTable(), $('#customSearch').val().trim());
 
             });
         });
@@ -100,10 +94,10 @@
     <!--=== Breadcrumbs ===-->
     <div class="breadcrumbs">
         <div class="container">
-            <h1 class="pull-left">Uri Mapping</h1>
+            <h1 class="pull-left">Policy</h1>
             <ul class="pull-right breadcrumb">
                 <li><a href="/service-console/index">HOME</a></li>
-                <li class="active">Uri Mapping</li>
+                <li class="active">Policy</li>
             </ul>
         </div>
     </div>
@@ -113,9 +107,9 @@
     <div class="container content profile">
         <div class="row">
             <div class="col-md-12">
-                <div class="headline margin-bottom-10"><h4>Uri Mappings </h4></div>
+                <div class="headline margin-bottom-10"><h4>Policy </h4></div>
 
-                <a class="btn-u btn-u-primary" href="/service-console/uris/new">Create Uri Mapping</a>
+                <a class="btn-u btn-u-primary" href="/service-console/policy/new">Create Policy</a>
 
                 <br>
                 <br>
@@ -123,15 +117,15 @@
                 <div class="margin-bottom-10">
                     <div class="table-responsive">
                         <div style="float: right"> Search : <input type="text" id="customSearch"
-                                                                   onKeyDown="javascript: search($('#uris').dataTable(), this.value)"/>
+                                                                   onKeyDown="javascript: search($('#policy').dataTable(), this.value)"/>
                         </div>
-                        <table id="uris" class="display table table-bordered table-striped">
+                        <table id="policy" class="display table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th>Order</th>
-                                <th>Uri</th>
-                                <th>Method</th>
-                                <th>RunWith</th>
+                                <th>Name</th>
+                                <th>Authentication</th>
+                                <th>ProxyUri</th>
+                                <th>PrefixUri</th>
                                 <th></th>
                             </tr>
                             </thead>

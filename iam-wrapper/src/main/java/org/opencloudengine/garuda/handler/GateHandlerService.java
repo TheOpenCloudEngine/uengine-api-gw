@@ -8,5 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface GateHandlerService {
 
-    void doStart(ResourceUri resourceUri, GatewayServlet servlet, HttpServletRequest servletRequest, HttpServletResponse servletResponse);
+    void doClassHandler(ResourceUri resourceUri, GatewayServlet servlet, HttpServletRequest servletRequest, HttpServletResponse servletResponse);
+
+    void doPolicyHandler(ResourceUri resourceUri, GatewayServlet servlet, HttpServletRequest servletRequest, HttpServletResponse servletResponse);
 }

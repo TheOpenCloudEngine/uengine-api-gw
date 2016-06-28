@@ -49,7 +49,7 @@
 
                     <c:choose>
                         <c:when test="${duplicate}">
-                            <h4 style="color: #ff0000">Uri Mapping already exist. </h4>
+                            <h4 style="color: #ff0000">Uri Mapping Order already exist. </h4>
                         </c:when>
                         <c:when test="${failed}">
                             <h4 style="color: #ff0000">Uri Mapping create failed. </h4>
@@ -94,6 +94,7 @@
                         <div class="col-md-6">
                             <select name="runWith" class="form-control">
                                 <option value="class">Class</option>
+                                <option value="policy">Policy</option>
                                 <option value="workflow">Workflow</option>
                             </select>
                         </div>
@@ -115,6 +116,19 @@
                             <select name="wid" class="form-control">
                                 <c:forEach items="${workflows}" var="workflow" varStatus="status">
                                     <option value="${workflow._id}">${workflow.name}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="policyForm">
+                        <label class="col-md-2 control-label">Policy <span
+                                class="color-red">*</span></label>
+
+                        <div class="col-md-6">
+                            <select name="policyId" class="form-control">
+                                <c:forEach items="${policies}" var="policy" varStatus="status">
+                                    <option value="${policy._id}">${policy.name}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -154,11 +168,20 @@
             var runWith = form.find('[name=runWith]').val();
             var classNameForm = $('#classNameForm');
             var widForm = $('#widForm');
+            var policyForm = $('#policyForm');
             if (runWith === 'class') {
                 classNameForm.show();
                 widForm.hide();
-            } else {
+                policyForm.hide();
+            }
+            else if (runWith === 'policy') {
                 classNameForm.hide();
+                policyForm.show();
+                widForm.hide();
+            }
+            else {
+                classNameForm.hide();
+                policyForm.hide();
                 widForm.show();
             }
         };

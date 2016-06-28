@@ -1,4 +1,4 @@
-package org.opencloudengine.garuda.handler.activity;
+package org.opencloudengine.garuda.handler.activity.classhandler;
 
 import org.opencloudengine.garuda.gateway.GateException;
 import org.opencloudengine.garuda.handler.AbstractHandler;
@@ -8,7 +8,7 @@ import org.opencloudengine.garuda.proxy.ProxyRequest;
 /**
  * Created by uengine on 2016. 6. 16..
  */
-public class SwiftHandler extends AbstractHandler {
+public class S3Handler extends AbstractHandler {
 
     @Override
     public void doAction() {
@@ -30,14 +30,13 @@ public class SwiftHandler extends AbstractHandler {
             return;
         }
 
-        //인증이 성공할 경우 프록시 처리
         ProxyRequest proxyRequest = new ProxyRequest();
         proxyRequest.setProxyServlet(gatewayServlet);
         proxyRequest.setRequest(servletRequest);
         proxyRequest.setResponse(servletResponse);
-        proxyRequest.setHost("http://52.79.125.242:9090");
+        proxyRequest.setHost("https://s3.ap-northeast-2.amazonaws.com");
 
-        proxyRequest.setPath(servletRequest.getPathInfo().replace("/swift", ""));
+        proxyRequest.setPath(servletRequest.getPathInfo().replace("/s3", ""));
         proxyService.doProxy(proxyRequest);
     }
 }

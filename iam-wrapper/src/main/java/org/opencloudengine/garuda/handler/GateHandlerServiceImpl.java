@@ -3,6 +3,7 @@ package org.opencloudengine.garuda.handler;
 import org.opencloudengine.garuda.gateway.GateException;
 import org.opencloudengine.garuda.gateway.GatewayService;
 import org.opencloudengine.garuda.gateway.GatewayServlet;
+import org.opencloudengine.garuda.handler.activity.policy.PolicyHandler;
 import org.opencloudengine.garuda.web.configuration.ConfigurationHelper;
 import org.opencloudengine.garuda.web.uris.ResourceUri;
 import org.slf4j.Logger;
@@ -34,11 +35,21 @@ public class GateHandlerServiceImpl implements GateHandlerService {
     private Logger logger = LoggerFactory.getLogger(GateHandlerServiceImpl.class);
 
 
+    @Override
+    public void doPolicyHandler(ResourceUri resourceUri, GatewayServlet servlet, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+        try{
+            PolicyHandler policyHandler = new PolicyHandler();
+            policyHandler.init(resourceUri, servlet, servletRequest, servletResponse);
+            policyHandler.doAction();
+        }catch (Exception ex){
+            gatewayService.errorResponse(GateException.SERVER_ERROR, servletRequest, servletResponse, null);
+        }
+    }
 
     @Override
-    public void doStart(ResourceUri resourceUri, GatewayServlet servlet, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+    public void doClassHandler(ResourceUri resourceUri, GatewayServlet servlet, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
 
-        String className = "org.opencloudengine.garuda.handler.activity." + resourceUri.getClassName();
+        String className = "org.opencloudengine.garuda.handler.activity.classhandler." + resourceUri.getClassName();
         Class<?> act = null;
         try {
             act = Class.forName(className);

@@ -1,4 +1,4 @@
-package org.opencloudengine.garuda.handler.activity;
+package org.opencloudengine.garuda.handler.activity.classhandler;
 
 import org.opencloudengine.garuda.handler.AbstractHandler;
 import org.opencloudengine.garuda.proxy.ProxyRequest;

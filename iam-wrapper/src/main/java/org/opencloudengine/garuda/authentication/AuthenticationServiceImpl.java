@@ -55,15 +55,8 @@ public class AuthenticationServiceImpl implements AuthenticationService, Initial
         AuthMap = db.hashMap("AuthMap").make();
     }
 
-    //TODO 여기서 메모리 DB 를 만듬.
-
-    //TODO IAM 과 연계하는 코드 시나리오를 작성
-
-    //TODO IAM 으로부터 유저,클라이언트,스코프,매니지먼트 정보도 함께 메모리 DB 에 저장하여야 함.
-
-
     /**
-     * 밸리데이팅에 실패하였을 경우
+     * 밸리데이팅에 실패하였을 경우 null return
      *
      * @param request   HttpServletRequest
      * @param key       토큰이 들어간 헤더또는 파라미터 키

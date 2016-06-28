@@ -97,7 +97,7 @@ var canvasCtl = {
         });
 
         canvas.onDivideLane(function (event, divideLane) {
-            // console.log(divideLane);
+
         });
 
         // Shape 이 처음 Draw 되었을 때의 이벤트 리스너
@@ -149,13 +149,14 @@ var canvasCtl = {
 
         ctl.canvas = canvas;
     },
-    initPropertyWindow: function(propertyWindow){
+    refreshEditor: function (propertyWindow) {
         propertyWindow.find('[name=propertyForm]').each(function () {
-            $(this).validate({
-                ignore: ""
-            });
             $(this).find('[name=script]').each(function (index, script) {
-                var editor = new CodeMirror.fromTextArea(script, {
+                var editor = $(script).data('CodeMirrorInstance');
+                if (editor) {
+                    editor.toTextArea();
+                }
+                editor = new CodeMirror.fromTextArea(script, {
                     mode: "javascript",
                     styleActiveLine: true,
                     lineNumbers: true
@@ -163,14 +164,22 @@ var canvasCtl = {
                 $(script).data('CodeMirrorInstance', editor);
             })
         });
-        //propertyWindow.find('[name=scriptTab]').each(function(){
-        //    $(this).click(function(){
-        //        console.log(123123);
-        //        setTimeout(function(){
-        //            propertyWindow.find('[name=script]').data('CodeMirrorInstance').focus()
-        //        },1000);
-        //    })
-        //})
+    },
+    initPropertyWindow: function (propertyWindow) {
+        var me = this;
+        propertyWindow.find('[name=propertyForm]').each(function () {
+            $(this).validate({
+                ignore: ""
+            });
+        });
+
+        //탭 오픈이벤트시에 에디터를 리프레쉬한다.
+        propertyWindow.find('[name=scriptTab]').each(function () {
+            $(this).bind('shown.bs.tab', function () {
+                me.refreshEditor(propertyWindow);
+            });
+        });
+        me.refreshEditor(propertyWindow);
     },
     save: function () {
         opengraphJSON = canvas.toJSON();
@@ -203,6 +212,12 @@ var canvasCtl = {
             popWindow = ctl.getPropertyWindow(graphElement);
             popWindow.find('[name=title]').text(nodeTitle);
             ctl.setNodeProperties(graphElement, nodeProperty);
+
+            //모달 오픈이벤트시에 에디터를 리프레쉬한다.
+            popWindow.unbind('shown.bs.modal');
+            popWindow.bind('shown.bs.modal', function () {
+                ctl.refreshEditor(popWindow);
+            });
             popWindow.modal('show');
 
             var saveBtn = popWindow.find('[name=save]');
@@ -353,9 +368,4 @@ var canvasCtl = {
 };
 $(document).ready(function () {
     canvasCtl.init();
-    ////Simple example
-    //var circleShape = canvas.drawShape([101, 107], new OG.CircleShape(), [101, 102]);
-    //var ellipseShape = canvas.drawShape([203, 405], new OG.EllipseShape('label'), [103, 53]);
-    //var edge = canvas.connect(circleShape, ellipseShape, null, 'YES');
-
 });

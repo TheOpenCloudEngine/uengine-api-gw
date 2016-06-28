@@ -29,6 +29,7 @@
         <logout logout-url="/service-console/auth/logout" invalidate-session="true" logout-success-url="/service-console/auth/login"/>
 
         <intercept-url pattern="/service-console/uris/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
+        <intercept-url pattern="/service-console/policy/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
         <intercept-url pattern="/service-console/workflow/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
         <intercept-url pattern="/service-console/iam/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
         <intercept-url pattern="/service-console/analysis/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>

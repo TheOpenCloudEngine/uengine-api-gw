@@ -16,6 +16,13 @@ structure.data = {
             href: '/service-console/uris'
         },
         /*
+         Policy
+         */
+        {
+            title: 'Policy',
+            href: '/service-console/policy'
+        },
+        /*
          Workflow
          */
         {
