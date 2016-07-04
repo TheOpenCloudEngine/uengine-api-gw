@@ -4,6 +4,7 @@ import org.opencloudengine.garuda.gateway.GatewayService;
 import org.opencloudengine.garuda.gateway.GatewayServlet;
 import org.opencloudengine.garuda.proxy.ProxyService;
 import org.opencloudengine.garuda.authentication.AuthenticationService;
+import org.opencloudengine.garuda.script.ScriptService;
 import org.opencloudengine.garuda.util.ApplicationContextRegistry;
 import org.opencloudengine.garuda.web.policy.PolicyService;
 import org.opencloudengine.garuda.web.uris.ResourceUri;
@@ -30,6 +31,7 @@ public class AbstractHandler {
     public AuthenticationService securityService;
     public GatewayService gatewayService;
     public PolicyService policyService;
+    public ScriptService scriptService;
 
     public Map pathVarialbe;
 
@@ -86,6 +88,7 @@ public class AbstractHandler {
         securityService = context.getBean(AuthenticationService.class);
         gatewayService = context.getBean(GatewayService.class);
         policyService = context.getBean(PolicyService.class);
+        scriptService = context.getBean(ScriptService.class);
 
     }
 

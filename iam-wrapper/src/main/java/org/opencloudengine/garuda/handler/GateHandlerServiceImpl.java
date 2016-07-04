@@ -1,5 +1,6 @@
 package org.opencloudengine.garuda.handler;
 
+import org.opencloudengine.garuda.common.exception.ServiceException;
 import org.opencloudengine.garuda.gateway.GateException;
 import org.opencloudengine.garuda.gateway.GatewayService;
 import org.opencloudengine.garuda.gateway.GatewayServlet;
