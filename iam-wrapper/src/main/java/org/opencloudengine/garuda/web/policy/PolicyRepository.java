@@ -20,11 +20,11 @@ public interface PolicyRepository {
 
     List<Policy> selectLikeName(String name, int limit, Long skip);
 
-    Policy selectByName(String uri);
+    Policy selectByName(String name);
 
     Long count();
 
-    Long countLikeName(String uri);
+    Long countLikeName(String name);
 
     Policy updateById(Policy policy);
 

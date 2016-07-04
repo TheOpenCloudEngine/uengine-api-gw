@@ -157,10 +157,10 @@ public class PolicyRepositoryImpl implements PolicyRepository, InitializingBean 
     }
 
     @Override
-    public Policy selectByName(String uri) {
+    public Policy selectByName(String name) {
         try {
             ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "selectByName");
-            Key.ComplexKey complex = new Key().complex(uri);
+            Key.ComplexKey complex = new Key().complex(name);
             return builder.newRequest(Key.Type.COMPLEX, Policy.class).
                     keys(complex).
                     build().getResponse().getRows().get(0).getValue();
@@ -189,15 +189,15 @@ public class PolicyRepositoryImpl implements PolicyRepository, InitializingBean 
     }
 
     @Override
-    public Long countLikeName(String uri) {
+    public Long countLikeName(String name) {
         Long count = null;
         Key.ComplexKey startKey;
         Key.ComplexKey endKey;
 
         try {
             ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "countLikeName");
-            startKey = new Key().complex(uri);
-            endKey = new Key().complex(uri + "Z");
+            startKey = new Key().complex(name);
+            endKey = new Key().complex(name + "Z");
             count = builder.newRequest(Key.Type.COMPLEX, Long.class).
                     startKey(startKey).endKey(endKey).reduce(true).
                     build().getResponse().getRows().get(0).getValue();

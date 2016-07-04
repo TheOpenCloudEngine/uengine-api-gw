@@ -17,6 +17,21 @@
 
     <dependencies>
 
+        <!-- ========== -->
+        <!--  Uengine Bpmn  -->
+        <!-- ========== -->
+        <dependency>
+            <groupId>org.uengine</groupId>
+            <artifactId>bpmn-model</artifactId>
+            <version>4.0-RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.uengine</groupId>
+            <artifactId>uengine-bpmn-modeler</artifactId>
+            <version>4.0-RELEASE</version>
+        </dependency>
+
         <!-- ================== -->
         <!--  MapDB  -->
         <!-- ================== -->

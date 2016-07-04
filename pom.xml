@@ -11,6 +11,7 @@
     <url>http://www.uengine.org/</url>
 
     <modules>
+        <module>uengine-bpm</module>
         <module>iam-common</module>
         <module>iam-wrapper</module>
     </modules>

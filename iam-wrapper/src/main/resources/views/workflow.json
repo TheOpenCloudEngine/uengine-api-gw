@@ -1,0 +1,26 @@
+{
+  "_id": "_design/workflow",
+  "language": "javascript",
+  "views": {
+    "select": {
+      "map": "function(doc) { if(doc.docType == \"workflow\"){ emit(null, doc); }}"
+    },
+    "selectById": {
+      "map": "function(doc) { if(doc.docType == \"workflow\"){ emit([doc._id], doc); }}"
+    },
+    "selectLikeName": {
+      "map": "function(doc) { if(doc.docType == \"workflow\"){ var words = {}; doc.name.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}"
+    },
+    "count": {
+      "map": "function(doc) { if(doc.docType == \"workflow\"){ emit(null, null); }}",
+      "reduce": "_count"
+    },
+    "countLikeName": {
+      "map": "function(doc) { if(doc.docType == \"workflow\"){ var words = {}; doc.name.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}",
+      "reduce": "_count"
+    },
+    "selectByName": {
+      "map": "function(doc) {if(doc.docType == \"workflow\"){emit([doc.name],doc); }}"
+    }
+  }
+}
