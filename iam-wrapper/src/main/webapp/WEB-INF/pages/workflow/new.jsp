@@ -87,61 +87,18 @@
                                     <strong>Edit Workflow</strong> Drag icons to the canvas.</a>
                                 </div>
                                 <div class="md-margin-bottom-30">
-                                    <h4 class="heading-sm">
-                                        <img src="/service-console/resources/opengraph/router/Request.png" class="icon_shape"
-                                             _shape_type="GEOM" _shape_id="OG.shape.router.Request"
-                                             _label="Request"
-                                             _textLine="Request"
-                                             _width="50" _height="50"/>
-                                        <span>Request</span>
-                                    </h4>
-                                    <h4 class="heading-sm">
-                                        <img src="/service-console/resources/opengraph/router/Authentication.png" class="icon_shape"
-                                             _shape_type="GEOM" _shape_id="OG.shape.router.Authentication"
-                                             _label="Authentication"
-                                             _textLine="YES,NO"
-                                             _width="50" _height="50"/>
-                                        <span>Authentication</span>
-                                    </h4>
-                                    <h4 class="heading-sm">
-                                        <img src="/service-console/resources/opengraph/router/Oauth.png" class="icon_shape"
-                                             _shape_type="GEOM" _shape_id="OG.shape.router.Oauth"
-                                             _label="Oauth2"
-                                             _textLine="Succeeded,Failed"
-                                             _width="50" _height="50"/>
-                                        <span>Oauth2</span>
-                                    </h4>
-                                    <h4 class="heading-sm">
-                                        <img src="/service-console/resources/opengraph/router/Response.png" class="icon_shape"
-                                             _shape_type="GEOM" _shape_id="OG.shape.router.Response"
-                                             _label="Response"
-                                             _textLine="Response"
-                                             _width="50" _height="50"/>
-                                        <span>Response</span>
-                                    </h4>
-                                    <h4 class="heading-sm">
-                                        <img src="/service-console/resources/opengraph/router/Function.svg" class="icon_shape"
-                                             _shape_type="GEOM" _shape_id="OG.shape.router.Function"
-                                             _label="Function"
-                                             _width="50" _height="50"/>
-                                        <span>Function</span>
-                                    </h4>
-                                    <h4 class="heading-sm">
-                                        <img src="/service-console/resources/opengraph/router/Api.png" class="icon_shape"
-                                             _shape_type="GEOM" _shape_id="OG.shape.router.Api"
-                                             _label="Api"
-                                             _textLine="Response"
-                                             _width="80" _height="50"/>
-                                        <span>Api</span>
-                                    </h4>
-                                    <h4 class="heading-sm">
-                                        <img src="/service-console/resources/opengraph/router/Proxy.png" class="icon_shape"
-                                             _shape_type="GEOM" _shape_id="OG.shape.router.Proxy"
-                                             _label="Proxy"
-                                             _textLine="Succeeded,Failed"
-                                             _width="50" _height="50"/>
-                                        <span>Proxy</span>
-                                    </h4>
+                                    <c:forEach items="${shapesProvidedList}" var="shape" varStatus="i">
+                                        <h4 class="heading-sm">
+                                            <img src="${shape.img}" class="icon_shape"
+                                                 _shape_type="${shape.shapeType}"
+                                                 _shape_id="${shape.shapeId}"
+                                                 _label="${shape.label}"
+                                                 _textLine="${shape.textLine}"
+                                                 _width="${shape.width}"
+                                                 _height="${shape.height}"/>
+                                            <span>${shape.label}</span>
+                                        </h4>
+                                    </c:forEach>
                                 </div>
                             </div>
                             <div class="col-md-8">

@@ -1,6 +1,7 @@
 package org.opencloudengine.garuda.web.workflow;
 
 
+import org.opencloudengine.garuda.handler.activity.workflow.shapes.ShapesProvided;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -60,6 +61,8 @@ public class WorkflowController {
     @ResponseStatus(HttpStatus.OK)
     public ModelAndView newManagement(HttpSession session) {
         ModelAndView mav = new ModelAndView("/workflow/new");
+
+        mav.addObject("shapesProvidedList", ShapesProvided.shapesProvidedList);
         return mav;
     }
 

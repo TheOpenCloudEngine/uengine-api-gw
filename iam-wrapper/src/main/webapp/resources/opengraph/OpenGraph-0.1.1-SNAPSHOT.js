@@ -10546,13 +10546,31 @@ OG.shape.IShape = function () {
 	this.CONNECTABLE = true;
 
 	/**
+	 * From 연결 가능여부 (From(Shape) => To)
+	 * @type Boolean
+	 */
+	this.ENABLE_FROM = true;
+
+	/**
+	 * To 연결 가능여부 (From => To(Shape))
+	 * @type Boolean
+	 */
+	this.ENABLE_TO = true;
+
+	/**
+	 * TO 연결 가능여부
+	 * @type Boolean
+	 */
+	this.ENABLE_FROM = true;
+
+	/**
 	 * Self 연결 가능여부
 	 * @type Boolean
 	 */
 	this.SELF_CONNECTABLE = true;
 
 	/**
-	 * 드래그하여 연결시 대상 없을 경우 자동으로 Shape 복사하여 연결 처리 여부
+	 * 가이드에 자기자신을 복사하는 컨트롤러 여부.
 	 * @type Boolean
 	 */
 	this.CONNECT_CLONEABLE = true;
@@ -10562,6 +10580,18 @@ OG.shape.IShape = function () {
 	 * @type Boolean
 	 */
 	this.CONNECT_REQUIRED = true;
+
+	/**
+	 * 드래그하여 연결시 그룹을 건너뛸때 스타일 변경 여부
+	 * @type Boolean
+	 */
+	this.CONNECT_STYLE_CHANGE = true;
+
+	/**
+	 * 가이드에 삭제 컨트롤러 여부
+	 * @type Boolean
+	 */
+	this.DELETABLE = true;
 
 	/**
 	 * 라벨 수정여부
@@ -10901,6 +10931,49 @@ OG.shape.EllipseShape.prototype.createShape = function () {
 	return this.geom;
 };
 /**
+ * SpotShape Shape
+ *
+ * @class
+ * @extends OG.shape.GeomShape
+ * @requires OG.common.*, OG.geometry.*
+ *
+ * @param {String} label 라벨 [Optional]
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ */
+OG.shape.From = function (label) {
+	OG.shape.From.superclass.call(this);
+
+	this.SHAPE_ID = 'OG.shape.From';
+	this.label = label;
+	this.MOVABLE = false;
+	this.RESIZABLE = false;
+	this.SELF_CONNECTABLE = false;
+	this.CONNECT_CLONEABLE = false;
+	this.LABEL_EDITABLE = false;
+	this.DELETABLE = false;
+	this.CONNECT_STYLE_CHANGE = false;
+	this.ENABLE_TO = false;
+};
+OG.shape.From.prototype = new OG.shape.GeomShape();
+OG.shape.From.superclass = OG.shape.GeomShape;
+OG.shape.From.prototype.constructor = OG.shape.From;
+OG.From = OG.shape.From;
+
+/**
+ * 드로잉할 Shape 을 생성하여 반환한다.
+ *
+ * @return {OG.geometry.Geometry} Shape 정보
+ * @override
+ */
+OG.shape.From.prototype.createShape = function () {
+	if (this.geom) {
+		return this.geom;
+	}
+
+	this.geom = new OG.geometry.Circle([10, 10], 10);
+	return this.geom;
+};
+/**
  * Group Shape
  *
  * @class
@@ -11194,6 +11267,49 @@ OG.shape.SpotShape.prototype.createShape = function () {
 	return this.geom;
 };
 /**
+ * SpotShape Shape
+ *
+ * @class
+ * @extends OG.shape.GeomShape
+ * @requires OG.common.*, OG.geometry.*
+ *
+ * @param {String} label 라벨 [Optional]
+ * @author <a href="mailto:sppark@uengine.org">Seungpil Park</a>
+ */
+OG.shape.To = function (label) {
+	OG.shape.To.superclass.call(this);
+
+	this.SHAPE_ID = 'OG.shape.To';
+	this.label = label;
+	this.MOVABLE = false;
+	this.RESIZABLE = false;
+	this.SELF_CONNECTABLE = false;
+	this.CONNECT_CLONEABLE = false;
+	this.LABEL_EDITABLE = false;
+	this.DELETABLE = false;
+	this.CONNECT_STYLE_CHANGE = false;
+	this.ENABLE_FROM = false;
+};
+OG.shape.To.prototype = new OG.shape.GeomShape();
+OG.shape.To.superclass = OG.shape.GeomShape;
+OG.shape.To.prototype.constructor = OG.shape.To;
+OG.To = OG.shape.To;
+
+/**
+ * 드로잉할 Shape 을 생성하여 반환한다.
+ *
+ * @return {OG.geometry.Geometry} Shape 정보
+ * @override
+ */
+OG.shape.To.prototype.createShape = function () {
+	if (this.geom) {
+		return this.geom;
+	}
+
+	this.geom = new OG.geometry.Circle([10, 10], 10);
+	return this.geom;
+};
+/**
  * BPMN : Transformer Shape
  *
  * @class
@@ -11209,6 +11325,11 @@ OG.shape.Transformer = function (label) {
     this.SHAPE_ID = 'OG.shape.Transformer';
     this.label = label;
     this.CONNECTABLE = false;
+    this.MOVABLE = true;
+    this.RESIZABLE = false;
+    this.SELF_CONNECTABLE = false;
+    this.CONNECT_CLONEABLE = false;
+    this.LABEL_EDITABLE = false;
 }
 OG.shape.Transformer.prototype = new OG.shape.GroupShape();
 OG.shape.Transformer.superclass = OG.shape.GroupShape;
@@ -17307,7 +17428,7 @@ OG.renderer.RaphaelRenderer.prototype.drawGroup = function (geometry, style, id)
  */
 OG.renderer.RaphaelRenderer.prototype.drawLabel = function (shapeElement, text, style) {
     var rElement = this._getREleById(OG.Util.isElement(shapeElement) ? shapeElement.id : shapeElement),
-        element, labelElement, envelope, _style = {}, size, beforeText, beforeEvent,position,
+        element, labelElement, envelope, _style = {}, size, beforeText, beforeEvent, position,
         /**
          * 라인(꺽은선)의 중심위치를 반환한다.
          *
@@ -17388,7 +17509,7 @@ OG.renderer.RaphaelRenderer.prototype.drawLabel = function (shapeElement, text, 
             }
             size = [envelope.getWidth(), envelope.getHeight()];
 
-            if(element.shape instanceof OG.shape.EdgeShape){
+            if (element.shape instanceof OG.shape.EdgeShape) {
                 var centerOfEdge = getCenterOfEdge(element);
                 position = [centerOfEdge.x, centerOfEdge.y];
             }
@@ -17724,6 +17845,73 @@ OG.renderer.RaphaelRenderer.prototype.redrawConnectedEdge = function (element, e
     }
 };
 
+
+/**
+ * 연결된 터미널의 vertices 를 초기화하여 재연결한다.
+ *
+ * @param {Element} edge Edge Shape
+ * @return {Element} 연결된 Edge 엘리먼트
+ * @override
+ */
+OG.renderer.RaphaelRenderer.prototype.reconnect = function (edge) {
+
+    var rEdge = this._getREleById(OG.Util.isElement(edge) ? edge.id : edge);
+    if (rEdge) {
+        edge = rEdge.node;
+    } else {
+        return null;
+    }
+
+    var from, to;
+    var me = this, fromShape, toShape, fromXY, toXY,
+        isSelf;
+
+    from = $(edge).attr("_from");
+    to = $(edge).attr("_to");
+    if (from) {
+        fromShape = this._getShapeFromTerminal(from);
+    }
+    if (to) {
+        toShape = this._getShapeFromTerminal(to);
+    }
+    if (!fromShape || !toShape) {
+        return edge;
+    }
+
+    // 연결 포지션 초기화
+    from = this.createDefaultTerminalString(fromShape);
+    to = this.createDefaultTerminalString(toShape);
+
+    fromXY = this._getPositionFromTerminal(from);
+    toXY = this._getPositionFromTerminal(to);
+
+    // 연결 노드 정보 설정
+    $(edge).attr("_from", from);
+    $(edge).attr("_to", to);
+
+
+    var geometry = edge.shape.geom;
+    var vertices = geometry.getVertices();
+    var newVertieces = [vertices[0], vertices[vertices.length - 1]];
+
+    newVertieces[0].x = fromXY.x;
+    newVertieces[0].y = fromXY.y;
+
+    newVertieces[1].x = toXY.x;
+    newVertieces[1].y = toXY.y;
+
+
+    // 라인 드로잉
+    edge = this.drawEdge(new OG.PolyLine(newVertieces), edge.shape.geom.style, edge ? edge.id : null);
+
+    me.trimConnectInnerVertice(edge);
+    me.trimConnectIntersection(edge);
+    me.trimEdge(edge);
+    me.checkBridgeEdge(edge);
+
+    return edge;
+};
+
 /**
  * 두개의 터미널을 연결하고, 속성정보에 추가한다.
  *
@@ -17782,13 +17970,13 @@ OG.renderer.RaphaelRenderer.prototype.connect = function (from, to, edge, style,
         toXY = this._getPositionFromTerminal(to);
     }
 
+    //셀프 커넥션 처리
     isSelf = fromShape && toShape && fromShape.id === toShape.id;
     if (isSelf) {
         fromXY = toXY = fromShape.shape.geom.getBoundary().getRightCenter();
     }
 
     if (fromShape && toShape) {
-
         if (fromShape.attributes._shape_id.value == "OG.shape.bpmn.Value_Chain" || toShape.attributes._shape_id.value == "OG.shape.bpmn.Value_Chain") {
             _style["arrow-end"] = "none";
         } else if (fromShape.attributes._shape_id.value == "OG.shape.bpmn.Value_Chain_Module" || toShape.attributes._shape_id.value == "OG.shape.bpmn.Value_Chain_Module") {
@@ -17803,7 +17991,7 @@ OG.renderer.RaphaelRenderer.prototype.connect = function (from, to, edge, style,
         $(this._PAPER.canvas).trigger(beforeEvent);
         if (beforeEvent.isPropagationStopped()) {
             this.remove(edge);
-            return false;
+            return null;
         }
     }
 
@@ -18048,12 +18236,15 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
         _size = me._CONFIG.GUIDE_RECT_SIZE, _hSize = OG.Util.round(_size / 2),
         _ctrlSize = me._CONFIG.GUIDE_LINE_SIZE,
         _ctrlMargin = me._CONFIG.GUIDE_LINE_MARGIN,
-        _trash, isEdge, isEssensia, controllers = [], _isConnectable, isLane,
+        _trash, isEdge, isEssensia, controllers = [], isLane,
         _qUpper, _qLow, _qBisector, _qThirds;
 
-    if (rElement && me._CONFIG.CONNECTABLE && rElement.node.shape.CONNECTABLE) {
-        _isConnectable = true;
-    }
+
+    var _isConnectable = rElement && me._CANVAS._HANDLER._isConnectable(element.shape);
+    var _isConnectCloneable = rElement && me._CANVAS._HANDLER._isConnectCloneable(element.shape);
+    var _isDeletable = rElement && me._CANVAS._HANDLER._isDeletable(element.shape);
+    var _isResizable = rElement && me._CANVAS._HANDLER._isResizable(element.shape);
+
 
     var createLinePath = function (x, y, idx) {
         var marginTop = 0;
@@ -18140,6 +18331,9 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
     }
 
     function _drawGuide() {
+        if (!_isResizable) {
+            return;
+        }
         _ulRect = me._PAPER.rect(_upperLeft.x - _hSize, _upperLeft.y - _hSize, _size, _size);
         _urRect = me._PAPER.rect(_upperRight.x - _hSize, _upperRight.y - _hSize, _size, _size);
         _lwlRect = me._PAPER.rect(_lowerLeft.x - _hSize, _lowerLeft.y - _hSize, _size, _size);
@@ -18187,6 +18381,9 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
     }
 
     function _redrawGuide() {
+        if (!_isResizable) {
+            return;
+        }
         _ulRect = me._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.UL);
         _urRect = me._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.UR);
         _lwlRect = me._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.LWL);
@@ -18207,6 +18404,9 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
     }
 
     function _drawTrash() {
+        if (!_isDeletable) {
+            return;
+        }
         _trash = me._PAPER.image("resources/images/symbol/trash.svg", 0, 0, _ctrlSize, _ctrlSize);
         _trash.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LINE_AREA);
         group.appendChild(_trash);
@@ -18226,11 +18426,17 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
     }
 
     function _redrawTrash() {
+        if (!_isDeletable) {
+            return;
+        }
         _trash = me._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.TRASH);
         controllers.push(_trash);
     }
 
     function _drawLine() {
+        if (!_isConnectable) {
+            return;
+        }
         _line = me._PAPER.rect(_upperRight.x + _ctrlMargin, _upperRight.y, _ctrlSize, _ctrlSize);
         _linePath1 = me._PAPER.path(createLinePath(0, 0, 0));
         _linePath2 = me._PAPER.path(createLinePath(0, 0, 8));
@@ -18265,6 +18471,9 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
     }
 
     function _redrawLine() {
+        if (!_isConnectable) {
+            return;
+        }
         _line = me._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.LINE);
         _linePath1 = me._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.LINE + '1');
         _linePath2 = me._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.LINE + '2');
@@ -18272,9 +18481,12 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
     }
 
     function _drawTextLine(i, text) {
+        if (!_isConnectable) {
+            return;
+        }
         var minText = text;
-        if(text.length > 3){
-            minText = text.substring(0,3) + '..';
+        if (text.length > 3) {
+            minText = text.substring(0, 3) + '..';
         }
         _line = me._PAPER.rect(_upperRight.x + _ctrlMargin, _upperRight.y, _ctrlSize, _ctrlSize);
         _linePath1 = me._PAPER.path(createTextLinePath(0, 0));
@@ -18307,6 +18519,9 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
     }
 
     function _redrawTextLine(i, text) {
+        if (!_isConnectable) {
+            return;
+        }
         _line = me._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.LINE_TEXT + i);
         _linePath1 = me._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.LINE_TEXT + i + '1');
         _linePath2 = me._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.LINE_TEXT + i + '2');
@@ -18314,6 +18529,9 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
     }
 
     function _drawRect() {
+        if (!_isConnectCloneable) {
+            return;
+        }
         _rect = me._PAPER.rect(_upperRight.x + _ctrlMargin, _upperRight.y, _ctrlSize, _ctrlSize);
         _rect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_RECT_AREA);
 
@@ -18326,6 +18544,9 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
     }
 
     function _redrawRect() {
+        if (!_isConnectCloneable) {
+            return;
+        }
         _rect = me._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.RECT);
         controllers.push(_rect);
     }
@@ -18471,11 +18692,7 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
             if (isLane) {
                 _redrawLaneQuarter(me.enableDivideCount(element));
             }
-            if (isLane && me.isTopGroup(element) && _isConnectable) {
-                _redrawRect();
-                _redrawLine();
-            }
-            if (!isLane && _isConnectable) {
+            if (!isLane) {
                 _redrawRect();
                 if (textList.length) {
                     $.each(textList, function (i, text) {
@@ -18510,15 +18727,7 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
             if (isLane) {
                 _drawLaneQuarter(me.enableDivideCount(element));
             }
-            if (isLane && me.isTopGroup(element) && _isConnectable) {
-                _drawRect();
-                if (textList.length) {
-
-                } else {
-                    _drawLine();
-                }
-            }
-            if (!isLane && _isConnectable) {
+            if (!isLane) {
                 _drawRect();
                 if (textList.length) {
                     $.each(textList, function (i, text) {
@@ -18528,7 +18737,6 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
                     _drawLine();
                 }
             }
-
             _drawTrash();
         }
         _setControllerPosition();
@@ -18553,26 +18761,28 @@ OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
  * @param {Object} position
  */
 OG.renderer.RaphaelRenderer.prototype.drawStickGuide = function (position) {
-
-    var me = this, path;
+//console.log(position);
+    //console.log(canvas._CONFIG.SCALE);
+    var me = this, path, pathX, pathY;
 
     if (!position) {
         return;
     }
     if (position.x) {
+        pathX = position.x * me._CONFIG.SCALE;
         this.removeStickGuide('vertical');
-        path = this._PAPER.path("M" + position.x + ",0L" + position.x + ",10000");
+        path = this._PAPER.path("M" + pathX + ",0L" + pathX + ",10000");
         this._stickGuideX = path;
     }
     if (position.y) {
+        pathY = position.y * me._CONFIG.SCALE;
         this.removeStickGuide('horizontal');
-        path = this._PAPER.path("M0," + position.y + "L10000," + position.y);
+        path = this._PAPER.path("M0," + pathY + "L10000," + pathY);
         this._stickGuideY = path;
     }
     path.attr("stroke-width", "2");
     path.attr("stroke", "#FFCC50");
     path.attr("opacity", "0.7");
-
 };
 
 OG.renderer.RaphaelRenderer.prototype.removeStickGuide = function (direction) {
@@ -20384,13 +20594,18 @@ OG.renderer.RaphaelRenderer.prototype.drawConnectGuide = function (element) {
                     spots.push(spot.node);
                 }
             }
-        })
+        });
 
         return spots;
+    };
+
+    // 스팟이 이미 존재하는 경우에는 가이드만 새로 만든다.
+    if (me.getSpots(element).length > 0) {
+        return null;
     }
 
-    if (me.getSpots(element).length > 0) {
-        // 스팟이 이미 존재하는 경우에는 가이드만 새로 만든다.
+    // 선택할수 없는 엘리먼트일경우 패스.
+    if (!me._CANVAS._HANDLER._isSelectable(element.shape)) {
         return null;
     }
 
@@ -21070,7 +21285,7 @@ OG.renderer.RaphaelRenderer.prototype.createDefaultTerminalString = function (el
         }
     }
     return terminal;
-}
+};
 
 /**
  * 터미널로부터 부모 Shape element 로의 퍼센테이지 좌표를 반환한다.
@@ -21329,6 +21544,9 @@ OG.renderer.RaphaelRenderer.prototype.addHistory = function () {
             });
         }
     }
+
+    //슬라이더가 있을경우 슬라이더 업데이트
+    me._CANVAS.updateSlider();
 };
 
 /**
@@ -22513,7 +22731,7 @@ OG.renderer.RaphaelRenderer.prototype.getRootGroupOfShape = function (element) {
  * @param {Element,String} Element 또는 ID
  */
 OG.renderer.RaphaelRenderer.prototype.checkBridgeEdge = function (element) {
-    var me = this;
+    var me = this, fromStyleChangable, toStyleChangable;
     var rElement = me._getREleById(OG.Util.isElement(element) ? element.id : element);
 
     if (!rElement) {
@@ -22531,10 +22749,12 @@ OG.renderer.RaphaelRenderer.prototype.checkBridgeEdge = function (element) {
     if (from) {
         fromShape = this._getShapeFromTerminal(from);
         fromRoot = me.getRootGroupOfShape(fromShape);
+        fromStyleChangable = me._CANVAS._HANDLER._isConnectStyleChangable(fromShape.shape);
     }
     if (to) {
         toShape = this._getShapeFromTerminal(to);
         toRoot = me.getRootGroupOfShape(toShape);
+        toStyleChangable = me._CANVAS._HANDLER._isConnectStyleChangable(toShape.shape);
     }
 
     if (fromShape && toShape && fromRoot && toRoot) {
@@ -22548,12 +22768,20 @@ OG.renderer.RaphaelRenderer.prototype.checkBridgeEdge = function (element) {
             me.setShapeStyle(element, {"stroke-dasharray": ''});
             return;
         }
+
+        //둘중 한쪽이 스타일 변경 방지 처리가 되어있으면 기본 처리한다.
+        if (!fromStyleChangable || !toStyleChangable) {
+            me.setShapeStyle(element, {"stroke-dasharray": ''});
+            return;
+        }
+
         //양쪽 루트그룹의 아이디가 틀리면 대쉬어래이 처리
         if (fromRoot.id !== toRoot.id) {
             me.setShapeStyle(element, {"arrow-start": "open_oval", "stroke-dasharray": '- '});
             return;
         }
     }
+
     me.setShapeStyle(element, {"stroke-dasharray": ''});
 };
 /**
@@ -23296,7 +23524,11 @@ OG.handler.EventHandler.prototype = {
                 return correctionConditions;
             }
 
-            //모든 Shape 의 중심점을 조건에 포함한다.
+            //모든 Shape 의 중심점,상하좌우 끝을 조건에 포함한다.
+            var moveBoundary = renderer.getBoundary(element);
+            var moveCenter = moveBoundary.getCentroid();
+            var moveHeight = moveBoundary.getHeight();
+            var moveWidth = moveBoundary.getWidth();
             var allShapes = renderer.getAllShapes();
             $.each(allShapes, function (idx, shape) {
                 if (renderer.isEdge(shape)) {
@@ -23307,12 +23539,127 @@ OG.handler.EventHandler.prototype = {
                 }
                 var boundary = renderer.getBoundary(shape);
                 var center = boundary.getCentroid();
+                var upperLeft = boundary.getUpperLeft();
+                var lowerRight = boundary.getLowerRight();
 
-                //vertical boundary range
+
+                //top boundary range
+                correctionConditions.push({
+                    condition: {
+                        minY: (upperLeft.y - moveHeight / 2) - delay,
+                        maxY: (upperLeft.y - moveHeight / 2) + delay
+                    },
+                    fixedPosition: {
+                        y: (upperLeft.y - moveHeight / 2)
+                    },
+                    guidePosition: {
+                        y: upperLeft.y
+                    },
+                    id: idx
+                });
+                correctionConditions.push({
+                    condition: {
+                        minY: (upperLeft.y + moveHeight / 2) - delay,
+                        maxY: (upperLeft.y + moveHeight / 2) + delay
+                    },
+                    fixedPosition: {
+                        y: (upperLeft.y + moveHeight / 2)
+                    },
+                    guidePosition: {
+                        y: upperLeft.y
+                    },
+                    id: idx
+                });
+
+                //low boundary range
+                correctionConditions.push({
+                    condition: {
+                        minY: (lowerRight.y + moveHeight / 2) - delay,
+                        maxY: (lowerRight.y + moveHeight / 2) + delay
+                    },
+                    fixedPosition: {
+                        y: (lowerRight.y + moveHeight / 2)
+                    },
+                    guidePosition: {
+                        y: lowerRight.y
+                    },
+                    id: idx
+                });
+                correctionConditions.push({
+                    condition: {
+                        minY: (lowerRight.y - moveHeight / 2) - delay,
+                        maxY: (lowerRight.y - moveHeight / 2) + delay
+                    },
+                    fixedPosition: {
+                        y: (lowerRight.y - moveHeight / 2)
+                    },
+                    guidePosition: {
+                        y: lowerRight.y
+                    },
+                    id: idx
+                });
+
+                //left boundary range
+                correctionConditions.push({
+                    condition: {
+                        minX: (upperLeft.x - moveWidth / 2) - delay,
+                        maxX: (upperLeft.x - moveWidth / 2) + delay
+                    },
+                    fixedPosition: {
+                        x: (upperLeft.x - moveWidth / 2)
+                    },
+                    guidePosition: {
+                        x: upperLeft.x
+                    },
+                    id: idx
+                });
+                correctionConditions.push({
+                    condition: {
+                        minX: (upperLeft.x + moveWidth / 2) - delay,
+                        maxX: (upperLeft.x + moveWidth / 2) + delay
+                    },
+                    fixedPosition: {
+                        x: (upperLeft.x + moveWidth / 2)
+                    },
+                    guidePosition: {
+                        x: upperLeft.x
+                    },
+                    id: idx
+                });
+
+                //right boundary range
+                correctionConditions.push({
+                    condition: {
+                        minX: (lowerRight.x + moveWidth / 2) - delay,
+                        maxX: (lowerRight.x + moveWidth / 2) + delay
+                    },
+                    fixedPosition: {
+                        x: (lowerRight.x + moveWidth / 2)
+                    },
+                    guidePosition: {
+                        x: lowerRight.x
+                    },
+                    id: idx
+                });
+                correctionConditions.push({
+                    condition: {
+                        minX: (lowerRight.x - moveWidth / 2) - delay,
+                        maxX: (lowerRight.x - moveWidth / 2) + delay
+                    },
+                    fixedPosition: {
+                        x: (lowerRight.x - moveWidth / 2)
+                    },
+                    guidePosition: {
+                        x: lowerRight.x
+                    },
+                    id: idx
+                });
+
+                //center vertical boundary range
                 correctionConditions.push({
                     condition: {
                         minX: center.x - delay,
-                        maxX: center.x + delay,
+                        maxX: center.x + delay
                     },
                     fixedPosition: {
                         x: center.x
@@ -23323,7 +23670,7 @@ OG.handler.EventHandler.prototype = {
                     id: idx
                 });
 
-                //horizontal boundary range
+                //center horizontal boundary range
                 correctionConditions.push({
                     condition: {
                         minY: center.y - delay,
@@ -23340,9 +23687,6 @@ OG.handler.EventHandler.prototype = {
             });
 
             //연결된 Shape 들의 터미널이 수평,수직으로 교차하는 순간을 조건에 포함한다.
-            var moveBoundary = renderer.getBoundary(element);
-            var moveCenter = moveBoundary.getCentroid();
-
             var edges = [];
             var prevEdges = renderer.getPrevEdges(element);
             var nextEdges = renderer.getNextEdges(element);
@@ -23411,7 +23755,7 @@ OG.handler.EventHandler.prototype = {
                 });
             });
             return correctionConditions;
-        }
+        };
 
         //엘리먼트 이동시 범위조건에 따라 새로운 포지션을 계산한다.
         //조건이 일치할 시 스틱가이드를 생선한다.
@@ -23425,7 +23769,7 @@ OG.handler.EventHandler.prototype = {
             var center = {
                 x: centroid.x + dx,
                 y: centroid.y + dy
-            }
+            };
 
             var calculateFixedPosition = function (expectedPosition) {
                 if (!expectedPosition) {
@@ -23843,17 +24187,127 @@ OG.handler.EventHandler.prototype = {
         var isEdge = $(element).attr("_shape") === OG.Constants.SHAPE_TYPE.EDGE ? true : false;
         var renderer = me._RENDERER;
 
+        var boundary = me._RENDERER.getBoundary(element);
+        var uP = boundary.getUpperCenter().y;
+        var lwP = boundary.getLowerCenter().y;
+        var lP = boundary.getLeftCenter().x;
+        var rP = boundary.getRightCenter().x;
+        var bWidth = boundary.getWidth();
+        var bHeight = boundary.getHeight();
+
         var calculateResizeCorrectionConditions = function (direction) {
             //조건집합
             var correctionConditions = [];
-            var boundary = me._RENDERER.getBoundary(element);
-            var uP = boundary.getUpperCenter().y;
-            var lwP = boundary.getLowerCenter().y;
-            var lP = boundary.getLeftCenter().x;
-            var rP = boundary.getRightCenter().x;
             var minSize = me._CONFIG.GUIDE_MIN_SIZE;
             var laneMinSize = me._CONFIG.LANE_MIN_SIZE;
             var groupInnerSapce = me._CONFIG.GROUP_INNER_SAPCE;
+
+            //모든 Shape 의 중심점,상하좌우 끝을 조건에 포함한다.
+            //이 조건은 다른 조건과 달리 리사이즈 최소 보정치 계산과 함께 하기 때문에 min,max 가 반대이다.
+            var delay = me._CONFIG.EDGE_MOVE_DELAY_SIZE;
+            var allShapes = renderer.getAllShapes();
+            $.each(allShapes, function (idx, shape) {
+                if (renderer.isEdge(shape)) {
+                    return;
+                }
+                if (shape.id === element.id) {
+                    return;
+                }
+                var boundary = renderer.getBoundary(shape);
+                var center = boundary.getCentroid();
+                var upperLeft = boundary.getUpperLeft();
+                var lowerRight = boundary.getLowerRight();
+
+                //top boundary range
+                correctionConditions.push({
+                    condition: {
+                        maxY: upperLeft.y - delay,
+                        minY: upperLeft.y + delay
+                    },
+                    fixedPosition: {
+                        y: upperLeft.y
+                    },
+                    guidePosition: {
+                        y: upperLeft.y
+                    },
+                    id: idx
+                });
+
+                //low boundary range
+                correctionConditions.push({
+                    condition: {
+                        maxY: lowerRight.y - delay,
+                        minY: lowerRight.y + delay
+                    },
+                    fixedPosition: {
+                        y: lowerRight.y
+                    },
+                    guidePosition: {
+                        y: lowerRight.y
+                    },
+                    id: idx
+                });
+
+                //left boundary range
+                correctionConditions.push({
+                    condition: {
+                        maxX: upperLeft.x - delay,
+                        minX: upperLeft.x + delay
+                    },
+                    fixedPosition: {
+                        x: upperLeft.x
+                    },
+                    guidePosition: {
+                        x: upperLeft.x
+                    },
+                    id: idx
+                });
+
+                //right boundary range
+                correctionConditions.push({
+                    condition: {
+                        maxX: lowerRight.x - delay,
+                        minX: lowerRight.x + delay
+                    },
+                    fixedPosition: {
+                        x: lowerRight.x
+                    },
+                    guidePosition: {
+                        x: lowerRight.x
+                    },
+                    id: idx
+                });
+
+                //center vertical boundary range
+                correctionConditions.push({
+                    condition: {
+                        maxX: center.x - delay,
+                        minX: center.x + delay
+                    },
+                    fixedPosition: {
+                        x: center.x
+                    },
+                    guidePosition: {
+                        x: center.x
+                    },
+                    id: idx
+                });
+
+                //center horizontal boundary range
+                correctionConditions.push({
+                    condition: {
+                        maxY: center.y - delay,
+                        minY: center.y + delay,
+                    },
+                    fixedPosition: {
+                        y: center.y
+                    },
+                    guidePosition: {
+                        y: center.y
+                    },
+                    id: idx
+                });
+            });
 
             function addRightCtrlCondition() {
                 correctionConditions.push({
@@ -24236,7 +24690,6 @@ OG.handler.EventHandler.prototype = {
                     laneRightHandleMoveright();
                 }
             }
-
             return correctionConditions;
         };
         //element가 가지고있는 범위조건에 따라 새로운 포지션을 계산한다.
@@ -24296,16 +24749,29 @@ OG.handler.EventHandler.prototype = {
                         conditionsPassToFix = false;
                     }
                 }
-
                 if (conditionsPassToFix) {
                     conditionsPassCandidates.push(correctionCondition);
                 }
             });
+
+            //$.each(conditionsPassCandidates, function (index, conditionsPassCandidate) {
+            //    fixedPosition = calculateFixedPosition(conditionsPassCandidate.fixedPosition);
+            //});
+
+            //console.log(correctionConditions,conditionsPassCandidates);
             $.each(conditionsPassCandidates, function (index, conditionsPassCandidate) {
                 fixedPosition = calculateFixedPosition(conditionsPassCandidate.fixedPosition);
+                var guidePosition = conditionsPassCandidate.guidePosition;
+                if (guidePosition) {
+                    renderer.drawStickGuide(guidePosition);
+                }
             });
+            if (!conditionsPassCandidates.length) {
+                renderer.removeAllStickGuide();
+            }
 
             return fixedPosition;
+
         };
 
         var upHandle = function (handleName) {
@@ -24338,34 +24804,106 @@ OG.handler.EventHandler.prototype = {
 
         if (isResizable === true) {
             if (!isEdge) {
-
                 for (var _handleName in guide) {
                     var handles = ['ul', 'uc', 'ur', 'rc', 'lwr', 'lwc', 'lwl', 'lc'];
                     var indexOfHandle = handles.indexOf(_handleName);
                     if (indexOfHandle === -1) {
                         continue;
                     }
-                    var indexOfAcrossHandle = (indexOfHandle + 4) >= 8 ? indexOfHandle - 4 : indexOfHandle + 4;
-                    var _acrossHandle = guide[handles[indexOfAcrossHandle]];
                     $(guide[_handleName]).data('handleName', _handleName);
-                    $(guide[_handleName]).data('acrossHandle', _acrossHandle);
-                    $(guide[_handleName]).data('acrossHandleName', handles[indexOfAcrossHandle]);
-
                     $(guide[_handleName]).draggable({
                         start: function (event) {
                             var handleName = $(this).data('handleName');
                             var eventOffset = me._getOffset(event);
+                            var hx = renderer.getAttr(guide[handleName], "x");
+                            var hy = renderer.getAttr(guide[handleName], "y");
+                            var hWidth = renderer.getAttr(guide[handleName], "width");
+                            var hHeight = renderer.getAttr(guide[handleName], "height");
                             $(this).data("start", {x: eventOffset.x, y: eventOffset.y});
                             $(this).data("offset", {
-                                x: eventOffset.x - me._num(renderer.getAttr(guide[handleName], "x")),
-                                y: eventOffset.y - me._num(renderer.getAttr(guide[handleName], "y"))
+                                x: eventOffset.x - me._num(hx + hWidth / 2),
+                                y: eventOffset.y - me._num(hy + hHeight / 2)
                             });
+
                             $(this).data('correctionConditions', calculateResizeCorrectionConditions(handleName));
                             renderer.removeRubberBand(renderer.getRootElement());
                         },
                         drag: function (event) {
                             var handleName = $(this).data('handleName');
-                            var acrossHandle = $(this).data('acrossHandle');
+                            var eventOffset = me._getOffset(event),
+                                start = $(this).data("start"),
+                                offset = $(this).data("offset");
+                            var hWidth = renderer.getAttr(guide[handleName], "width");
+                            var hHeight = renderer.getAttr(guide[handleName], "height");
+                            var newXY = correctionConditionAnalysis($(this), {
+                                x: eventOffset.x - offset.x,
+                                y: eventOffset.y - offset.y
+                            });
+                            var newX = me._grid(newXY.x);
+                            var newY = me._grid(newXY.y);
+                            var newWidth, newHeight
+                            var newUp = uP;
+                            var newLwp = lwP;
+                            var newLp = lP;
+                            var newRp = rP;
+                            $(this).css({"position": "", "left": "", "top": ""});
+                            if (upHandle(handleName)) {
+                                newUp = newY;
+                            }
+                            if (lowHandle(handleName)) {
+                                newLwp = newY;
+                            }
+                            if (rightHandle(handleName)) {
+                                newRp = newX;
+                            }
+                            if (leftHandle(handleName)) {
+                                newLp = newX;
+                            }
+                            newWidth = Math.abs(newRp - newLp);
+                            newHeight = Math.abs(newLwp - newUp);
+
+                            renderer.setAttr(guide.ul, {
+                                x: newLp - hWidth / 2,
+                                y: newUp - hHeight / 2
+                            });
+                            renderer.setAttr(guide.uc, {
+                                x: (newLp + newRp) / 2 - hWidth / 2,
+                                y: newUp - hHeight / 2
+                            });
+                            renderer.setAttr(guide.ur, {
+                                x: newRp - hWidth / 2,
+                                y: newUp - hHeight / 2
+                            });
+                            renderer.setAttr(guide.lc, {
+                                x: newLp - hWidth / 2,
+                                y: (newUp + newLwp) / 2 - hHeight / 2
+                            });
+                            renderer.setAttr(guide.rc, {
+                                x: newRp - hWidth / 2,
+                                y: (newUp + newLwp) / 2 - hHeight / 2
+                            });
+                            renderer.setAttr(guide.lwl, {
+                                x: newLp - hWidth / 2,
+                                y: newLwp - hHeight / 2
+                            });
+                            renderer.setAttr(guide.lwc, {
+                                x: (newLp + newRp) / 2 - hWidth / 2,
+                                y: newLwp - hHeight / 2
+                            });
+                            renderer.setAttr(guide.lwr, {
+                                x: newRp - hWidth / 2,
+                                y: newLwp - hHeight / 2
+                            });
+                            renderer.setAttr(guide.bBox, {
+                                x: newLp,
+                                y: newUp,
+                                width: newWidth,
+                                height: newHeight
+                            });
+                            renderer.removeAllConnectGuide();
+                        },
+                        stop: function (event) {
+                            var handleName = $(this).data('handleName');
                             var eventOffset = me._getOffset(event),
                                 start = $(this).data("start"),
                                 offset = $(this).data("offset");
@@ -24375,91 +24913,36 @@ OG.handler.EventHandler.prototype = {
                             });
                             var newX = me._grid(newXY.x);
                             var newY = me._grid(newXY.y);
-                            var newWidth;
-                            var newHeight;
-                            $(this).css({"position": "", "left": "", "top": ""});
-
-                            if (upHandle(handleName) || lowHandle(handleName)) {
-                                newHeight = Math.abs(me._grid(me._num(renderer.getAttr(acrossHandle, "y")) - newY));
+                            var newUp = uP;
+                            var newLwp = lwP;
+                            var newLp = lP;
+                            var newRp = rP;
+                            if (upHandle(handleName)) {
+                                newUp = newY;
                             }
-                            if (rightHandle(handleName) || leftHandle(handleName)) {
-                                newWidth = Math.abs(me._grid(me._num(renderer.getAttr(acrossHandle, "x")) - newX));
+                            if (lowHandle(handleName)) {
+                                newLwp = newY;
                             }
-
-                            if (newWidth) {
-                                if (rightHandle(handleName)) {
-                                    renderer.setAttr(guide.ur, {x: newX});
-                                    renderer.setAttr(guide.rc, {x: newX});
-                                    renderer.setAttr(guide.lwr, {x: newX});
-                                    renderer.setAttr(guide.bBox, {width: newWidth});
-                                }
-                                if (leftHandle(handleName)) {
-                                    renderer.setAttr(guide.ul, {x: newX});
-                                    renderer.setAttr(guide.lc, {x: newX});
-                                    renderer.setAttr(guide.lwl, {x: newX});
-                                    renderer.setAttr(guide.bBox, {
-                                        x: OG.Util.round(newX + me._num(renderer.getAttr(acrossHandle, "width")) / 2),
-                                        width: newWidth
-                                    });
-                                }
-                                renderer.setAttr(guide.uc, {x: OG.Util.round((me._num(renderer.getAttr(acrossHandle, "x")) + newX) / 2)});
-                                renderer.setAttr(guide.lwc, {x: OG.Util.round((me._num(renderer.getAttr(acrossHandle, "x")) + newX) / 2)});
+                            if (rightHandle(handleName)) {
+                                newRp = newX;
                             }
-
-                            if (newHeight) {
-                                if (upHandle(handleName)) {
-                                    renderer.setAttr(guide.ul, {y: newY});
-                                    renderer.setAttr(guide.uc, {y: newY});
-                                    renderer.setAttr(guide.ur, {y: newY});
-                                    renderer.setAttr(guide.bBox, {
-                                        y: OG.Util.round(newY + me._num(renderer.getAttr(acrossHandle, "height")) / 2),
-                                        height: newHeight
-                                    });
-                                }
-                                if (lowHandle(handleName)) {
-                                    renderer.setAttr(guide.lwl, {y: newY});
-                                    renderer.setAttr(guide.lwc, {y: newY});
-                                    renderer.setAttr(guide.lwr, {y: newY});
-                                    renderer.setAttr(guide.bBox, {height: newHeight});
-                                }
-                                renderer.setAttr(guide.lc, {y: OG.Util.round((me._num(renderer.getAttr(acrossHandle, "y")) + newY) / 2)});
-                                renderer.setAttr(guide.rc, {y: OG.Util.round((me._num(renderer.getAttr(acrossHandle, "y")) + newY) / 2)});
+                            if (leftHandle(handleName)) {
+                                newLp = newX;
                             }
-                            renderer.removeAllConnectGuide();
-                        },
-                        stop: function (event) {
+                            var newWidth = Math.abs(newRp - newLp);
+                            var newHeight = Math.abs(newLwp - newUp);
+                            var du = uP - newUp;
+                            var dlw = newLwp - lwP;
+                            var dl = lP - newLp;
+                            var dr = newRp - rP;
 
-                            var handleName = $(this).data('handleName');
-                            var eventOffset = me._getOffset(event),
-                                start = $(this).data("start"),
-                                offset = $(this).data("offset");
-                            var newXY = correctionConditionAnalysis($(this), {
-                                x: eventOffset.x,
-                                y: eventOffset.y
-                            });
-
-                            var dx, dy;
-                            var du = 0, dlw = 0, dl = 0, dr = 0;
+                            //다른 selected 엘리먼트 리사이즈용 변수
+                            var stBoundary,stUp,stLwp,stLp,stRp,
+                                newStUp,newStLwp,newStLp,newStRp,
+                                stDu,stDlw,stDl,stDr;
 
                             $(this).css({"position": "absolute", "left": "0px", "top": "0px"});
                             if (element && element.shape.geom) {
-                                if (upHandle(handleName)) {
-                                    dy = me._grid(start.y - newXY.y);
-                                    du = dy;
-                                }
-                                if (lowHandle(handleName)) {
-                                    dy = me._grid(newXY.y - start.y);
-                                    dlw = dy;
-                                }
-                                if (leftHandle(handleName)) {
-                                    dx = me._grid(start.x - newXY.x);
-                                    dl = dx;
-                                }
-                                if (rightHandle(handleName)) {
-                                    dx = me._grid(newXY.x - start.x);
-                                    dr = dx;
-                                }
-
                                 if (renderer.isLane(element)) {
                                     renderer.resizeLane(element, [du, dlw, dl, dr]);
                                 } else {
@@ -24471,8 +24954,53 @@ OG.handler.EventHandler.prototype = {
                                     me.setResizable(element, _guide, me._isResizable(element.shape));
                                     me.setConnectable(element, _guide, me._isConnectable(element.shape));
                                 }
-                            }
 
+                                //선택된 다른 엘리먼트들의 리사이즈 처리
+                                $.each(me._getSelectedElement(), function (idx, selected) {
+                                    if(selected.id === element.id){
+                                        return;
+                                    }
+                                    if (renderer.isShape(selected) && !renderer.isEdge(selected)) {
+                                        stBoundary = renderer.getBoundary(selected);
+                                        stUp = stBoundary.getUpperCenter().y;
+                                        stLwp = stBoundary.getLowerCenter().y;
+                                        stLp = stBoundary.getLeftCenter().x;
+                                        stRp = stBoundary.getRightCenter().x;
+                                        newStUp = stUp;
+                                        newStLwp = stLwp;
+                                        newStLp = stLp;
+                                        newStRp = stRp;
+                                        if (upHandle(handleName)) {
+                                            newStUp = stLwp - newHeight;
+                                        }
+                                        if (lowHandle(handleName)) {
+                                            newStLwp = stUp + newHeight;
+                                        }
+                                        if (rightHandle(handleName)) {
+                                            newStRp = stLp + newWidth;
+                                        }
+                                        if (leftHandle(handleName)) {
+                                            newStLp = stRp - newWidth;
+                                        }
+                                        stDu = stUp - newStUp;
+                                        stDlw = newStLwp - stLwp;
+                                        stDl = stLp - newStLp;
+                                        stDr = newStRp - stRp;
+
+                                        if (renderer.isLane(selected)) {
+                                            renderer.resizeLane(selected, [stDu, stDlw, stDl, stDr]);
+                                        } else {
+                                            renderer.resize(selected, [stDu, stDlw, stDl, stDr]);
+                                        }
+                                        renderer.removeGuide(selected);
+                                        var _stGuide = renderer.drawGuide(selected);
+                                        if (_stGuide) {
+                                            me.setResizable(selected, _stGuide, me._isResizable(selected.shape));
+                                            me.setConnectable(selected, _stGuide, me._isConnectable(selected.shape));
+                                        }
+                                    }
+                                });
+                            }
                             renderer.removeAllConnectGuide();
                             renderer.addHistory();
                         }
@@ -24556,8 +25084,17 @@ OG.handler.EventHandler.prototype = {
                                     return;
                                 }
                                 me._RENDERER.removeAllVirtualEdge();
-                                me._RENDERER._CANVAS.connect(target, element, null, connectText)
-                                renderer.addHistory();
+                                //From,To 가능여부 확인
+                                if (!me._isConnectableFrom(target.shape)) {
+                                    isConnectable = false;
+                                }
+                                if (!me._isConnectableTo(element.shape)) {
+                                    isConnectable = false;
+                                }
+                                if (isConnectable) {
+                                    me._RENDERER._CANVAS.connect(target, element, null, connectText)
+                                    renderer.addHistory();
+                                }
                             } else {
                                 me._RENDERER.removeAllVirtualEdge();
                             }
@@ -24578,11 +25115,19 @@ OG.handler.EventHandler.prototype = {
                             var width = boundary.getWidth();
                             var height = boundary.getHeight();
 
-                            var rectShape = renderer._CANVAS.drawShape([eventOffset.x, eventOffset.y], newShape, [width, height], style);
-                            $(renderer._PAPER.canvas).trigger('duplicated', [target, rectShape]);
+                            //From,To 가능여부 확인
+                            if (!me._isConnectableFrom(target.shape)) {
+                                isConnectable = false;
+                            }
+                            if (!me._isConnectableTo(target.shape)) {
+                                isConnectable = false;
+                            }
+                            if (isConnectable) {
+                                var rectShape = renderer._CANVAS.drawShape([eventOffset.x, eventOffset.y], newShape, [width, height], style);
+                                $(renderer._PAPER.canvas).trigger('duplicated', [target, rectShape]);
 
-                            renderer._CANVAS.connect(target, rectShape, null, null, null, null);
-
+                                renderer._CANVAS.connect(target, rectShape, null, null, null, null);
+                            }
                         }
                     }
                 }
@@ -24768,11 +25313,20 @@ OG.handler.EventHandler.prototype = {
                     var width = boundary.getWidth();
                     var height = boundary.getHeight();
 
-                    var rectShape = renderer._CANVAS.drawShape([eventOffset.x, eventOffset.y], newShape, [width, height], style);
-                    $(renderer._PAPER.canvas).trigger('duplicated', [target, rectShape]);
+                    //From,To 가능여부 확인
+                    var isConnectable = me._isConnectable(target.shape);
+                    if (!me._isConnectableFrom(target.shape)) {
+                        isConnectable = false;
+                    }
+                    if (!me._isConnectableTo(target.shape)) {
+                        isConnectable = false;
+                    }
+                    if (isConnectable) {
+                        var rectShape = renderer._CANVAS.drawShape([eventOffset.x, eventOffset.y], newShape, [width, height], style);
+                        $(renderer._PAPER.canvas).trigger('duplicated', [target, rectShape]);
 
-                    renderer._CANVAS.connect(target, rectShape, null, null, null, null);
-
+                        renderer._CANVAS.connect(target, rectShape, null, null, null, null);
+                    }
                 }
             }
         });
@@ -27715,6 +28269,16 @@ OG.handler.EventHandler.prototype = {
         return me._CONFIG.CONNECTABLE && shape.CONNECTABLE;
     },
 
+    _isConnectableFrom: function (shape) {
+        var me = this;
+        return shape.ENABLE_FROM;
+    },
+
+    _isConnectableTo: function (shape) {
+        var me = this;
+        return shape.ENABLE_TO;
+    },
+
     _isSelfConnectable: function (shape) {
         var me = this;
         return me._CONFIG.SELF_CONNECTABLE && shape.SELF_CONNECTABLE;
@@ -27734,6 +28298,18 @@ OG.handler.EventHandler.prototype = {
         var me = this;
         return (me._CONFIG.SELECTABLE && shape.SELECTABLE) &&
             (me._CONFIG.MOVABLE && me._CONFIG.MOVABLE_[shape.TYPE] && shape.MOVABLE);
+    },
+
+    _isDeletable: function (shape) {
+        var me = this;
+        return (me._CONFIG.DELETABLE && shape.DELETABLE) &&
+            (me._CONFIG.DELETABLE && me._CONFIG.DELETABLE_[shape.TYPE] && shape.DELETABLE);
+    },
+
+    _isConnectStyleChangable: function (shape) {
+        var me = this;
+        return (me._CONFIG.CONNECT_STYLE_CHANGE && shape.CONNECT_STYLE_CHANGE) &&
+            (me._CONFIG.CONNECT_STYLE_CHANGE && me._CONFIG.CONNECT_STYLE_CHANGE_[shape.TYPE] && shape.CONNECT_STYLE_CHANGE);
     },
 
     _isResizable: function (shape) {
@@ -27813,38 +28389,20 @@ OG.handler.EventHandler.prototype = {
             var reativePoints = [];
             var type = $(spot).data('type');
             var vertices = element.shape.geom.getVertices();
+            var allVertices;
 
-            //서클타입 스팟인 경우 이웃한 변곡점 집합
-            if (type === OG.Constants.CONNECT_GUIDE_SUFFIX.SPOT_CIRCLE) {
-                var index = $(spot).data('index');
-                if (vertices[index - 1]) {
-                    reativePoints.push(vertices[index - 1]);
-                }
-                if (vertices[index + 1]) {
-                    reativePoints.push(vertices[index + 1]);
-                }
-            }
-
-            //사각타입 스팟인 경우 선분의 양 변곡과 그 이웃한 변곡의 집합.
-            if (type === OG.Constants.CONNECT_GUIDE_SUFFIX.SPOT_RECT) {
-                var prev = $(spot).data('prev');
-                var next = $(spot).data('next');
-                if (vertices[prev - 1]) {
-                    reativePoints.push(vertices[prev - 1]);
-                }
-                if (vertices[prev]) {
-                    reativePoints.push(vertices[prev]);
-                }
-                if (vertices[next]) {
-                    reativePoints.push(vertices[next]);
-                }
-                if (vertices[next + 1]) {
-                    reativePoints.push(vertices[next + 1]);
-                }
-            }
+            //모든 엣지의 변곡점 집합
+            var allEdges = renderer.getAllEdges();
+            $.each(allEdges, function (idx, edge) {
+                allVertices = edge.shape.geom.getVertices();
+                $.each(allVertices, function (i, vertice) {
+                    reativePoints.push(vertice);
+                });
+            });
 
             //서클 타입 스팟이고, 마지막 변곡점인 경우 shape 바운더리의 십자 영역을 번위조건에 추가한다.
             if (type === OG.Constants.CONNECT_GUIDE_SUFFIX.SPOT_CIRCLE) {
+                var index = $(spot).data('index');
                 if (index === 0 || index === vertices.length - 1) {
                     $.each(root.childNodes, function (idx, childNode) {
 
@@ -27913,12 +28471,12 @@ OG.handler.EventHandler.prototype = {
                     },
                     id: idx
                 });
-            })
+            });
 
             // spot 에 데이터 저장
             $(spot).data('correctionConditions', correctionConditions);
 
-        }
+        };
 
         //스팟이 가지고있는 범위조건에 따라 새로운 포지션을 계산한다.
         var correctionConditionAnalysis = function (spot, offset) {
@@ -27981,59 +28539,12 @@ OG.handler.EventHandler.prototype = {
                 if (conditionsPass) {
                     conditionsPassCandidates.push(correctionCondition);
                 }
-            })
-            if (conditionsPassCandidates.length === 0) {
-                return fixedPosition;
-            }
-            if (conditionsPassCandidates.length === 1) {
-                $(spot).data('lastCorrectionId', conditionsPassCandidates[0].id);
-                return calculateFixedPosition(conditionsPassCandidates[0].fixedPosition);
-            }
-            if (conditionsPassCandidates.length > 1) {
-
-                //범위조건 후보군들이 중복된 x좌표나 중복된 y좌표를 가지고 있지 않을경우,
-                //각자가 가지고 있는 x,y 모두 충족하는 좌표를 되돌려준다.
-                var IntersectionPosition = {};
-                var isIntersection = false;
-                $.each(conditionsPassCandidates, function (idx, correctionCondition) {
-                    if (correctionCondition.fixedPosition.x) {
-                        if (IntersectionPosition.x) {
-                            isIntersection = true;
-                        } else {
-                            IntersectionPosition.x = correctionCondition.fixedPosition.x
-                        }
-                    }
-                    if (correctionCondition.fixedPosition.y) {
-                        if (IntersectionPosition.y) {
-                            isIntersection = true;
-                        } else {
-                            IntersectionPosition.y = correctionCondition.fixedPosition.y
-                        }
-                    }
-                });
-                if (!isIntersection) {
-                    return calculateFixedPosition(IntersectionPosition);
-                }
-
-                //범위조건 후보군들이 중복된 x좌표나 중복된 y좌표를 가지고 있을 경우,하나의 범위조건을 되돌린다.
-                //후보 선정 기준은 마지막 사용된 범위조건의 캐쉬값이다.
-                var selectedCorrection;
-                var lastCorrectionId = $(spot).data('lastCorrectionId');
-                if (lastCorrectionId) {
-                    $.each(conditionsPassCandidates, function (idx, correctionCondition) {
-                        if (correctionCondition.id === lastCorrectionId) {
-                            selectedCorrection = correctionCondition;
-                        }
-                    });
-                    if (!selectedCorrection) {
-                        selectedCorrection = conditionsPassCandidates[0];
-                    }
-                } else {
-                    selectedCorrection = conditionsPassCandidates[0];
-                }
-                return calculateFixedPosition(selectedCorrection.fixedPosition);
-            }
-        }
+            });
+            $.each(conditionsPassCandidates, function (index, conditionsPassCandidate) {
+                fixedPosition = calculateFixedPosition(conditionsPassCandidate.fixedPosition);
+            });
+            return fixedPosition;
+        };
 
         var isConnectableSpot = function (spot) {
             var isConnectable;
@@ -28050,7 +28561,7 @@ OG.handler.EventHandler.prototype = {
                 }
             }
             return isConnectable;
-        }
+        };
 
         $(element).bind({
             mousemove: function (event) {
@@ -28545,11 +29056,18 @@ OG.handler.EventHandler.prototype = {
                                     if (connectableDirection && frontElement) {
                                         var point = [newX, newY];
                                         var terminal = renderer.createTerminalString(frontElement, point);
-                                        if (connectableDirection === 'from') {
-                                            renderer.connect(terminal, null, element, element.shape.geom.style);
-                                        }
-                                        if (connectableDirection === 'to') {
-                                            renderer.connect(null, terminal, element, element.shape.geom.style);
+                                        var isConnectable = me._isConnectable(frontElement.shape);
+                                        if (isConnectable) {
+                                            if (connectableDirection === 'from') {
+                                                if (me._isConnectableFrom(frontElement.shape)) {
+                                                    renderer.connect(terminal, null, element, element.shape.geom.style);
+                                                }
+                                            }
+                                            if (connectableDirection === 'to') {
+                                                if (me._isConnectableTo(frontElement.shape)) {
+                                                    renderer.connect(null, terminal, element, element.shape.geom.style);
+                                                }
+                                            }
                                         }
                                     }
                                     if (connectableDirection && !frontElement) {
@@ -29035,6 +29553,10 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
 
     this._CONFIG = {
         /**
+         * 슬라이더
+         */
+        SLIDER: null,
+        /**
          * 서버 수신 데이터 처리중
          */
         REMOTE_PERFORMED_DURING: false,
@@ -29066,6 +29588,11 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
          * 히스토리 저장 횟수
          */
         HISTORY_SIZE: 100,
+
+        /**
+         * 확대/축소 슬라이더
+         */
+        USE_SLIDER: true,
 
         /**
          * 클릭선택 가능여부
@@ -29114,7 +29641,7 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
         SELF_CONNECTABLE: true,
 
         /**
-         * 드래그하여 연결시 대상 없을 경우 자동으로 Shape 복사하여 연결 처리 여부
+         * 가이드에 자기자신을 복사하는 컨트롤러 여부.
          */
         CONNECT_CLONEABLE: true,
 
@@ -29122,6 +29649,32 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
          * 드래그하여 연결시 연결대상 있는 경우에만 Edge 드로잉 처리 여부
          */
         CONNECT_REQUIRED: true,
+
+        /**
+         * 드래그하여 연결시 그룹을 건너뛸때 스타일 변경 여부
+         */
+        CONNECT_STYLE_CHANGE: true,
+        CONNECT_STYLE_CHANGE_: {
+            GEOM: true,
+            TEXT: true,
+            HTML: true,
+            IMAGE: true,
+            EDGE: true,
+            GROUP: true
+        },
+
+        /**
+         * 가이드에 삭제 컨트롤러 여부
+         */
+        DELETABLE: true,
+        DELETABLE_: {
+            GEOM: true,
+            TEXT: true,
+            HTML: true,
+            IMAGE: true,
+            EDGE: true,
+            GROUP: true
+        },
 
         /**
          * 라벨 수정여부
@@ -29672,6 +30225,8 @@ OG.graph.Canvas.prototype = {
      * - collapsible        : 최소화 가능여부(디폴트 true)
      * - enableHotKey       : 핫키 가능여부(디폴트 true)
      * - enableContextMenu  : 마우스 우클릭 메뉴 가능여부(디폴트 true)
+     * - autoExtensional    : 캔버스 자동 확장 기능(디폴트 true)
+     * - useSlider          : 확대축소 슬라이더 사용 여부
      * </pre>
      *
      * @param {Object} config JSON 포맷의 configuration
@@ -29692,6 +30247,8 @@ OG.graph.Canvas.prototype = {
             this._CONFIG.GROUP_COLLAPSIBLE = config.collapsible === undefined ? this._CONFIG.GROUP_COLLAPSIBLE : config.collapsible;
             this._CONFIG.ENABLE_HOTKEY = config.enableHotKey === undefined ? this._CONFIG.ENABLE_HOTKEY : config.enableHotKey;
             this._CONFIG.ENABLE_CONTEXTMENU = config.enableContextMenu === undefined ? this._CONFIG.ENABLE_CONTEXTMENU : config.enableContextMenu;
+            this._CONFIG.AUTO_EXTENSIONAL = config.autoExtensional === undefined ? this._CONFIG.AUTO_EXTENSIONAL : config.autoExtensional;
+            this._CONFIG.USE_SLIDER = config.useSlider === undefined ? this._CONFIG.USE_SLIDER : config.useSlider;
         }
 
         this._HANDLER.setDragSelectable(this._CONFIG.SELECTABLE && this._CONFIG.DRAG_SELECTABLE);
@@ -29730,6 +30287,292 @@ OG.graph.Canvas.prototype = {
     getEventHandler: function () {
         return this._HANDLER;
     },
+
+    /**
+     * 확대 축소 슬라이더를 설치한다.
+     */
+    addSlider: function (option) {
+        var me = this;
+        var slider;
+        var sliderBarWrapper;
+        var sliderText;
+        var sliderBar;
+        var sliderImageWrapper;
+        var sliderImage;
+        var sliderNavigator;
+        var onNavigatorMove;
+        var sliderParent;
+        var expandBtn;
+        var container = me._CONTAINER;
+
+        if (!option.slider) {
+            return;
+        }
+        if (!option.slider.length) {
+            return;
+        }
+        slider = option.slider;
+        slider.css({
+            width: option.width + 'px'
+        });
+        slider.dialog({
+                title: option.title ? option.title : "Zoom",
+                position: option.position ? option.position : {my: "right top", at: "right top", of: container},
+                height: option.height ? option.height : 300,
+                width: option.width ? option.width : 250,
+                dialogClass: "no-close",
+                appendTo: option.appendTo ? option.appendTo : '#' + container.id,
+                resize: function (event, ui) {
+                    me.updateNavigatior();
+                }
+            }
+        );
+
+        //클로즈버튼 이벤트를 collape,expand 이벤트로..
+        sliderParent = slider.parent();
+        expandBtn = sliderParent.find('.ui-dialog-titlebar-close');
+        expandBtn.html('<span class="ui-button-icon-primary ui-icon ui-icon-circle-minus"></span>');
+        expandBtn.append();
+        expandBtn.unbind('click');
+        expandBtn.bind('click', function () {
+            //접혀있는 상태라면
+            if ($(this).data('collape')) {
+                var height = $(this).data('collape');
+                sliderParent.height(height);
+                slider.show();
+                $(this).data('collape', false);
+            }
+            //접혀있지 않은 상태라면
+            else {
+                $(this).data('collape', sliderParent.height());
+                slider.hide();
+                sliderParent.height(40);
+            }
+        });
+
+        sliderBarWrapper = $('<div class="scaleSliderWrapper"></div>');
+        sliderBarWrapper.css({
+            position: 'relative',
+            width: '100%'
+        });
+
+        sliderText = $('<div class="scaleSliderText"></div>');
+        sliderBar = $('<input type="range" min="25" max="400" class="scaleSlider"/>');
+        sliderBar.bind('change', function () {
+            me.updateSlider($(this).val());
+        });
+        sliderBar.bind('input', function () {
+            me.updateSlider($(this).val());
+        });
+        sliderBar.css({
+            position: 'relative',
+            'writing-mode': 'bt-lr', /* IE */
+            'width': '100%',
+            'height': '8px'
+        });
+
+        sliderImageWrapper = $('<div class="sliderImageWrapper"></div>');
+        sliderImageWrapper.css({
+            position: 'absolute',
+            top: '50px',
+            bottom: '5px',
+            left: '5px',
+            right: '5px',
+            'overflow-x': 'hidden',
+            'overflow-y': 'auto'
+        });
+        sliderImage = $('<img class="sliderImage" src=""/>');
+        sliderImage.css({
+            position: 'absolute',
+            top: '0px',
+            left: '0px'
+        });
+        sliderImage.attr("width", "100%");
+        sliderImage.attr('id', container.id + 'sliderImage');
+
+        sliderNavigator = $('<div class="sliderNavigator">' +
+            '<div style="position: absolute;top: 2px;left: 2px;bottom: 2px;right: 2px;border: 2px solid #3e77ff;"></div>' +
+            '</div>');
+        sliderNavigator.css({
+            position: 'absolute',
+            top: '0px',
+            left: '0px',
+            width: '100px',
+            height: '100px',
+            background: 'transparent'
+        });
+
+//네비게이터가 이동되었을경우의 이벤트
+        onNavigatorMove = function () {
+            var svg, svgW, svgH, imgW, imgH, xRate, yRate, xOffset, yOffset, sliderX, sliderY;
+            svg = me._RENDERER.getRootElement();
+            imgW = sliderImage.width();
+            imgH = sliderImage.height();
+            svgW = $(svg).attr('width');
+            svgH = $(svg).attr('height');
+            xRate = imgW / svgW;
+            yRate = imgH / svgH;
+            if (xRate > 1) {
+                xRate = 1;
+            }
+            if (yRate > 1) {
+                yRate = 1;
+            }
+            xOffset = sliderNavigator.offset().left - sliderImage.offset().left;
+            if (xOffset < 0) {
+                xOffset = 0;
+            }
+            yOffset = sliderNavigator.offset().top - sliderImage.offset().top;
+            if (yOffset < 0) {
+                yOffset = 0;
+            }
+            sliderX = xOffset * ( 1 / xRate);
+            sliderY = yOffset * ( 1 / yRate);
+            container.scrollLeft = sliderX;
+            container.scrollTop = sliderY;
+        };
+
+        $(container).unbind('scroll');
+        $(container).bind('scroll', function (event) {
+            if (sliderNavigator.data('drag')) {
+                return;
+            }
+            me.updateNavigatior();
+        });
+
+        sliderImage.click(function (event) {
+            var eX, eY, nX, nY;
+            eX = event.pageX - sliderImage.offset().left;
+            eY = event.pageY - sliderImage.offset().top;
+            nX = eX - (sliderNavigator.width() / 2);
+            nY = eY - (sliderNavigator.height() / 2);
+            if (nX < 0) {
+                nX = 0;
+            }
+            if (nY < 0) {
+                nY = 0;
+            }
+            if ((nX + sliderNavigator.width()) > sliderImage.width()) {
+                nX = sliderImage.width() - sliderNavigator.width();
+            }
+            if ((nY + sliderNavigator.height()) > sliderImage.height()) {
+                nY = sliderImage.height() - sliderNavigator.height();
+            }
+            sliderNavigator.css({
+                "left": nX + 'px',
+                "top": nY + 'px'
+            });
+            onNavigatorMove();
+        });
+
+        sliderNavigator.draggable({
+            containment: "#" + container.id + 'sliderImage',
+            scroll: false,
+            start: function (event) {
+                sliderNavigator.data('drag', true);
+            },
+            drag: function (event) {
+                onNavigatorMove();
+            },
+            stop: function (event) {
+                onNavigatorMove();
+                sliderNavigator.data('drag', false);
+            }
+        });
+
+        slider.append(sliderBarWrapper);
+        sliderBarWrapper.append(sliderText);
+        sliderBarWrapper.append(sliderBar);
+
+        slider.append(sliderImageWrapper);
+        sliderImageWrapper.append(sliderImage);
+        sliderImageWrapper.append(sliderNavigator);
+
+//캔버스 삭제시 슬라이더도 삭제
+        $(container).on("remove", function () {
+            me.removeSlider();
+        });
+
+//기존에 등록된 슬라이더 삭제
+        if (this._CONFIG.SLIDER) {
+            me.removeSlider();
+        }
+
+//슬라이더를 캔버스에 등록
+        this._CONFIG.SLIDER = slider;
+
+//슬라이더 업데이트
+        this.updateSlider(this._CONFIG.SCALE * 100);
+    },
+    updateNavigatior: function () {
+        var me = this;
+        var svg = me._RENDERER.getRootElement();
+        var svgWidth, svgHeight, vx, vy, xRate, yRate, xImgRate, yImgRate;
+        var slider = this._CONFIG.SLIDER;
+        var sliderImage = slider.find('.sliderImage');
+        var sliderNavigator = slider.find('.sliderNavigator');
+        var container = me._CONTAINER;
+
+        svgWidth = $(svg).attr('width');
+        svgHeight = $(svg).attr('height');
+        vx = container.scrollLeft;
+        vy = container.scrollTop;
+        xRate = $(container).width() / svgWidth;
+        yRate = $(container).height() / svgHeight;
+        if (xRate > 1) {
+            xRate = 1;
+        }
+        if (yRate > 1) {
+            yRate = 1;
+        }
+        xImgRate = sliderImage.width() / svgWidth;
+        yImgRate = sliderImage.height() / svgHeight;
+
+        sliderNavigator.width(sliderImage.width() * xRate);
+        sliderNavigator.height(sliderImage.height() * yRate);
+        sliderNavigator.css({
+            left: (vx * xImgRate) + 'px',
+            top: (vy * yImgRate) + 'px'
+        })
+    }
+    ,
+    updateSlider: function (val) {
+        var me = this;
+        if (!this._CONFIG.SLIDER) {
+            return;
+        }
+        if (!val) {
+            val = this._CONFIG.SCALE * 100;
+        }
+
+        var slider = this._CONFIG.SLIDER;
+        var sliderText = slider.find('.scaleSliderText');
+        var sliderBar = slider.find('.scaleSlider');
+        var sliderImage = slider.find('.sliderImage');
+        var sliderNavigator = slider.find('.sliderNavigator');
+
+        sliderText.html(val);
+        sliderBar.val(val);
+        me._RENDERER.setScale(val / 100);
+
+        var svg = me._RENDERER.getRootElement();
+        var svgData = new XMLSerializer().serializeToString(svg);
+        var srcURL = "data:image/svg+xml;utf-8," + svgData;
+        sliderImage.attr('src', srcURL);
+
+        me.updateNavigatior();
+    }
+    ,
+    /**
+     * 확대 축소 슬라이더를 삭제한다.
+     */
+    removeSlider: function () {
+        if (this._CONFIG.SLIDER) {
+            this._CONFIG.SLIDER.dialog("destroy");
+            this._CONFIG.SLIDER.remove();
+        }
+    }
+    ,
 
     /**
      * Shape 을 캔버스에 위치 및 사이즈 지정하여 드로잉한다.
@@ -29782,47 +30625,79 @@ OG.graph.Canvas.prototype = {
         if (!id) {
             this._RENDERER.addHistory();
         }
-
+        this.updateSlider();
         return element;
-    },
+    }
+    ,
 
-    drawTransformer: function (position, type, input, output, id) {
+    /**
+     * Transfomer Shape 을 캔버스에 위치 및 사이즈 지정하여 드로잉한다.
+     *
+     * @example
+     * canvas.drawTransformer([100, 100], 'label' ['str1','str2'],['out']);
+     *
+     * @param {Number[]} position 드로잉할 위치 좌표(중앙 기준)
+     * @param {String} label Label
+     * @param {String[]} inputs 인풋에 위치할 리스트
+     * @param {String[]} outputs 아웃풋에 위치할 리스트
+     * @param {String} id Element ID 지정 (Optional)
+     * @return {Element} Group DOM Element with geometry
+     */
+    drawTransformer: function (position, label, inputs, outputs, drawData, id) {
         var me = this, shape, element, style, envelope, i, toShape, fromShape, toElement, fromElement, textShape, textElement;
-        id = 'OG_4779';
-        shape = new OG.shape.Transformer(type);
-        element = me.drawShape(position, shape, [90, 22 + (input * 20)], style, id);
+        shape = new OG.shape.Transformer(label);
+
+        if (!Array.isArray(inputs) || !Array.isArray(outputs)) {
+            return null;
+        }
+        var lines = Math.max(inputs.length, outputs.length);
+        element = me.drawShape(position, shape, [120, 30 + (lines * 25)], style, id);
+
         envelope = element.shape.geom.getBoundary();
 
-        for (i = 0; i < input; i++) {
-            textShape = new OG.shape.bpmn.M_Text('in' + (i + 1));
-            textElement = me.drawShape([envelope.getUpperLeft().x + 25, envelope.getUpperLeft().y + (i * 20) + 30], textShape, [50, 20]);
+        $.each(inputs, function (idx, input) {
+            textShape = new OG.shape.bpmn.M_Text(input);
+            textElement = me.drawShape([envelope.getUpperLeft().x + 35, envelope.getUpperLeft().y + (idx * 25) + 40], textShape, [50, 20]);
             element.appendChild(textElement);
             toShape = new OG.shape.To();
-            toElement = me.drawShape([envelope.getUpperLeft().x + 10, envelope.getUpperLeft().y + (i * 20) + 30], toShape, [5, 5], {"r": 5});
+            toElement = me.drawShape([envelope.getUpperLeft().x + 15, envelope.getUpperLeft().y + (idx * 25) + 40], toShape, [5, 5], {"r": 5});
             element.appendChild(toElement);
-        }
+            var data = JSON.parse(JSON.stringify(drawData));
+            data['type'] = 'input';
+            data['name'] = input;
+            data['parentId'] = element.id;
+            me.setCustomData(toElement, data);
+        });
 
-        for (i = 0; i < output; i++) {
-            textShape = new OG.shape.bpmn.M_Text('out' + (i + 1));
-            textElement = me.drawShape([envelope.getUpperRight().x - 30, envelope.getUpperRight().y + (i * 20) + 30], textShape, [50, 20]);
+        $.each(outputs, function (idx, output) {
+            textShape = new OG.shape.bpmn.M_Text(output);
+            textElement = me.drawShape([envelope.getUpperRight().x - 35, envelope.getUpperRight().y + (idx * 25) + 40], textShape, [50, 20]);
             element.appendChild(textElement);
             fromShape = new OG.shape.From();
-            fromElement = me.drawShape([envelope.getUpperRight().x - 10, envelope.getUpperRight().y + (i * 20) + 30], fromShape, [5, 5], {"r": 5});
+            fromElement = me.drawShape([envelope.getUpperRight().x - 15, envelope.getUpperRight().y + (idx * 25) + 40], fromShape, [5, 5], {"r": 5});
             element.appendChild(fromElement);
-        }
+            var data = JSON.parse(JSON.stringify(drawData));
+            data['type'] = 'output';
+            data['name'] = output;
+            data['parentId'] = element.id;
+            me.setCustomData(fromElement, data);
+        });
 
         if (!id) {
             this._RENDERER.addHistory();
         }
-    },
+    }
+    ,
 
     setExceptionType: function (element, exceptionType) {
         this._HANDLER.setExceptionType(element, exceptionType);
-    },
+    }
+    ,
 
     setInclusion: function (element, inclusion) {
         this._HANDLER.setInclusion(element, inclusion);
-    },
+    }
+    ,
 
     /**
      * Shape 의 스타일을 변경한다.
@@ -29832,7 +30707,8 @@ OG.graph.Canvas.prototype = {
      */
     setShapeStyle: function (shapeElement, style) {
         this._RENDERER.setShapeStyle(shapeElement, style);
-    },
+    }
+    ,
 
     /**
      * Shape 의 선 연결 커스텀 컨트롤러를 설정한다.
@@ -29842,7 +30718,8 @@ OG.graph.Canvas.prototype = {
      */
     setTextListInController: function (shapeElement, textList) {
         this._RENDERER.setTextListInController(shapeElement, textList);
-    },
+    }
+    ,
 
     /**
      * Shape 의 선 연결 커스텀 컨트롤러를 가져온다.
@@ -29851,7 +30728,8 @@ OG.graph.Canvas.prototype = {
      */
     getTextListInController: function (shapeElement) {
         this._RENDERER.getTextListInController(shapeElement);
-    },
+    }
+    ,
 
     /**
      * Shape 의 Label 을 캔버스에 위치 및 사이즈 지정하여 드로잉한다.
@@ -29864,7 +30742,8 @@ OG.graph.Canvas.prototype = {
      */
     drawLabel: function (shapeElement, text, style, position) {
         return this._RENDERER.drawLabel(shapeElement, text, style, position);
-    },
+    }
+    ,
 
     /**
      * Shape 의 연결된 Edge 를 redraw 한다.(이동 또는 리사이즈시)
@@ -29873,7 +30752,20 @@ OG.graph.Canvas.prototype = {
      */
     redrawConnectedEdge: function (element) {
         this._RENDERER.redrawConnectedEdge(element);
-    },
+    }
+    ,
+
+    /**
+     * 연결된 터미널의 vertices 를 초기화한다.
+     *
+     * @param {Element} edge Edge Shape
+     * @return {Element} 연결된 Edge 엘리먼트
+     * @override
+     */
+    reconnect: function (edge) {
+        return this._RENDERER.reconnect(edge);
+    }
+    ,
 
     /**
      * 두개의 Shape 을 Edge 로 연결한다.
@@ -29907,8 +30799,6 @@ OG.graph.Canvas.prototype = {
         // draw edge
         edge = this._RENDERER.drawShape(null, new OG.EdgeShape(fromPosition, toPosition));
         edge = this._RENDERER.trimEdgeDirection(edge, fromElement, toElement);
-        // edge 방위 설정
-
 
         // connect
         edge = this._RENDERER.connect(fromTerminal, toTerminal, edge, style, label, preventTrigger);
@@ -29921,9 +30811,10 @@ OG.graph.Canvas.prototype = {
                 this._HANDLER.enableEditLabel(edge);
             }
         }
-
+        this.updateSlider();
         return edge;
-    },
+    }
+    ,
 
     /**
      * 두개의 터미널 아이디로 부터 얻어진 Shape를 Edge 로 연결한다.
@@ -29979,9 +30870,10 @@ OG.graph.Canvas.prototype = {
                 this._HANDLER.enableEditLabel(edge);
             }
         }
-
+        this.updateSlider();
         return edge;
-    },
+    }
+    ,
 
     /**
      * 연결속성정보를 삭제한다. Edge 인 경우는 라인만 삭제하고, 일반 Shape 인 경우는 연결된 모든 Edge 를 삭제한다.
@@ -29990,7 +30882,8 @@ OG.graph.Canvas.prototype = {
      */
     disconnect: function (element) {
         this._RENDERER.disconnect(element);
-    },
+    }
+    ,
 
     /**
      * 주어진 Shape 들을 그룹핑한다.
@@ -30009,7 +30902,8 @@ OG.graph.Canvas.prototype = {
         }
 
         return group;
-    },
+    }
+    ,
 
     /**
      * 주어진 그룹들을 그룹해제한다.
@@ -30019,7 +30913,8 @@ OG.graph.Canvas.prototype = {
      */
     ungroup: function (groupElements) {
         return this._RENDERER.ungroup(groupElements);
-    },
+    }
+    ,
 
     /**
      * 주어진 Shape 들을 그룹에 추가한다.
@@ -30029,7 +30924,8 @@ OG.graph.Canvas.prototype = {
      */
     addToGroup: function (groupElement, elements) {
         this._RENDERER.addToGroup(groupElement, elements);
-    },
+    }
+    ,
 
     /**
      * 주어진 Shape 이 그룹인 경우 collapse 한다.
@@ -30038,7 +30934,8 @@ OG.graph.Canvas.prototype = {
      */
     collapse: function (element) {
         this._RENDERER.collapse(element);
-    },
+    }
+    ,
 
     /**
      * 주어진 Shape 이 그룹인 경우 expand 한다.
@@ -30047,14 +30944,16 @@ OG.graph.Canvas.prototype = {
      */
     expand: function (element) {
         this._RENDERER.expand(element);
-    },
+    }
+    ,
 
     /**
      * 드로잉된 모든 오브젝트를 클리어한다.
      */
     clear: function () {
         this._RENDERER.clear();
-    },
+    }
+    ,
 
     /**
      * Shape 을 캔버스에서 관련된 모두를 삭제한다.
@@ -30063,7 +30962,8 @@ OG.graph.Canvas.prototype = {
      */
     removeShape: function (element) {
         this._RENDERER.removeShape(element);
-    },
+    }
+    ,
 
     /**
      * 하위 엘리먼트만 제거한다.
@@ -30072,7 +30972,8 @@ OG.graph.Canvas.prototype = {
      */
     removeChild: function (element) {
         this._RENDERER.removeChild(element);
-    },
+    }
+    ,
 
     /**
      * ID에 해당하는 Element 의 Move & Resize 용 가이드를 제거한다.
@@ -30081,14 +30982,16 @@ OG.graph.Canvas.prototype = {
      */
     removeGuide: function (element) {
         this._RENDERER.removeGuide(element);
-    },
+    }
+    ,
 
     /**
      * 모든 Move & Resize 용 가이드를 제거한다.
      */
     removeAllGuide: function () {
         this._RENDERER.removeAllGuide();
-    },
+    }
+    ,
 
     /**
      * 랜더러 캔버스 Root Element 를 반환한다.
@@ -30097,7 +31000,8 @@ OG.graph.Canvas.prototype = {
      */
     getRootElement: function () {
         return this._RENDERER.getRootElement();
-    },
+    }
+    ,
 
     /**
      * 랜더러 캔버스 Root Group Element 를 반환한다.
@@ -30106,7 +31010,8 @@ OG.graph.Canvas.prototype = {
      */
     getRootGroup: function () {
         return this._RENDERER.getRootGroup();
-    },
+    }
+    ,
 
     /**
      * 주어진 지점을 포함하는 Top Element 를 반환한다.
@@ -30116,7 +31021,8 @@ OG.graph.Canvas.prototype = {
      */
     getElementByPoint: function (position) {
         return this._RENDERER.getElementByPoint(position);
-    },
+    }
+    ,
 
     /**
      * 주어진 Boundary Box 영역에 포함되는 Shape(GEOM, TEXT, IMAGE) Element 를 반환한다.
@@ -30127,7 +31033,8 @@ OG.graph.Canvas.prototype = {
      */
     getElementsByBBox: function (envelope) {
         return this._RENDERER.getElementsByBBox(envelope);
-    },
+    }
+    ,
 
     /**
      * 엘리먼트에 속성값을 설정한다.
@@ -30137,7 +31044,8 @@ OG.graph.Canvas.prototype = {
      */
     setAttr: function (element, attribute) {
         this._RENDERER.setAttr(element, attribute);
-    },
+    }
+    ,
 
     /**
      * 엘리먼트 속성값을 반환한다.
@@ -30148,7 +31056,8 @@ OG.graph.Canvas.prototype = {
      */
     getAttr: function (element, attrName) {
         return this._RENDERER.getAttr(element, attrName);
-    },
+    }
+    ,
 
     /**
      * ID에 해당하는 Element 를 최상단 레이어로 이동한다.
@@ -30157,7 +31066,8 @@ OG.graph.Canvas.prototype = {
      */
     toFront: function (element) {
         this._RENDERER.toFront(element);
-    },
+    }
+    ,
 
     /**
      * ID에 해당하는 Element 를 최하단 레이어로 이동한다.
@@ -30166,7 +31076,8 @@ OG.graph.Canvas.prototype = {
      */
     toBack: function (element) {
         this._RENDERER.toBack(element);
-    },
+    }
+    ,
 
     /**
      * 랜더러 캔버스의 사이즈(Width, Height)를 반환한다.
@@ -30175,7 +31086,8 @@ OG.graph.Canvas.prototype = {
      */
     getCanvasSize: function () {
         this._RENDERER.getCanvasSize();
-    },
+    }
+    ,
 
     /**
      * 랜더러 캔버스의 사이즈(Width, Height)를 변경한다.
@@ -30184,7 +31096,8 @@ OG.graph.Canvas.prototype = {
      */
     setCanvasSize: function (size) {
         this._RENDERER.setCanvasSize(size);
-    },
+    }
+    ,
 
     /**
      * 랜더러 캔버스의 사이즈(Width, Height)를 실제 존재하는 Shape 의 영역에 맞게 변경한다.
@@ -30194,7 +31107,8 @@ OG.graph.Canvas.prototype = {
      */
     fitCanvasSize: function (minSize, fitScale) {
         this._RENDERER.fitCanvasSize(minSize, fitScale);
-    },
+    }
+    ,
 
     /**
      * 새로운 View Box 영역을 설정한다. (ZoomIn & ZoomOut 가능)
@@ -30205,7 +31119,8 @@ OG.graph.Canvas.prototype = {
      */
     setViewBox: function (position, size, isFit) {
         this._RENDERER.setViewBox(position, size, isFit);
-    },
+    }
+    ,
 
     /**
      * Scale 을 반환한다. (리얼 사이즈 : Scale = 1)
@@ -30214,7 +31129,8 @@ OG.graph.Canvas.prototype = {
      */
     getScale: function () {
         return this._RENDERER.getScale();
-    },
+    }
+    ,
 
     /**
      * Scale 을 설정한다. (리얼 사이즈 : Scale = 1)
@@ -30223,7 +31139,8 @@ OG.graph.Canvas.prototype = {
      */
     setScale: function (scale) {
         this._RENDERER.setScale(scale);
-    },
+    }
+    ,
 
     /**
      * ID에 해당하는 Element 를 캔버스에서 show 한다.
@@ -30232,7 +31149,8 @@ OG.graph.Canvas.prototype = {
      */
     show: function (element) {
         this._RENDERER.show(element);
-    },
+    }
+    ,
 
     /**
      * ID에 해당하는 Element 를 캔버스에서 hide 한다.
@@ -30241,7 +31159,8 @@ OG.graph.Canvas.prototype = {
      */
     hide: function (element) {
         this._RENDERER.hide(element);
-    },
+    }
+    ,
 
     /**
      * Source Element 를 Target Element 아래에 append 한다.
@@ -30252,7 +31171,8 @@ OG.graph.Canvas.prototype = {
      */
     appendChild: function (srcElement, targetElement) {
         return this._RENDERER.appendChild(srcElement, targetElement);
-    },
+    }
+    ,
 
     /**
      * Source Element 를 Target Element 이후에 insert 한다.
@@ -30263,7 +31183,8 @@ OG.graph.Canvas.prototype = {
      */
     insertAfter: function (srcElement, targetElement) {
         return this._RENDERER.insertAfter(srcElement, targetElement);
-    },
+    }
+    ,
 
     /**
      * Source Element 를 Target Element 이전에 insert 한다.
@@ -30274,7 +31195,8 @@ OG.graph.Canvas.prototype = {
      */
     insertBefore: function (srcElement, targetElement) {
         return this._RENDERER.insertBefore(srcElement, targetElement);
-    },
+    }
+    ,
 
     /**
      * 해당 Element 를 가로, 세로 Offset 만큼 이동한다.
@@ -30285,7 +31207,8 @@ OG.graph.Canvas.prototype = {
      */
     move: function (element, offset) {
         return this._RENDERER.move(element, offset);
-    },
+    }
+    ,
 
     /**
      * 주어진 중심좌표로 해당 Element 를 이동한다.
@@ -30296,7 +31219,8 @@ OG.graph.Canvas.prototype = {
      */
     moveCentroid: function (element, position) {
         return this._RENDERER.moveCentroid(element, position);
-    },
+    }
+    ,
 
     /**
      * 중심 좌표를 기준으로 주어진 각도 만큼 회전한다.
@@ -30307,7 +31231,8 @@ OG.graph.Canvas.prototype = {
      */
     rotate: function (element, angle) {
         return this._RENDERER.rotate(element, angle);
-    },
+    }
+    ,
 
     /**
      * 상, 하, 좌, 우 외곽선을 이동한 만큼 리사이즈 한다.
@@ -30318,7 +31243,8 @@ OG.graph.Canvas.prototype = {
      */
     resize: function (element, offset) {
         return this._RENDERER.resize(element, offset);
-    },
+    }
+    ,
 
     /**
      * 중심좌표는 고정한 채 Bounding Box 의 width, height 를 리사이즈 한다.
@@ -30329,7 +31255,8 @@ OG.graph.Canvas.prototype = {
      */
     resizeBox: function (element, size) {
         return this._RENDERER.resizeBox(element, size);
-    },
+    }
+    ,
 
     /**
      * 노드 Element 를 복사한다.
@@ -30339,7 +31266,8 @@ OG.graph.Canvas.prototype = {
      */
     clone: function (element) {
         return this._RENDERER.clone(element);
-    },
+    }
+    ,
 
     /**
      * ID로 Node Element 를 반환한다.
@@ -30349,7 +31277,8 @@ OG.graph.Canvas.prototype = {
      */
     getElementById: function (id) {
         return this._RENDERER.getElementById(id);
-    },
+    }
+    ,
 
     /**
      * Shape 타입에 해당하는 Node Element 들을 반환한다.
@@ -30360,7 +31289,8 @@ OG.graph.Canvas.prototype = {
      */
     getElementsByType: function (shapeType, excludeType) {
         return this._RENDERER.getElementsByType(shapeType, excludeType);
-    },
+    }
+    ,
 
     /**
      * Shape ID에 해당하는 Node Element 들을 반환한다.
@@ -30371,7 +31301,8 @@ OG.graph.Canvas.prototype = {
     getElementsByShapeId: function (shapeId) {
         var root = this.getRootGroup();
         return $(root).find("[_type=SHAPE][_shape_id='" + shapeId + "']");
-    },
+    }
+    ,
 
     /**
      * Edge 엘리먼트와 연결된 fromShape, toShape 엘리먼트를 반환한다.
@@ -30402,7 +31333,8 @@ OG.graph.Canvas.prototype = {
                 to: null
             };
         }
-    },
+    }
+    ,
 
     /**
      * 해당 엘리먼트의 BoundingBox 영역 정보를 반환한다.
@@ -30412,7 +31344,8 @@ OG.graph.Canvas.prototype = {
      */
     getBBox: function (element) {
         return this._RENDERER.getBBox(element);
-    },
+    }
+    ,
 
     /**
      * 부모노드기준으로 캔버스 루트 엘리먼트의 BoundingBox 영역 정보를 반환한다.
@@ -30421,7 +31354,8 @@ OG.graph.Canvas.prototype = {
      */
     getRootBBox: function () {
         return this._RENDERER.getRootBBox();
-    },
+    }
+    ,
 
     /**
      * 부모노드기준으로 캔버스 루트 엘리먼트의 실제 Shape 이 차지하는 BoundingBox 영역 정보를 반환한다.
@@ -30430,7 +31364,8 @@ OG.graph.Canvas.prototype = {
      */
     getRealRootBBox: function () {
         return this._RENDERER.getRealRootBBox();
-    },
+    }
+    ,
 
     /**
      * SVG 인지 여부를 반환한다.
@@ -30439,7 +31374,8 @@ OG.graph.Canvas.prototype = {
      */
     isSVG: function () {
         return this._RENDERER.isSVG();
-    },
+    }
+    ,
 
     /**
      * VML 인지 여부를 반환한다.
@@ -30448,7 +31384,8 @@ OG.graph.Canvas.prototype = {
      */
     isVML: function () {
         return this._RENDERER.isVML();
-    },
+    }
+    ,
 
     /**
      * 주어진 Shape 엘리먼트에 커스텀 데이타를 저장한다.
@@ -30459,7 +31396,8 @@ OG.graph.Canvas.prototype = {
     setCustomData: function (shapeElement, data) {
         var element = OG.Util.isElement(shapeElement) ? shapeElement : document.getElementById(shapeElement);
         element.data = data;
-    },
+    }
+    ,
 
     /**
      * 주어진 Shape 엘리먼트에 저장된 커스텀 데이터를 반환한다.
@@ -30470,7 +31408,8 @@ OG.graph.Canvas.prototype = {
     getCustomData: function (shapeElement) {
         var element = OG.Util.isElement(shapeElement) ? shapeElement : document.getElementById(shapeElement);
         return element.data;
-    },
+    }
+    ,
 
     /**
      * 주어진 Shape 엘리먼트에 확장 커스텀 데이타를 저장한다.
@@ -30481,7 +31420,8 @@ OG.graph.Canvas.prototype = {
     setExtCustomData: function (shapeElement, data) {
         var element = OG.Util.isElement(shapeElement) ? shapeElement : document.getElementById(shapeElement);
         element.dataExt = data;
-    },
+    }
+    ,
 
     /**
      * 주어진 Shape 엘리먼트에 저장된 확장 커스텀 데이터를 반환한다.
@@ -30492,7 +31432,8 @@ OG.graph.Canvas.prototype = {
     getExtCustomData: function (shapeElement) {
         var element = OG.Util.isElement(shapeElement) ? shapeElement : document.getElementById(shapeElement);
         return element.dataExt;
-    },
+    }
+    ,
 
     /**
      *    Canvas 에 그려진 Shape 들을 OpenGraph XML 문자열로 export 한다.
@@ -30501,7 +31442,8 @@ OG.graph.Canvas.prototype = {
      */
     toXML: function () {
         return OG.Util.jsonToXml(this.toJSON());
-    },
+    }
+    ,
 
     /**
      * Canvas 에 그려진 Shape 들을 OpenGraph JSON 객체로 export 한다.
@@ -30643,7 +31585,8 @@ OG.graph.Canvas.prototype = {
         childShape(rootGroup, true);
 
         return jsonObj;
-    },
+    }
+    ,
 
     /**
      * OpenGraph XML 문자열로 부터 Shape 을 드로잉한다.
@@ -30656,23 +31599,28 @@ OG.graph.Canvas.prototype = {
             xml = OG.Util.parseXML(xml);
         }
         return this.loadJSON(OG.Util.xmlToJson(xml));
-    },
+    }
+    ,
 
     alignLeft: function () {
         this._RENDERER.alignLeft();
-    },
+    }
+    ,
 
     alignRight: function () {
         this._RENDERER.alignRight();
-    },
+    }
+    ,
 
     alignTop: function () {
         this._RENDERER.alignTop();
-    },
+    }
+    ,
 
     alignBottom: function () {
         this._RENDERER.alignBottom();
-    },
+    }
+    ,
 
     /**
      * JSON 객체로 부터 Shape 을 드로잉한다.
@@ -30843,21 +31791,24 @@ OG.graph.Canvas.prototype = {
             x2: 0,
             y2: 0
         };
-    },
+    }
+    ,
 
     /**
      * 캔버스 undo.
      */
     undo: function () {
         this._RENDERER.undo();
-    },
+    }
+    ,
 
     /**
      * 캔버스 redo.
      */
     redo: function () {
         this._RENDERER.redo();
-    },
+    }
+    ,
 
     /**
      * 연결된 이전 Edge Element 들을 반환한다.
@@ -30867,7 +31818,8 @@ OG.graph.Canvas.prototype = {
      */
     getPrevEdges: function (element) {
         return this._RENDERER.getPrevEdges(element);
-    },
+    }
+    ,
 
     /**
      * 연결된 이후 Edge Element 들을 반환한다.
@@ -30877,7 +31829,8 @@ OG.graph.Canvas.prototype = {
      */
     getNextEdges: function (element) {
         return this._RENDERER.getNextEdges(element);
-    },
+    }
+    ,
 
     /**
      * 연결된 이전 노드 Element 들을 반환한다.
@@ -30887,7 +31840,8 @@ OG.graph.Canvas.prototype = {
      */
     getPrevShapes: function (element) {
         return this._RENDERER.getPrevShapes(element);
-    },
+    }
+    ,
 
     /**
      * 연결된 이전 노드 Element ID들을 반환한다.
@@ -30897,7 +31851,8 @@ OG.graph.Canvas.prototype = {
      */
     getPrevShapeIds: function (element) {
         return this._RENDERER.getPrevShapeIds(element);
-    },
+    }
+    ,
 
     /**
      * 연결된 이후 노드 Element 들을 반환한다.
@@ -30907,7 +31862,8 @@ OG.graph.Canvas.prototype = {
      */
     getNextShapes: function (element) {
         return this._RENDERER.getNextShapes(element);
-    },
+    }
+    ,
 
     /**
      * 연결된 이후 노드 Element ID들을 반환한다.
@@ -30917,7 +31873,8 @@ OG.graph.Canvas.prototype = {
      */
     getNextShapeIds: function (element) {
         return this._RENDERER.getNextShapeIds(element);
-    },
+    }
+    ,
 
     /**
      * Shape 이 처음 Draw 되었을 때의 이벤트 리스너
@@ -30928,7 +31885,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('drawShape', function (event, shapeElement) {
             callbackFunc(event, shapeElement);
         });
-    },
+    }
+    ,
 
     /**
      * Undo 되었을때의 이벤트 리스너
@@ -30939,7 +31897,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('undo', function (event) {
             callbackFunc(event);
         });
-    },
+    }
+    ,
 
     /**
      * Undo 되었을때의 이벤트 리스너
@@ -30950,7 +31909,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('redo', function (event) {
             callbackFunc(event);
         });
-    },
+    }
+    ,
 
     /**
      * Lane 이 divide 되었을 때의 이벤트 리스너
@@ -30961,7 +31921,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('divideLane', function (event, divideLanes) {
             callbackFunc(event, divideLanes);
         });
-    },
+    }
+    ,
 
     /**
      * 라벨이 Draw 되었을 때의 이벤트 리스너
@@ -30972,7 +31933,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('drawLabel', function (event, shapeElement, labelText) {
             callbackFunc(event, shapeElement, labelText);
         })
-    },
+    }
+    ,
 
     /**
      * 라벨이 Change 되었을 때의 이벤트 리스너
@@ -30983,7 +31945,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('labelChanged', function (event, shapeElement, afterText, beforeText) {
             callbackFunc(event, shapeElement, afterText, beforeText);
         });
-    },
+    }
+    ,
 
     /**
      * 라벨이 Change 되기전 이벤트 리스너
@@ -30996,7 +31959,8 @@ OG.graph.Canvas.prototype = {
                 event.stopPropagation();
             }
         });
-    },
+    }
+    ,
 
     /**
      * Shape 이 Redraw 되었을 때의 이벤트 리스너
@@ -31007,7 +31971,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('redrawShape', function (event, shapeElement) {
             callbackFunc(event, shapeElement);
         });
-    },
+    }
+    ,
 
     /**
      * Shape 이 Remove 될 때의 이벤트 리스너
@@ -31018,7 +31983,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('removeShape', function (event, shapeElement) {
             callbackFunc(event, shapeElement);
         });
-    },
+    }
+    ,
 
     /**
      * Shape 이 Rotate 될 때의 이벤트 리스너
@@ -31029,7 +31995,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('rotateShape', function (event, element, angle) {
             callbackFunc(event, element, angle);
         });
-    },
+    }
+    ,
 
     /**
      * Shape 이 Move 되었을 때의 이벤트 리스너
@@ -31040,7 +32007,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('moveShape', function (event, shapeElement, offset) {
             callbackFunc(event, shapeElement, offset);
         });
-    },
+    }
+    ,
 
     /**
      * Shape 이 Resize 되었을 때의 이벤트 리스너
@@ -31051,7 +32019,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('resizeShape', function (event, shapeElement, offset) {
             callbackFunc(event, shapeElement, offset);
         });
-    },
+    }
+    ,
 
     /**
      * Shape 이 Connect 되기전 이벤트 리스너
@@ -31064,7 +32033,8 @@ OG.graph.Canvas.prototype = {
                 event.stopPropagation();
             }
         });
-    },
+    }
+    ,
 
     /**
      * Shape 이 Remove 되기전 이벤트 리스너
@@ -31077,7 +32047,8 @@ OG.graph.Canvas.prototype = {
                 event.stopPropagation();
             }
         });
-    },
+    }
+    ,
 
     /**
      * Shape 이 Connect 되었을 때의 이벤트 리스너
@@ -31088,7 +32059,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('connectShape', function (event, edgeElement, fromElement, toElement) {
             callbackFunc(event, edgeElement, fromElement, toElement);
         });
-    },
+    }
+    ,
 
     /**
      * Shape 이 Disconnect 되었을 때의 이벤트 리스너
@@ -31099,7 +32071,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('disconnectShape', function (event, edgeElement, fromElement, toElement) {
             callbackFunc(event, edgeElement, fromElement, toElement);
         });
-    },
+    }
+    ,
 
     /**
      * Shape 이 Grouping 되었을 때의 이벤트 리스너
@@ -31110,7 +32083,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('group', function (event, groupElement) {
             callbackFunc(event, groupElement);
         });
-    },
+    }
+    ,
 
     /**
      * Shape 이 UnGrouping 되었을 때의 이벤트 리스너
@@ -31121,7 +32095,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('ungroup', function (event, ungroupedElements) {
             callbackFunc(event, ungroupedElements);
         });
-    },
+    }
+    ,
 
     /**
      * Group 이 Collapse 되었을 때의 이벤트 리스너
@@ -31132,7 +32107,8 @@ OG.graph.Canvas.prototype = {
         $(this.getRootElement()).bind('collapsed', function (event, element) {
             callbackFunc(event, element);
         });
-    },
+    }
+    ,
 
     /**
      * Group 이 Expand 되었을 때의 이벤트 리스너
@@ -31144,6 +32120,7 @@ OG.graph.Canvas.prototype = {
             callbackFunc(event, element);
         });
     }
-};
+}
+;
 OG.graph.Canvas.prototype.constructor = OG.graph.Canvas;
 OG.Canvas = OG.graph.Canvas;
