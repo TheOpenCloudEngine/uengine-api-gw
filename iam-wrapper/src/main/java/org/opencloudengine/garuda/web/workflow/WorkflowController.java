@@ -143,7 +143,7 @@ public class WorkflowController {
         }
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @RequestMapping(value = "/workflow/update", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     public ModelAndView update(HttpSession session,HttpServletResponse response,
                                @RequestParam(defaultValue = "") String _id,

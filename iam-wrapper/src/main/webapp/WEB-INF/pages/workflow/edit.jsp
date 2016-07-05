@@ -127,6 +127,24 @@
 <!--/wrapper-->
 <%@include file="../template/footer_js.jsp" %>
 
+<div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">Caution</h4>
+            </div>
+            <div class="modal-body">
+                <p style="text-align: center" name="content">Are you sure delete workflow?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-u" type="button" name="delete">Delete</button>
+                <button class="btn-u" type="button" name="close">Cancle</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script type="text/javascript" src="/service-console/resources/opengraph/opengraph.js"></script>
 <script type="text/javascript" src="/service-console/resources/opengraph/router/Request.js"></script>
