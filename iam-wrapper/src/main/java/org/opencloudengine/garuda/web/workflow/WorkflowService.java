@@ -8,9 +8,7 @@ public interface WorkflowService {
 
 
     Workflow createWorkflow(String name,
-                            String designer_xml,
-                            String vars,
-                            String status
+                            String designer_xml
     );
 
     List<Workflow> selectAll();
@@ -31,9 +29,7 @@ public interface WorkflowService {
 
     Workflow updateById(String id,
                       String name,
-                      String designer_xml,
-                      String vars,
-                      String status);
+                      String designer_xml);
 
     void deleteById(String id);
 }

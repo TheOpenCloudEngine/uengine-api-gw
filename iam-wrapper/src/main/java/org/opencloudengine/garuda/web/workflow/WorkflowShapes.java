@@ -1,4 +1,4 @@
-package org.opencloudengine.garuda.handler.activity.workflow.shapes;
+package org.opencloudengine.garuda.web.workflow;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,18 +9,18 @@ import java.util.List;
 /**
  * Created by uengine on 2016. 7. 4..
  */
-public class ShapesProvided {
+public class WorkflowShapes {
 
     /**
      * SLF4J Logging
      */
-    private Logger logger = LoggerFactory.getLogger(ShapesProvided.class);
-    public static List<ShapesProvided> shapesProvidedList = new ArrayList<>();
+    private Logger logger = LoggerFactory.getLogger(WorkflowShapes.class);
+    public static List<WorkflowShapes> shapesProvidedList = new ArrayList<>();
 
     static {
 
         shapesProvidedList.add(
-                new ShapesProvided(
+                new WorkflowShapes(
                         "/service-console/resources/opengraph/router/Request.png",
                         "GEOM",
                         "OG.shape.router.Request",
@@ -29,7 +29,7 @@ public class ShapesProvided {
                         50, 50));
 
         shapesProvidedList.add(
-                new ShapesProvided(
+                new WorkflowShapes(
                         "/service-console/resources/opengraph/router/Authentication.png",
                         "GEOM",
                         "OG.shape.router.Authentication",
@@ -37,7 +37,7 @@ public class ShapesProvided {
                         "YES,NO",
                         50, 50));
         shapesProvidedList.add(
-                new ShapesProvided(
+                new WorkflowShapes(
                         "/service-console/resources/opengraph/router/Oauth.png",
                         "GEOM",
                         "OG.shape.router.Oauth",
@@ -45,7 +45,7 @@ public class ShapesProvided {
                         "Succeeded,Failed",
                         50, 50));
         shapesProvidedList.add(
-                new ShapesProvided(
+                new WorkflowShapes(
                         "/service-console/resources/opengraph/router/Response.png",
                         "GEOM",
                         "OG.shape.router.Response",
@@ -53,7 +53,7 @@ public class ShapesProvided {
                         "Response",
                         50, 50));
         shapesProvidedList.add(
-                new ShapesProvided(
+                new WorkflowShapes(
                         "/service-console/resources/opengraph/router/Function.svg",
                         "GEOM",
                         "OG.shape.router.Function",
@@ -61,7 +61,7 @@ public class ShapesProvided {
                         null,
                         50, 50));
         shapesProvidedList.add(
-                new ShapesProvided(
+                new WorkflowShapes(
                         "/service-console/resources/opengraph/router/Api.png",
                         "GEOM",
                         "OG.shape.router.Api",
@@ -69,7 +69,7 @@ public class ShapesProvided {
                         "Response",
                         80, 50));
         shapesProvidedList.add(
-                new ShapesProvided(
+                new WorkflowShapes(
                         "/service-console/resources/opengraph/router/Proxy.png",
                         "GEOM",
                         "OG.shape.router.Proxy",
@@ -86,7 +86,7 @@ public class ShapesProvided {
     private int width;
     private int height;
 
-    public ShapesProvided(String img, String shapeType, String shapeId, String label, String textLine, int width, int height) {
+    public WorkflowShapes(String img, String shapeType, String shapeId, String label, String textLine, int width, int height) {
         this.img = img;
         this.shapeType = shapeType;
         this.shapeId = shapeId;

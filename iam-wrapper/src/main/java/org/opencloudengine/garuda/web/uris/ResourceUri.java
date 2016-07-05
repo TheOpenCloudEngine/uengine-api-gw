@@ -12,7 +12,7 @@ public class ResourceUri extends CouchDAO {
     private String method;
     private String runWith;
     private String wid;
-    private String wName;
+    private String workflowName;
     private String className;
     private String policyId;
     private String policyName;
@@ -59,12 +59,12 @@ public class ResourceUri extends CouchDAO {
         this.wid = wid;
     }
 
-    public String getwName() {
-        return wName;
+    public String getWorkflowName() {
+        return workflowName;
     }
 
-    public void setwName(String wName) {
-        this.wName = wName;
+    public void setWorkflowName(String workflowName) {
+        this.workflowName = workflowName;
     }
 
     public String getClassName() {

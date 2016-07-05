@@ -275,6 +275,7 @@
                 }
             },
             submitHandler: function (form, event) {
+                event.preventDefault();
                 var from = $('[name=prefixUriFrom]').val();
                 var to = $('[name=prefixUriTo]').val();
                 $(form).find('[name=prefixUri]').val(from + ',' + to);

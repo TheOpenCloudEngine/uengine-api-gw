@@ -6,6 +6,8 @@ import org.opencloudengine.garuda.web.iam.IamRepository;
 import org.opencloudengine.garuda.web.iam.IamService;
 import org.opencloudengine.garuda.web.policy.Policy;
 import org.opencloudengine.garuda.web.policy.PolicyRepository;
+import org.opencloudengine.garuda.web.workflow.Workflow;
+import org.opencloudengine.garuda.web.workflow.WorkflowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,9 @@ public class ResourceUriServiceImpl implements ResourceUriService {
 
     @Autowired
     private PolicyRepository policyRepository;
+
+    @Autowired
+    private WorkflowRepository workflowRepository;
 
     @Autowired
     ConfigurationHelper configurationHelper;
@@ -66,6 +71,21 @@ public class ResourceUriServiceImpl implements ResourceUriService {
             for (ResourceUri uri : uris) {
                 if (policy.get_id().equals(uri.getPolicyId())) {
                     uri.setPolicyName(policy.getName());
+                }
+            }
+        }
+
+        List<String> workflowIds = new ArrayList<>();
+        for (ResourceUri uri : uris) {
+            if (uri.getRunWith().equals("workflow")) {
+                workflowIds.add(uri.getWid());
+            }
+        }
+        List<Workflow> workflows = workflowRepository.selectByIds(workflowIds);
+        for (Workflow workflow : workflows) {
+            for (ResourceUri uri : uris) {
+                if (workflow.get_id().equals(uri.getWid())) {
+                    uri.setWorkflowName(workflow.getName());
                 }
             }
         }

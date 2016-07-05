@@ -8,6 +8,8 @@ import org.opencloudengine.garuda.web.iam.Iam;
 import org.opencloudengine.garuda.web.iam.IamService;
 import org.opencloudengine.garuda.web.policy.Policy;
 import org.opencloudengine.garuda.web.policy.PolicyService;
+import org.opencloudengine.garuda.web.workflow.Workflow;
+import org.opencloudengine.garuda.web.workflow.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,9 @@ public class ResourceUriController {
 
     @Autowired
     private PolicyService policyService;
+
+    @Autowired
+    private WorkflowService workflowService;
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
@@ -79,9 +84,11 @@ public class ResourceUriController {
     public ModelAndView newUri(HttpSession session) {
 
         List<Policy> policies = policyService.selectAll();
+        List<Workflow> workflows = workflowService.selectAll();
 
         ModelAndView mav = new ModelAndView("/uris/new");
         mav.addObject("policies", policies);
+        mav.addObject("workflows", workflows);
         return mav;
     }
 
@@ -97,12 +104,17 @@ public class ResourceUriController {
                                @RequestParam(defaultValue = "") String policyId
     ) throws IOException {
 
+        List<Policy> policies = policyService.selectAll();
+        List<Workflow> workflows = workflowService.selectAll();
+
         try {
             //같은 오더 검색
             ResourceUri existUri = uriService.selectByOrder(order);
             if (existUri != null) {
                 ModelAndView mav = new ModelAndView("/uris/new");
                 mav.addObject("duplicate", true);
+                mav.addObject("policies", policies);
+                mav.addObject("workflows", workflows);
                 return mav;
             }
 
@@ -115,6 +127,8 @@ public class ResourceUriController {
         } catch (Exception ex) {
             ModelAndView mav = new ModelAndView("/uris/new");
             mav.addObject("failed", true);
+            mav.addObject("policies", policies);
+            mav.addObject("workflows", workflows);
             return mav;
         }
     }
@@ -131,10 +145,12 @@ public class ResourceUriController {
             }
 
             List<Policy> policies = policyService.selectAll();
+            List<Workflow> workflows = workflowService.selectAll();
 
             ModelAndView mav = new ModelAndView("/uris/edit");
             mav.addObject("resourceUri", resourceUri);
             mav.addObject("policies", policies);
+            mav.addObject("workflows", workflows);
             return mav;
         } catch (Exception ex) {
             throw new ServiceException("Invalid resourceUri id");
@@ -180,6 +196,8 @@ public class ResourceUriController {
             throw new ServiceException("Invalid resourceUri id");
         }
 
+        List<Policy> policies = policyService.selectAll();
+        List<Workflow> workflows = workflowService.selectAll();
         try {
             //같은 오더 검색
             ResourceUri existUri = uriService.selectByOrder(order);
@@ -188,6 +206,8 @@ public class ResourceUriController {
                     ModelAndView mav = new ModelAndView("/uris/edit");
                     mav.addObject("resourceUri", resourceUri);
                     mav.addObject("duplicate", true);
+                    mav.addObject("policies", policies);
+                    mav.addObject("workflows", workflows);
                     return mav;
                 }
             }
@@ -200,6 +220,8 @@ public class ResourceUriController {
             ModelAndView mav = new ModelAndView("/uris/edit");
             mav.addObject("resourceUri", resourceUri);
             mav.addObject("failed", true);
+            mav.addObject("policies", policies);
+            mav.addObject("workflows", workflows);
             return mav;
         }
     }

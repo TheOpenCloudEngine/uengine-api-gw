@@ -32,60 +32,40 @@
             var limit = tableAPI.settings()[0]._iDisplayLength
             var skip = tableAPI.settings()[0]._iDisplayStart;
 
-            tableAPI.ajax.url('/service-console/uris/list?limit=' + limit + '&skip=' + skip + '&uri=' + searchValue);
+            tableAPI.ajax.url('/service-console/workflow/list?limit=' + limit + '&skip=' + skip + '&name=' + searchValue);
             tableAPI.ajax.reload();
         }
 
         $(document).ready(function () {
-            var table = $('#uris').DataTable({
+            var table = $('#workflow').DataTable({
                 serverSide: true,
                 searching: false,
                 ajax: {
-                    url: '/service-console/uris/list',
-                    dataSrc: function (resourceUris) {
+                    url: '/service-console/workflow/list',
+                    dataSrc: function (workflows) {
                         // change init page setting (_iDisplayStart )
-                        table.settings()[0]._iDisplayStart = resourceUris.displayStart;
+                        table.settings()[0]._iDisplayStart = workflows.displayStart;
 
                         // make id edit href
-                        for (var i = 0; i < resourceUris.data.length; i++) {
-                            resourceUris.data[i]._id = '<a href=/service-console/uris/edit?_id=' + resourceUris.data[i]._id + '>Edit</a>';
-                            if (resourceUris.data[i].runWith == 'workflow') {
-                                resourceUris.data[i].runWith = '' +
-                                        '<button class="btn btn-xs rounded btn-primary">workflow</button>  ' +
-                                        '<a href=/service-console/workflow-edit?_id=' + resourceUris.data[i].wid + '>' +
-                                        resourceUris.data[i].workflowName + '</a>';
-                            }
-                            if (resourceUris.data[i].runWith == 'class') {
-                                resourceUris.data[i].runWith = '' +
-                                        '<button class="btn btn-xs rounded btn-primary">class</button>  ' +
-                                        resourceUris.data[i].className
-                            }
-                            if (resourceUris.data[i].runWith == 'policy') {
-                                resourceUris.data[i].runWith = '' +
-                                        '<button class="btn btn-xs rounded btn-primary">policy</button>  ' +
-                                        '<a href=/service-console/policy/edit?_id=' + resourceUris.data[i].policyId + '>' +
-                                        resourceUris.data[i].policyName + '</a>';
-                            }
+                        for (var i = 0; i < workflows.data.length; i++) {
+                            workflows.data[i]._id = '<a href=/service-console/workflow-edit?_id=' + workflows.data[i]._id + '>Edit</a>';
                         }
-                        return resourceUris.data;
+                        return workflows.data;
                     }
                 },
                 columns: [
-                    {data: 'order'},
-                    {data: 'uri'},
-                    {data: 'method'},
-                    {data: 'runWith'},
+                    {data: 'name'},
                     {data: '_id'}
                 ]
             });
 
             // page event
-            $('#uris').on('page.dt', function () {
-                reload($('#uris').dataTable(), $('#customSearch').val().trim());
+            $('#workflow').on('page.dt', function () {
+                reload($('#workflow').dataTable(), $('#customSearch').val().trim());
 
                 // page length event
             }).on('length.dt', function () {
-                reload($('#uris').dataTable(), $('#customSearch').val().trim());
+                reload($('#workflow').dataTable(), $('#customSearch').val().trim());
 
             });
         });
@@ -100,10 +80,10 @@
     <!--=== Breadcrumbs ===-->
     <div class="breadcrumbs">
         <div class="container">
-            <h1 class="pull-left">Uri Mapping</h1>
+            <h1 class="pull-left">Workflow</h1>
             <ul class="pull-right breadcrumb">
                 <li><a href="/service-console/index">HOME</a></li>
-                <li class="active">Uri Mapping</li>
+                <li class="active">Workflow</li>
             </ul>
         </div>
     </div>
@@ -113,9 +93,9 @@
     <div class="container content profile">
         <div class="row">
             <div class="col-md-12">
-                <div class="headline margin-bottom-10"><h4>Uri Mappings </h4></div>
+                <div class="headline margin-bottom-10"><h4>Workflow </h4></div>
 
-                <a class="btn-u btn-u-primary" href="/service-console/uris/new">Create Uri Mapping</a>
+                <a class="btn-u btn-u-primary" href="/service-console/workflow-new">Create Workflow</a>
 
                 <br>
                 <br>
@@ -123,15 +103,12 @@
                 <div class="margin-bottom-10">
                     <div class="table-responsive">
                         <div style="float: right"> Search : <input type="text" id="customSearch"
-                                                                   onKeyDown="javascript: search($('#uris').dataTable(), this.value)"/>
+                                                                   onKeyDown="javascript: search($('#workflow').dataTable(), this.value)"/>
                         </div>
-                        <table id="uris" class="display table table-bordered table-striped">
+                        <table id="workflow" class="display table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th>Order</th>
-                                <th>Uri</th>
-                                <th>Method</th>
-                                <th>RunWith</th>
+                                <th>Name</th>
                                 <th></th>
                             </tr>
                             </thead>

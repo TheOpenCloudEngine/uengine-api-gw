@@ -20,13 +20,17 @@
     <script type="text/javascript" src="/service-console/resources/plugins/codemirror/javascript.js"></script>
 
     <link rel="stylesheet" href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/css/sky-forms.css">
-    <link rel="stylesheet" href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css">
+    <link rel="stylesheet"
+          href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css">
     <!--[if lt IE 9]>
-    <link rel="stylesheet" href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/css/sky-forms-ie8.css"><![endif]-->
+    <link rel="stylesheet"
+          href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/css/sky-forms-ie8.css"><![endif]-->
 
 
-    <link rel="stylesheet" type="text/css" href="/service-console/resources/opengraph/contextmenu/jquery.contextMenu.css"/>
-    <script type="text/javascript" src="/service-console/resources/opengraph/contextmenu/jquery.contextMenu-min.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="/service-console/resources/opengraph/contextmenu/jquery.contextMenu.css"/>
+    <script type="text/javascript"
+            src="/service-console/resources/opengraph/contextmenu/jquery.contextMenu-min.js"></script>
     <script type="text/javascript" src="/service-console/resources/opengraph/OpenGraph-0.1.1-SNAPSHOT.js"/>
 
 </head>
@@ -51,38 +55,38 @@
     <div class="container content profile">
         <div class="row">
             <div class="col-md-12">
-                <form action="/service-console/workflow/create" class="form-horizontal"
+                <form action="/service-console/workflow/update" class="form-horizontal"
                       role="form"
                       id="workflowForm" method="post">
-                    <h4>Create New Workflow </h4>
+                    <h4>Edit Workflow </h4>
 
                     <c:choose>
                         <c:when test="${duplicate}">
                             <h4 style="color: #ff0000">Workflow Name already exist. </h4>
                         </c:when>
                         <c:when test="${failed}">
-                            <h4 style="color: #ff0000">Workflow create failed. </h4>
+                            <h4 style="color: #ff0000">Policy create failed. </h4>
                         </c:when>
                     </c:choose>
+
+                    <input type="hidden" id="_id" name="_id" value="${workflow._id}">
 
                     <div class="form-group">
                         <label class="col-md-2 control-label">Name <span class="color-red">*</span></label>
 
                         <div class="col-md-6">
-                            <input name="name" type="text" class="form-control" value="">
+                            <input name="name" type="text" class="form-control" value="${workflow.name}">
                         </div>
                     </div>
 
-                    <input type="hidden" name="designer_xml">
+                    <input type="hidden" name="designer_xml" value="">
 
                     <div class="form-group">
                         <div class="col-md-12">
-                            <button id="submitBtn" type="submit" class="btn-u btn-u-primary">Create</button>
+                            <button id="submitBtn" type="submit" class="btn-u btn-u-primary">Edit</button>
+                            <a href="#" class="btn-u btn-u-primary" id="deleteBtn">Delete </a>
                             <a href="#" class="btn-u btn-u-primary" onclick="console.log($.parseXML(canvas.toXML()));">printXML</a>
-                            <a href="#" class="btn-u btn-u-primary" onclick="console.log(canvas.toJSON());">printJSON</a>
                             <a href="#" class="btn-u btn-u-primary" onclick="canvas.clear();">clear</a>
-                            <a href="#" class="btn-u btn-u-primary" onclick="canvasCtl.save();">saveJSON</a>
-                            <a href="#" class="btn-u btn-u-primary" onclick="canvas.loadJSON(opengraphJSON);">loadJSON</a>
                             <a href="#" class="btn-u btn-u-primary" onclick="canvas.undo();">undo</a>
                             <a href="#" class="btn-u btn-u-primary" onclick="canvas.redo();">redo</a>
                         </div>
@@ -142,6 +146,20 @@
 
 <script type="text/javascript">
     $(function () {
+        $('#deleteBtn').click(function () {
+            $('#deleteConfirm').modal({
+                show: true
+            });
+        });
+
+        $('#deleteConfirm').find('[name=close]').click(function () {
+            $('#deleteConfirm').find('.close').click();
+        });
+
+        $('#deleteConfirm').find('[name=delete]').click(function () {
+            window.location.href = '/service-console/workflow/delete?_id=' + $('#_id').val();
+        });
+
         var form = $('#workflowForm');
 
         //폼 발리데이션
@@ -169,6 +187,7 @@
         });
 
         canvasCtl.init();
+        canvasCtl.onWorkflowLoad('${workflow.designer_xml}');
     });
 </script>
 </html>

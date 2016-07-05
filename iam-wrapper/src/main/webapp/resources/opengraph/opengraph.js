@@ -265,26 +265,43 @@ var canvasCtl = {
      * @return {Object} Property(name:value) Object
      */
     getNodeProperties: function (graphElement) {
+        var me = this;
         var properties = {}, value, form, editor, fields;
         var forms = this.getPropertyForms(graphElement);
         forms.each(function () {
             fields = $(this).find(":input").serializeArray();
             form = $(this);
-            $.each(fields, function (i, field) {
-                value = field.value;
-                var filedEle = form.find('[name=' + field.name + ']');
-                if (filedEle.data('CodeMirrorInstance')) {
-                    editor = filedEle.data('CodeMirrorInstance');
-                    value = editor.getDoc().getValue();
-                }
-                if (properties[field.name]) {
-                    properties[field.name] += ',' + value
-                } else {
-                    properties[field.name] = value;
-                }
-            });
+            if (form.attr('id') === 'flowProperty') {
+                me.getFlowProperties(graphElement, form, properties);
+            } else {
+                $.each(fields, function (i, field) {
+                    value = field.value;
+                    var filedEle = form.find('[name=' + field.name + ']');
+                    if (filedEle.data('CodeMirrorInstance')) {
+                        editor = filedEle.data('CodeMirrorInstance');
+                        value = editor.getDoc().getValue();
+                    }
+                    if (properties[field.name]) {
+                        properties[field.name] += ',' + value
+                    } else {
+                        properties[field.name] = value;
+                    }
+                });
+            }
         });
         return properties;
+    },
+    getFlowProperties: function (element, form, properties) {
+        var flows = [];
+        var flowTemplates = $("[name=flow_template]");
+        flowTemplates.each(function () {
+            var value = $(this).find("[name=flow_value]").val();
+            if (value.length > 0) {
+                flows.push(value);
+            }
+        });
+        properties['flow'] = flows.join();
+        canvas.setTextListInController(element, flows);
     },
     /**
      * 노드의 메타데이터정보를 반환한다.
@@ -306,17 +323,24 @@ var canvasCtl = {
         var popWindow = this.getPropertyWindow(graphElement);
         return popWindow.find('[name=propertyForm]')
     },
+
     /**
      * 주어진 프라퍼티정보로 노드의 프라퍼티를 설정한다.
      *
      * @param {Object} nodeProperties Property(name:value) Object
      */
     setNodeProperties: function (graphElement, nodeProperties) {
+        var me = this;
         if (nodeProperties) {
             var forms = this.getPropertyForms(graphElement);
             var field, value, editor;
             forms.each(function () {
                 var form = $(this);
+                if (form.attr('id') === 'flowProperty') {
+                    me.setFlowProperties(form, nodeProperties);
+                    return;
+                }
+
                 var fields = form.find(":input").serializeArray();
                 $.each(fields, function (i, serializeFiled) {
                     field = form.find('[name=' + serializeFiled.name + ']');
@@ -363,9 +387,36 @@ var canvasCtl = {
             });
         }
     },
+    setFlowProperties: function (form, nodeProperties) {
+        form.find('[name=flow_template]').each(function () {
+            if ($(this).attr('id') !== 'flow_template') {
+                $(this).remove();
+            }
+        });
+        var flows = nodeProperties['flow'];
+        if (!flows) {
+            flows = ''
+        }
+        flows = flows.split(',');
+        $.each(flows, function (i, flow) {
+            var template = $('#flow_template');
+            var clone = template.clone();
+            clone.removeAttr("id");
+            template.after(clone);
+            clone.find('[name=flow_value]').val(flow);
+            clone.show();
 
-
+            clone.find("[name=flow_del]").click(function () {
+                clone.remove();
+            });
+        });
+    },
+    onSaveClick: function(form){
+        var toXML = canvas.toXML();
+        $(form).find('[name=designer_xml]').val(toXML);
+        form.submit();
+    },
+    onWorkflowLoad: function(xml){
+        canvas.loadXML(xml);
+    }
 };
-$(document).ready(function () {
-    canvasCtl.init();
-});

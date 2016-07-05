@@ -25,15 +25,11 @@ public class WorkflowServiceImpl implements WorkflowService {
 
     @Override
     public Workflow createWorkflow(String name,
-                                 String designer_xml,
-                                 String vars,
-                                 String status) {
+                                 String designer_xml) {
 
         Workflow workflow = new Workflow();
         workflow.setName(name);
         workflow.setDesigner_xml(designer_xml);
-        workflow.setVars(vars);
-        workflow.setStatus(status);
         return workflowRepository.insert(workflow);
     }
 
@@ -80,15 +76,11 @@ public class WorkflowServiceImpl implements WorkflowService {
     @Override
     public Workflow updateById(String id,
                                String name,
-                               String designer_xml,
-                               String vars,
-                               String status) {
+                               String designer_xml) {
         Workflow workflow = new Workflow();
         workflow.set_id(id);
         workflow.setName(name);
         workflow.setDesigner_xml(designer_xml);
-        workflow.setVars(vars);
-        workflow.setStatus(status);
 
         return workflowRepository.updateById(workflow);
     }
