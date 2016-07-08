@@ -2,6 +2,74 @@
 
 ## Tutorial
 
+### Architecture
+
+![](images/service-wrapper.png)
+
+서비스 래퍼는 동일한 스프링 프레임워크 내의 2가지의 서블릿 구조를 가지고 있습니다.
+
+하나는 / path 로 시작하는 Proxy Servlet 이고, 나머지 하나는 /service-console 로 시작하는 UI 컨트롤러 입니다.
+
+서버를 구동 후 UI 에 접근하기 위해서는 /service-console/index 로 접근하도록 합니다.
+
+
+#### Spec
+
+ - tomcat8
+ 
+ - java8
+ 
+ - couchDB
+
+#### Features
+
+**개발된 기능들**
+
+- Proxy Server
+
+- Custom Handler registration
+
+- URI Mapping using same way as the Servlet Mapping rule
+
+- URI Mapping using Cash Memory
+
+- Https Support
+
+- Broken Pipe error handling
+
+- Authentication processing using Cash Memory
+
+- Authentication information embed in Custom script 
+
+- UI Security
+
+- Gateway Workflow compliance with the Bpmn 2.0 Standard Spec
+
+
+ - 성능 모니터링
+
+ - 워크플로우로 핸들러 추가
+
+ - 트랜잭션 별 로그 및 추적 기능 처리
+
+ - 빌링 미터링 시스템 연동 
+
+### Configuration
+
+메뉴의 Configuration 에서 연동될 IAM 서버를 설정할 수 있습니다.
+
+![](images/wrapper-conf.png)
+
+ - Host : Iam 서버 호스트
+ 
+ - Port : Iam 서버 포트
+ 
+ - managementKey : Iam 에서 생성한 managementKey
+ 
+ - managementSecret : Iam 에서 생성한 managementSecret
+
+### Policy
+
 OCE IAM 의 Oauth Endpoint 는 다음으로 구성되어 있습니다.
 
 | Endpoint             | 설명                   |

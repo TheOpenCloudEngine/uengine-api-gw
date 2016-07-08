@@ -255,6 +255,7 @@ UI 에서 로그인 할때 쓰이는 계정입니다.
 ```
 $ sudo initctl stop tomcat
 
+$ sudo chown -R tomcat:tomcat /opt/tomcat/webapps
 $ sudo rm -rf /opt/tomcat/webapps/ROOT
 $ sudo rm -rf /opt/tomcat/webapps/ROOT.war 
 
@@ -262,18 +263,16 @@ $ cd OCEIAM-SERVICEWARRPER
 
 $ mvn clean install
 
-$ sudo cp iam-web/target/iam-web-0.0.1-SNAPSHOT.war /var/lib/tomcat7/webapps/
+$ sudo cp iam-wrapper/target/iam-wrapper-1.0.0-SNAPSHOT.war /opt/tomcat/webapps/ROOT.war
 
-$ sudo mv /var/lib/tomcat7/webapps/iam-web-0.0.1-SNAPSHOT.war /var/lib/tomcat7/webapps/ROOT.war
+$ sudo chmod +x /opt/tomcat/webapps/ROOT.war
 
-$ sudo chmod +x /var/lib/tomcat7/webapps/ROOT.war
-
-$ sudo service tomcat7 start
+$ sudo initctl start tomcat
 ```
 
+실행된 서버의 /service-console/index 주소로 접근해봅니다.
+
 초기 로그인은 support@iam.co.kr  /   admin  입니다.
-
-
 
 
 
