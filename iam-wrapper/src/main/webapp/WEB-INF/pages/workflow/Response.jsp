@@ -82,7 +82,7 @@
                                             <div class="col-md-12 md-margin-bottom-10">
                                                 <h4>This Script must return HttpResponse </h4>
 
-                                                <p>return HttpResponse(status,headers,content)</p>
+                                                <p>return HttpResponse(status,headers,entity)</p>
 
                                                 <table class="table">
                                                     <thead>
@@ -101,8 +101,8 @@
                                                         <td>Map( key, value )</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>content</td>
-                                                        <td>Object</td>
+                                                        <td>entity</td>
+                                                        <td>String</td>
                                                     </tr>
                                                     </tbody>
                                                 </table>

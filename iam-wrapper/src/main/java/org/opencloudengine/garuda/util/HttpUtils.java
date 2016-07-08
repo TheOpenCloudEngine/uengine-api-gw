@@ -3,11 +3,19 @@ package org.opencloudengine.garuda.util;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.security.KeyManagementException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +65,36 @@ public class HttpUtils {
         }
 
         HttpClient client = new DefaultHttpClient();
+        if (uri.startsWith("https")) {
+            try {
+                TrustManager easyTrustManager = new X509TrustManager() {
+
+                    public X509Certificate[] getAcceptedIssuers() {
+                        // no-op
+                        return null;
+                    }
+
+                    public void checkServerTrusted(X509Certificate[] chain,
+                                                   String authType) throws CertificateException {
+                    }
+
+                    public void checkClientTrusted(X509Certificate[] chain,
+                                                   String authType) throws CertificateException {
+                    }
+                };
+                SSLContext sslcontext = SSLContext.getInstance("TLS");
+                sslcontext.init(null, new TrustManager[]{easyTrustManager}, null);
+
+                SSLSocketFactory socketFactory = new SSLSocketFactory(sslcontext,
+                        SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
+
+                Scheme sch = new Scheme("https", 443, socketFactory);
+                client.getConnectionManager().getSchemeRegistry().register(sch);
+            } catch (Exception ex) {
+                throw new IOException("Failed to create httpsClient", ex.getCause());
+            }
+        }
+
         System.out.println("Making " + request.getMethod() + " request to: " + uri);
         HttpResponse httpResponse = client.execute(request);
 

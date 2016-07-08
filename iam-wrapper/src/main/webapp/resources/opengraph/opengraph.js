@@ -73,7 +73,8 @@ var canvasCtl = {
                     canvasEle.removeData('DRAG_SHAPE');
 
                     var properties = {
-                        label: shapeInfo._label
+                        label: shapeInfo._label,
+                        shapeId: shapeInfo._shape_id
                     };
                     var isValidated = false;
                     var nodeMeta = {
@@ -346,6 +347,7 @@ var canvasCtl = {
                     field = form.find('[name=' + serializeFiled.name + ']');
                     value = nodeProperties[serializeFiled.name];
                     var tagName = field.get(0).tagName;
+
                     switch (tagName) {
                         case 'TEXTAREA':
                             if (field.data('CodeMirrorInstance')) {

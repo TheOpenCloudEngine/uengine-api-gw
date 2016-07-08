@@ -23,6 +23,8 @@ public interface PolicyService {
 
     Policy selectById(String id);
 
+    Policy cashById(String id);
+
     List<Policy> selectLikeName(String name, int limit, Long skip);
 
     Policy selectByName(String name);

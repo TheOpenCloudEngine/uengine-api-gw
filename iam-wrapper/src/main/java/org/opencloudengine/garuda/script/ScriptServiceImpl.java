@@ -81,4 +81,18 @@ public class ScriptServiceImpl implements ScriptService {
                 setScript(script).
                 build();
     }
+
+    @Override
+    public ScriptResponse workflowScript(String script, Map<String, Object> taskOutputData) throws Exception {
+        ScriptRequest request = new ScriptRequest();
+
+        Set<String> keySet = taskOutputData.keySet();
+        Iterator<String> iterator = keySet.iterator();
+        while (iterator.hasNext()) {
+            String taskName = iterator.next();
+            Object data = taskOutputData.get(taskName);
+            request = request.embed(taskName, data);
+        }
+        return request.setScript(script).build();
+    }
 }

@@ -106,7 +106,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td>body</td>
-                                                        <td>Object</td>
+                                                        <td>String</td>
                                                     </tr>
                                                     </tbody>
                                                 </table>

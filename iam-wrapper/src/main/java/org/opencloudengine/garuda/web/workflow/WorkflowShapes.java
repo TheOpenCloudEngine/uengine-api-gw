@@ -36,14 +36,14 @@ public class WorkflowShapes {
                         "Authentication",
                         "YES,NO",
                         50, 50));
-        shapesProvidedList.add(
-                new WorkflowShapes(
-                        "/service-console/resources/opengraph/router/Oauth.png",
-                        "GEOM",
-                        "OG.shape.router.Oauth",
-                        "Oauth2",
-                        "Succeeded,Failed",
-                        50, 50));
+//        shapesProvidedList.add(
+//                new WorkflowShapes(
+//                        "/service-console/resources/opengraph/router/Oauth.png",
+//                        "GEOM",
+//                        "OG.shape.router.Oauth",
+//                        "Oauth2",
+//                        "Succeeded,Failed",
+//                        50, 50));
         shapesProvidedList.add(
                 new WorkflowShapes(
                         "/service-console/resources/opengraph/router/Response.png",

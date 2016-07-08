@@ -9,12 +9,14 @@ public class TaskHistory extends CouchDAO {
 
     private String identifier;
     private String wid;
-    private String task_id;
-    private String name;
+    private String taskId;
+    private String taskName;
     private Long startDate;
     private Long endDate;
     private Long duration;
     private String status;
+    private String input;
+    private String output;
     private String stdout;
     private String stderr;
 
@@ -34,20 +36,20 @@ public class TaskHistory extends CouchDAO {
         this.wid = wid;
     }
 
-    public String getTask_id() {
-        return task_id;
+    public String getTaskId() {
+        return taskId;
     }
 
-    public void setTask_id(String task_id) {
-        this.task_id = task_id;
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
-    public String getName() {
-        return name;
+    public String getTaskName() {
+        return taskName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
     }
 
     public Long getStartDate() {
@@ -80,6 +82,22 @@ public class TaskHistory extends CouchDAO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getInput() {
+        return input;
+    }
+
+    public void setInput(String input) {
+        this.input = input;
+    }
+
+    public String getOutput() {
+        return output;
+    }
+
+    public void setOutput(String output) {
+        this.output = output;
     }
 
     public String getStdout() {

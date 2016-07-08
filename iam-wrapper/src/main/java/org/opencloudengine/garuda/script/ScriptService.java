@@ -13,4 +13,5 @@ public interface ScriptService {
 
     void afterUseScript(String script, AuthInformation authInformation) throws Exception;
 
+    ScriptResponse workflowScript(String script, Map<String,Object> taskOutputData) throws Exception;
 }

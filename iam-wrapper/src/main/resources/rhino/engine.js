@@ -4,6 +4,31 @@ function run() {
         console.log(obj);
         stdout = stdout + obj + '\n\n';
     };
+
+    var FunctionResponse = function (flow, data) {
+        return {
+            flow: flow,
+            data: data
+        }
+    };
+
+    var HttpRequest = function (uri, method, headers, body) {
+        return {
+            uri: uri,
+            method: method,
+            headers: headers,
+            body: body
+        }
+    };
+
+    var HttpResponse = function (status, headers, entity) {
+        return {
+            status: status,
+            headers: headers,
+            entity: entity
+        }
+    };
+
     var customScript = function () {
         ${script}
     };

@@ -20,7 +20,7 @@ public class PolicyHandler extends AbstractHandler {
     @Override
     public void doAction() {
 
-        Policy policy = policyService.selectById(resourceUri.getPolicyId());
+        Policy policy = policyService.cashById(resourceUri.getPolicyId());
         if (policy == null) {
             gatewayService.errorResponse(GateException.POLICY_NOT_FOUND, servletRequest, servletResponse, null);
             return;

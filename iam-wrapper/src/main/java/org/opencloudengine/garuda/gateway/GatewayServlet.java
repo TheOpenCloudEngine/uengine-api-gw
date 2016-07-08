@@ -124,9 +124,6 @@ public class GatewayServlet extends HttpServlet {
             SSLSocketFactory socketFactory = new SSLSocketFactory(sslcontext,
                     SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
 
-//            SSLSocketFactory socketFactory = new SSLSocketFactory(sslcontext,
-//                    SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
             Scheme sch = new Scheme("https", 443, socketFactory);
 
             try {

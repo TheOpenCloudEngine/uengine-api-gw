@@ -18,15 +18,9 @@ public class WorkflowHistory extends CouchDAO {
     private Long startDate;
     private Long endDate;
     private Long duration;
-    private int steps;
-    private int current;
-    private String task_id;
-    private String task_name;
+    private String currentTaskId;
+    private String currentTaskName;
     private String status;
-    private String sf_parent_identifier;
-    private String sf_root_identifier;
-    private int sf_depth;
-    private String sf_task_id;
 
     public WorkflowHistory() {
 
@@ -104,36 +98,20 @@ public class WorkflowHistory extends CouchDAO {
         this.duration = duration;
     }
 
-    public int getSteps() {
-        return steps;
+    public String getCurrentTaskId() {
+        return currentTaskId;
     }
 
-    public void setSteps(int steps) {
-        this.steps = steps;
+    public void setCurrentTaskId(String currentTaskId) {
+        this.currentTaskId = currentTaskId;
     }
 
-    public int getCurrent() {
-        return current;
+    public String getCurrentTaskName() {
+        return currentTaskName;
     }
 
-    public void setCurrent(int current) {
-        this.current = current;
-    }
-
-    public String getTask_id() {
-        return task_id;
-    }
-
-    public void setTask_id(String task_id) {
-        this.task_id = task_id;
-    }
-
-    public String getTask_name() {
-        return task_name;
-    }
-
-    public void setTask_name(String task_name) {
-        this.task_name = task_name;
+    public void setCurrentTaskName(String currentTaskName) {
+        this.currentTaskName = currentTaskName;
     }
 
     public String getStatus() {
@@ -142,37 +120,5 @@ public class WorkflowHistory extends CouchDAO {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getSf_parent_identifier() {
-        return sf_parent_identifier;
-    }
-
-    public void setSf_parent_identifier(String sf_parent_identifier) {
-        this.sf_parent_identifier = sf_parent_identifier;
-    }
-
-    public String getSf_root_identifier() {
-        return sf_root_identifier;
-    }
-
-    public void setSf_root_identifier(String sf_root_identifier) {
-        this.sf_root_identifier = sf_root_identifier;
-    }
-
-    public int getSf_depth() {
-        return sf_depth;
-    }
-
-    public void setSf_depth(int sf_depth) {
-        this.sf_depth = sf_depth;
-    }
-
-    public String getSf_task_id() {
-        return sf_task_id;
-    }
-
-    public void setSf_task_id(String sf_task_id) {
-        this.sf_task_id = sf_task_id;
     }
 }

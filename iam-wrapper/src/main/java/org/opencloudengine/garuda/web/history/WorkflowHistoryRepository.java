@@ -1,32 +1,32 @@
-///*
-// * Copyright (C) 2015 Bahamas Project (http://www.opencloudengine.org).
-// *
-// * This program is free software: you can redistribute it and/or modify
-// * it under the terms of the GNU General Public License as published by
-// * the Free Software Foundation, either version 3 of the License, or
-// * (at your option) any later version.
-// *
-// * This program is distributed in the hope that it will be useful,
-// * but WITHOUT ANY WARRANTY; without even the implied warranty of
-// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// * GNU General Public License for more details.
-// *
-// * You should have received a copy of the GNU General Public License
-// * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// */
-//package org.opencloudengine.garuda.web.history;
-//
-//
-//import org.opencloudengine.garuda.common.repository.PersistentRepository;
-//
-//public interface WorkflowHistoryRepository extends PersistentRepository<WorkflowHistory, Long> {
-//
-//    public static final String NAMESPACE = WorkflowHistoryRepository.class.getName();
-//
-//    void updateCurrentStep(WorkflowHistory workflowHistory);
-//
-//    WorkflowHistory selectById(long id);
-//
-//    WorkflowHistory selectByIdentifier(String identifier);
-//
-//}
+package org.opencloudengine.garuda.web.history;
+
+
+import java.util.List;
+
+public interface WorkflowHistoryRepository {
+
+    WorkflowHistory updateCurrentStep(WorkflowHistory history, String taskId, String taskName);
+
+    WorkflowHistory updateAsFailed(WorkflowHistory history);
+
+    WorkflowHistory updateAsFinished(WorkflowHistory history);
+
+    WorkflowHistory selectByIdentifier(String identifier);
+
+    WorkflowHistory selectById(String id);
+
+    WorkflowHistory insert(WorkflowHistory history);
+
+    List<WorkflowHistory> select(int limit, Long skip);
+
+    List<WorkflowHistory> selectLikeName(String name, int limit, Long skip);
+
+    Long count();
+
+    Long countLikeName(String name);
+
+    WorkflowHistory updateById(WorkflowHistory history);
+
+    void deleteById(String id);
+
+}

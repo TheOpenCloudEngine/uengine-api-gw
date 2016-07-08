@@ -62,6 +62,7 @@
                 /WEB-INF/dispatcher-servlet.xml
                 /WEB-INF/applicationContext-security.xml
                 /WEB-INF/applicationContext-reactor.xml
+                /WEB-INF/applicationContext-activiti.xml
             </param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>

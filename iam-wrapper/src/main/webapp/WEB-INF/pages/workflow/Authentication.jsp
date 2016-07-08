@@ -53,7 +53,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Name <span
+                                            <label class="col-md-3 control-label">Parameter Name <span
                                                     class="color-red">*</span></label>
 
                                             <div class="col-md-9">

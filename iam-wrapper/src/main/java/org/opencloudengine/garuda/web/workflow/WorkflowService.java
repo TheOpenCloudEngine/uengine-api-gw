@@ -8,14 +8,15 @@ public interface WorkflowService {
 
 
     Workflow createWorkflow(String name,
-                            String designer_xml
-    );
+                            String designer_xml) throws Exception;
 
     List<Workflow> selectAll();
 
     List<Workflow> select(int limit, Long skip);
 
     Workflow selectById(String id);
+
+    Workflow cashById(String id);
 
     List<Workflow> selectLikeName(String name, int limit, Long skip);
 
@@ -25,11 +26,11 @@ public interface WorkflowService {
 
     Long countLikeName(String name);
 
-    Workflow updateById(Workflow workflow);
+    Workflow updateById(Workflow workflow) throws Exception;
 
     Workflow updateById(String id,
                       String name,
-                      String designer_xml);
+                      String designer_xml) throws Exception;
 
     void deleteById(String id);
 }

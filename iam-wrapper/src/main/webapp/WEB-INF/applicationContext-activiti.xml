@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans  http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/util                  http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+    <!-- ========================= TRANSFORMER DEFINITION ========================= -->
+
+    <!-- 디자이너에서 그린 각 UI 노드를 Task로 변환시 Task 클래스를 매핑하기 위한 정보 -->
+    <bean id="transformer" class="org.opencloudengine.garuda.util.Transformer">
+        <property name="defaultTask"
+                  value="org.opencloudengine.garuda.handler.activity.workflow.JavaTask"/>
+    </bean>
+
+    <!-- 디자이너의 XML을 BPM XML로 변환하는 변환기 -->
+    <util:properties id="taskProps">
+        <prop key="OG.shape.router.Request">org.opencloudengine.garuda.handler.activity.workflow.RequestTask</prop>
+        <prop key="OG.shape.router.Authentication">org.opencloudengine.garuda.handler.activity.workflow.AuthenticationTask</prop>
+        <prop key="OG.shape.router.Oauth">org.opencloudengine.garuda.handler.activity.workflow.OauthTask</prop>
+        <prop key="OG.shape.router.Response">org.opencloudengine.garuda.handler.activity.workflow.ResponseTask</prop>
+        <prop key="OG.shape.router.Function">org.opencloudengine.garuda.handler.activity.workflow.FunctionTask</prop>
+        <prop key="OG.shape.router.Api">org.opencloudengine.garuda.handler.activity.workflow.ApiTask</prop>
+        <prop key="OG.shape.router.Proxy">org.opencloudengine.garuda.handler.activity.workflow.ProxyTask</prop>
+    </util:properties>
+
+</beans>

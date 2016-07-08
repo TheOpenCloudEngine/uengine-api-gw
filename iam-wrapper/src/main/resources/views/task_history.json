@@ -1,0 +1,12 @@
+{
+  "_id": "_design/task_history",
+  "language": "javascript",
+  "views": {
+    "selectByIdentifier": {
+      "map": "function(doc) { if(doc.docType == \"task_history\"){ emit([doc.identifier], doc); }}"
+    },
+    "selectById": {
+      "map": "function(doc) { if(doc.docType == \"task_history\"){ emit([doc._id], doc); }}"
+    }
+  }
+}

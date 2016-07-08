@@ -62,6 +62,18 @@ public class PolicyServiceImpl implements PolicyService {
     }
 
     @Override
+    public Policy cashById(String id) {
+        Policy cashPolicy = null;
+        List<Policy> cash = policyRepository.getCash();
+        for (Policy policy : cash) {
+            if(policy.get_id().equals(id)){
+                cashPolicy = policy;
+            }
+        }
+        return cashPolicy;
+    }
+
+    @Override
     public List<Policy> selectLikeName(String name, int limit, Long skip) {
         return policyRepository.selectLikeName(name, limit, skip);
     }

@@ -49,7 +49,7 @@ public class GatewayServiceImpl implements GatewayService {
         if (reourceUri == null) {
             this.errorResponse(GateException.NO_MAPPING_URI, servletRequest, servletResponse, null);
         } else if (reourceUri.getRunWith().equals("workflow")) {
-            this.errorResponse(GateException.WORKFLOW_NOT_SUPPORT, servletRequest, servletResponse, null);
+            handlerService.doWorkflowHandler(reourceUri, servlet, servletRequest, servletResponse);
         } else if (reourceUri.getRunWith().equals("policy")) {
             handlerService.doPolicyHandler(reourceUri, servlet, servletRequest, servletResponse);
         } else if (reourceUri.getRunWith().equals("class")) {

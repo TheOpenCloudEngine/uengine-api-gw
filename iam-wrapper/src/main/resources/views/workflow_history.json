@@ -1,0 +1,26 @@
+{
+  "_id": "_design/workflow_history",
+  "language": "javascript",
+  "views": {
+    "select": {
+      "map": "function(doc) { if(doc.docType == \"workflow_history\"){ emit(null, doc); }}"
+    },
+    "selectByIdentifier": {
+      "map": "function(doc) { if(doc.docType == \"workflow_history\"){ emit([doc.identifier], doc); }}"
+    },
+    "selectById": {
+      "map": "function(doc) { if(doc.docType == \"workflow_history\"){ emit([doc._id], doc); }}"
+    },
+    "selectLikeName": {
+      "map": "function(doc) { if(doc.docType == \"workflow_history\"){ var words = {}; doc.name.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}"
+    },
+    "count": {
+      "map": "function(doc) { if(doc.docType == \"workflow_history\"){ emit(null, null); }}",
+      "reduce": "_count"
+    },
+    "countLikeName": {
+      "map": "function(doc) { if(doc.docType == \"workflow_history\"){ var words = {}; doc.name.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}",
+      "reduce": "_count"
+    }
+  }
+}

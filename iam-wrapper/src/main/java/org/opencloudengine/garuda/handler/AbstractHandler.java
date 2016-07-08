@@ -2,6 +2,7 @@ package org.opencloudengine.garuda.handler;
 
 import org.opencloudengine.garuda.gateway.GatewayService;
 import org.opencloudengine.garuda.gateway.GatewayServlet;
+import org.opencloudengine.garuda.model.HttpObjectSet;
 import org.opencloudengine.garuda.proxy.ProxyService;
 import org.opencloudengine.garuda.authentication.AuthenticationService;
 import org.opencloudengine.garuda.script.ScriptService;
@@ -9,6 +10,7 @@ import org.opencloudengine.garuda.util.ApplicationContextRegistry;
 import org.opencloudengine.garuda.web.policy.PolicyService;
 import org.opencloudengine.garuda.web.uris.ResourceUri;
 import org.springframework.context.ApplicationContext;
+import org.uengine.kernel.DefaultActivity;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +22,7 @@ import java.util.Map;
 /**
  * Created by uengine on 2016. 6. 16..
  */
-public class AbstractHandler {
+public class AbstractHandler extends DefaultActivity {
 
     public ResourceUri resourceUri;
     public HttpServletRequest servletRequest;
@@ -76,6 +78,17 @@ public class AbstractHandler {
     }
 
     public void init(ResourceUri resourceUri, GatewayServlet gatewayServlet, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+        this.initHandler(resourceUri, gatewayServlet, servletRequest, servletResponse);
+    }
+
+    public void init(HttpObjectSet httpObjectSet) {
+        this.initHandler(httpObjectSet.getResourceUri(),
+                httpObjectSet.getServlet(),
+                httpObjectSet.getServletRequest(),
+                httpObjectSet.getServletResponse());
+    }
+
+    private void initHandler(ResourceUri resourceUri, GatewayServlet gatewayServlet, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
         this.resourceUri = resourceUri;
         this.servletRequest = servletRequest;
         this.servletResponse = servletResponse;
@@ -89,7 +102,6 @@ public class AbstractHandler {
         gatewayService = context.getBean(GatewayService.class);
         policyService = context.getBean(PolicyService.class);
         scriptService = context.getBean(ScriptService.class);
-
     }
 
     public void doAction() {

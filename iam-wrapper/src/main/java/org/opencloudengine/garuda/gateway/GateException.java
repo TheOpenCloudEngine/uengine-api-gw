@@ -18,6 +18,7 @@ public class GateException {
     public static String AUTHENTICATION_FAIL = "authentication_fail";
     public static String BEFORE_USE_SCRIPT = "before_use_script_error";
     public static String AFTER_USE_SCRIPT = "after_use_script_error";
+    public static String WORKFLOW_FAILED = "workflow_failed";
 
     public GateResponse getResponse(String code, HttpServletRequest request, String msg) {
         GateResponse response = new GateResponse();
@@ -54,6 +55,11 @@ public class GateException {
             case "before_use_script_error":
                 response.setError(BEFORE_USE_SCRIPT);
                 response.setError_description("before_use_script_error while execute " + request.getPathInfo());
+                break;
+
+            case "workflow_failed":
+                response.setError(WORKFLOW_FAILED);
+                response.setError_description("workflow_failed while execute " + request.getPathInfo());
                 break;
 
             case "after_use_script_error":
