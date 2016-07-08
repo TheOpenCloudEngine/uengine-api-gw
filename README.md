@@ -6,6 +6,3 @@
 
 [CouchDB Schema And View](document/couchdb-schema.md)
 
-[Rest Api](document/api.md)
-
-[POC](document/poc.md)

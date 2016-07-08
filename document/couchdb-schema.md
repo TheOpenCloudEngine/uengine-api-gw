@@ -2,21 +2,21 @@
 
 ## CouchDB Schema And View
 
-### User
+### iam
 
 Document
 
 ```
 {
-    "_id": "10e94d565d164bea841ca6840c54f7e8",
-    "_rev": "5-dcbbbab83c454aa54d2cec32427e516d",
-    "docType": "oauth_user",
-    "managementId": "5e3432ad172644ea8041fe67eb8f5cbd"
-    "userPassword": "asdasd",
-    "userName": "user4",
-    "level": 5,
-    "regDate": 1462088181948,
-    "updDate": 1462088612137
+   "_id": "61d499104f264bb78383ec8b5fc8931e",
+   "_rev": "6-2c729a9a658d9e3824babeab95e794a8",
+   "host": "52.79.164.208",
+   "port": 8080,
+   "managementKey": "f4562539-2937-4982-912c-f7bd24024510",
+   "managementSecret": "df872f4d-6c02-465d-b4ae-6739f0d70ceb",
+   "regDate": 1465985340420,
+   "updDate": 1466490568613,
+   "docType": "iam"
 }
 ```
 
@@ -24,42 +24,89 @@ View
 
 ```
 {
-  "_id": "_design/oauth_user",
+  "_id": "_design/iam",
   "language": "javascript",
   "views": {
+    "select": {
+      "map": "function(doc) {if(doc.docType == \"iam\"){emit(null,doc); }}"
+    }
+  }
+}
+```
+
+### policy
+
+Document
+
+```
+
+Source
+{
+   "_id": "6718173f8cc94fb68c4380af3acbaa65",
+   "_rev": "37-0ab3cb1d62267e27c2e8beedea106f83",
+   "name": "CloudantPolicy",
+   "authentication": "Y",
+   "tokenLocation": "header",
+   "tokenName": "ACCESS-TOKEN",
+   "proxyUri": "http://52.79.164.208:5984",
+   "prefixUri": "/cloudant,/",
+   "beforeUse": "var scopes = scope.split(',');\r\nif(scopes[0]){\r\n   return true;\r\n}else{\r\n   return false;\r\n}",
+   "afterUse": "return user;",
+   "regDate": 1466486064279,
+   "updDate": 1467940969528,
+   "docType": "policy"
+}
+```
+
+View
+
+```
+{
+  "_id": "_design/policy",
+  "language": "javascript",
+  "views": {
+    "select": {
+      "map": "function(doc) { if(doc.docType == \"policy\"){ emit(null, doc); }}"
+    },
     "selectById": {
-      "map": "function(doc) {if(doc.docType == \"oauth_user\"){emit([doc._id],doc); }}"
+      "map": "function(doc) { if(doc.docType == \"policy\"){ emit([doc._id], doc); }}"
     },
-    "selectByManagementId": {
-      "map": "function(doc) {if(doc.docType == \"oauth_user\"){emit([doc.managementId],doc); }}"
+    "selectLikeName": {
+      "map": "function(doc) { if(doc.docType == \"policy\"){ var words = {}; doc.name.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}"
     },
-    "selectByManagementIdAndUserName": {
-      "map": "function(doc) {if(doc.docType == \"oauth_user\"){emit([doc.managementId,doc.userName],doc); }}"
+    "count": {
+      "map": "function(doc) { if(doc.docType == \"policy\"){ emit(null, null); }}",
+      "reduce": "_count"
     },
-    "selectByManagementIdAndCredential": {
-      "map": "function(doc) {if(doc.docType == \"oauth_user\"){emit([doc.managementId,doc.userName,doc.userPassword],doc); }}"
+    "countLikeName": {
+      "map": "function(doc) { if(doc.docType == \"policy\"){ var words = {}; doc.name.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}",
+      "reduce": "_count"
     },
-    "selectByManagementIdAndId": {
-      "map": "function(doc) {if(doc.docType == \"oauth_user\"){emit([doc.managementId,doc._id],doc); }}"
+    "selectByName": {
+      "map": "function(doc) {if(doc.docType == \"policy\"){emit([doc.name],doc); }}"
     }
   }
 }
 ```
 
-### Scope
+### uris
 
 Document
 
 ```
 {
-    "_id": "621c711a8a4b4990b7e940c58ecbe108",
-    "_rev": "1-96d9d3cd1245066384fb15f9c0fa1c78",
-    "docType": "oauth_scope",
-    "managementId": "5e3432ad172644ea8041fe67eb8f5cbd",
-    "name": "form:delete",
-    "description": "form:delete",
-    "regDate": 1462088629198,
-    "updDate": 1462088629198
+   "_id": "4f50de965610417cb0f88cebe2d58b9d",
+   "_rev": "10-ffc3b7fcea8da7c867fbb0f1d392b0f8",
+   "order": 3,
+   "uri": "/cloudant/*",
+   "method": "GET,POST,PUT,DELETE,HEAD",
+   "runWith": "policy",
+   "wid": "",
+   "className": "CloudantHandler",
+   "policyId": "6718173f8cc94fb68c4380af3acbaa65",
+   "regDate": 1466058133567,
+   "updDate": 1467187500496,
+   "docType": "uris"
 }
 ```
 
@@ -67,52 +114,52 @@ View
 
 ```
 {
-  "_id": "_design/oauth_scope",
+  "_id": "_design/uris",
   "language": "javascript",
   "views": {
+    "select": {
+      "map": "function(doc) { if(doc.docType == \"uris\"){ emit(null, doc); }}"
+    },
     "selectById": {
-      "map": "function(doc) {if(doc.docType == \"oauth_scope\"){emit([doc._id],doc); }}"
+      "map": "function(doc) { if(doc.docType == \"uris\"){ emit([doc._id], doc); }}"
     },
-    "selectByManagementId": {
-      "map": "function(doc) {if(doc.docType == \"oauth_scope\"){emit([doc.managementId],doc); }}"
+    "selectByOrder": {
+      "map": "function(doc) { if(doc.docType == \"uris\"){ emit([doc.order], doc); }}"
     },
-    "selectByManagementIdAndName": {
-      "map": "function(doc) {if(doc.docType == \"oauth_scope\"){emit([doc.managementId,doc.name],doc); }}"
+    "selectLikeUri": {
+      "map": "function(doc) { if(doc.docType == \"uris\"){ var words = {}; doc.uri.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}"
     },
-    "selectByManagementIdAndId": {
-      "map": "function(doc) {if(doc.docType == \"oauth_scope\"){emit([doc.managementId,doc._id],doc); }}"
+    "count": {
+      "map": "function(doc) { if(doc.docType == \"uris\"){ emit(null, null); }}",
+      "reduce": "_count"
+    },
+    "countLikeUri": {
+      "map": "function(doc) { if(doc.docType == \"uris\"){ var words = {}; doc.uri.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}",
+      "reduce": "_count"
+    },
+    "selectByUri": {
+      "map": "function(doc) {if(doc.docType == \"uris\"){emit([doc.uri],doc); }}"
     }
   }
 }
 ```
 
-### Client
+### workflow
 
 Document
 
 ```
 {
-    "_id": "97ed8f30da014800b92a24d8bed6d5a5",
-    "_rev": "3-2a2e7ac899eb79fe6b953b5c7899688b",
-    "docType": "oauth_client",
-    "managementId": "5e3432ad172644ea8041fe67eb8f5cbd",
-    "name": "eform",
-    "description": "eform",
-    "clientKey": "fcf5afd7-be50-4dac-949f-d4ab768b485d",
-    "clientSecret": "ac1603fa-f38a-481d-a336-aa06064c5eeb",
-    "clientJwtSecret": "f6e7eca0-58fc-491f-950f-9e956d3b47b2",
-    "clientTrust": "trust",
-    "clientType": "confidential",
-    "activeClient": "Y",
-    "authorizedGrantTypes": "code,implicit,password,credentials",
-    "webServerRedirectUri": "http://localhost:8080/oauth/authorize_redirect",
-    "refreshTokenValidity": "Y",
-    "codeLifetime": 3600,
-    "refreshTokenLifetime": 3600,
-    "accessTokenLifetime": 3600,
-    "jwtTokenLifetime": 3600,
-    "regDate": 1462088798255,
-    "updDate": 1462088815929
+   "_id": "f3be41747fd947b9a14df32efd0bb5b1",
+   "_rev": "28-ec3b8c5656572ee4c4f957e5e040945a",
+   "name": "BasicApi",
+   "designer_xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><opengraph....",
+   "bpmn_xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<definitions....",
+   "vars": "{\"OG_2909_4\":{\"shapeId\":\"OG.shape.router.Authentication....",
+   "steps": 0,
+   "regDate": 1467700537355,
+   "updDate": 1467941505000,
+   "docType": "workflow"
 }
 ```
 
@@ -120,44 +167,52 @@ View
 
 ```
 {
-  "_id": "_design/oauth_client",
+  "_id": "_design/workflow",
   "language": "javascript",
   "views": {
+    "select": {
+      "map": "function(doc) { if(doc.docType == \"workflow\"){ emit(null, doc); }}"
+    },
     "selectById": {
-      "map": "function(doc) {if(doc.docType == \"oauth_client\"){emit([doc._id],doc); }}"
+      "map": "function(doc) { if(doc.docType == \"workflow\"){ emit([doc._id], doc); }}"
     },
-    "selectByManagementId": {
-      "map": "function(doc) {if(doc.docType == \"oauth_client\"){emit([doc.managementId],doc); }}"
+    "selectLikeName": {
+      "map": "function(doc) { if(doc.docType == \"workflow\"){ var words = {}; doc.name.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}"
     },
-    "selectByManagementIdAndName": {
-      "map": "function(doc) {if(doc.docType == \"oauth_client\"){emit([doc.managementId,doc.name],doc); }}"
+    "count": {
+      "map": "function(doc) { if(doc.docType == \"workflow\"){ emit(null, null); }}",
+      "reduce": "_count"
     },
-    "selectByManagementIdAndId": {
-      "map": "function(doc) {if(doc.docType == \"oauth_client\"){emit([doc.managementId,doc._id],doc); }}"
+    "countLikeName": {
+      "map": "function(doc) { if(doc.docType == \"workflow\"){ var words = {}; doc.name.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}",
+      "reduce": "_count"
     },
-    "selectByClientKey": {
-      "map": "function(doc) {if(doc.docType == \"oauth_client\"){emit([doc.clientKey],doc); }}"
-    },
-    "selectByClientKeyAndSecret": {
-      "map": "function(doc) {if(doc.docType == \"oauth_client\"){emit([doc.clientKey,doc.clientSecret],doc); }}"
+    "selectByName": {
+      "map": "function(doc) {if(doc.docType == \"workflow\"){emit([doc.name],doc); }}"
     }
   }
 }
 ```
 
-### Client Scopes
+### workflow_history
 
 Document
 
 ```
 {
-   "_id": "0848940809214a81979e01fc240487e4",
-   "_rev": "1-61168f9e89cff19f97d57c97b42673c1",
-   "docType": "oauth_client_scopes",
-   "clientId": "97ed8f30da014800b92a24d8bed6d5a5",
-   "scopeId": "621c711a8a4b4990b7e940c58ecbe108",
-   "regDate": 1462088816176,
-   "updDate": 1462088816176
+   "_id": "1128cba8e10740de81d333f1f0d44ff9",
+   "_rev": "6-4290a24bb6ef76a492931648c66af545",
+   "identifier": "6956273a-bf80-4663-8c74-54bfee93da08",
+   "wid": "f3be41747fd947b9a14df32efd0bb5b1",
+   "name": "BasicApi",
+   "vars": "{\"OG_2909_4\":{\"shapeId\":\"OG.shape.router.Aut....",
+   "startDate": 1467909722383,
+   "endDate": 1467909762396,
+   "duration": 40013,
+   "currentTaskId": "OG_2909_474",
+   "currentTaskName": "Api",
+   "status": "FAILED",
+   "docType": "workflow_history"
 }
 ```
 
@@ -165,168 +220,52 @@ View
 
 ```
 {
-  "_id": "_design/oauth_client_scopes",
+  "_id": "_design/workflow_history",
   "language": "javascript",
   "views": {
-    "selectClientScopesByClientId": {
-      "map": "function(doc) {if(doc.docType == \"oauth_client_scopes\"){emit([doc.clientId],doc); }}"
+    "select": {
+      "map": "function(doc) { if(doc.docType == \"workflow_history\"){ emit(null, doc); }}"
     },
-    "selectClientScopesByClientIdAndScopeId": {
-      "map": "function(doc) {if(doc.docType == \"oauth_client_scopes\"){emit([doc.clientId,doc.scopeId],doc); }}"
-    }
-  }
-}
-```
-
-### Code
-
-Document
-
-```
-{
-   "_id": "7e6735a08a0145e3b64508ed38eba731",
-   "_rev": "1-89b7759c58c8cbfbb219c1b4cac07242",
-   "docType": "oauth_code",
-   "managementId": "5e3432ad172644ea8041fe67eb8f5cbd",
-   "clientId": "97ed8f30da014800b92a24d8bed6d5a5",
-   "oauthUserId": "1543c5ac2c5049b18058662da236f011",
-   "code": "376b9aaa-f9de-43b7-a5b2-d4e01ac6ef5a",
-   "scopes": "form:create",
-   "regDate": 1462089230963,
-   "updDate": 1462089230963
-}
-```
-
-View
-
-```
-{
-  "_id": "_design/oauth_code",
-  "language": "javascript",
-  "views": {
-    "selectCodeById": {
-      "map": "function(doc) {if(doc.docType == \"oauth_code\"){emit([doc._id],doc); }}"
+    "selectByIdentifier": {
+      "map": "function(doc) { if(doc.docType == \"workflow_history\"){ emit([doc.identifier], doc); }}"
     },
-    "selectCodeByCode": {
-      "map": "function(doc) {if(doc.docType == \"oauth_code\"){emit([doc.code],doc); }}"
-    },
-    "selectCodeByCodeAndClientId": {
-      "map": "function(doc) {if(doc.docType == \"oauth_code\"){emit([doc.code,doc.clientId],doc); }}"
-    }
-  }
-}
-```
-
-### Token
-
-Document
-
-```
-{
-   "_id": "0398ec50c4a140868e10f9d1a63382bf",
-   "_rev": "1-b799f3d748f4bfeda343357befb31fff",
-   "docType": "oauth_access_token",
-   "type": "user",
-   "scopes": "form:create",
-   "token": "2d5eb022-14fc-4796-bfec-8579f6888ace",
-   "oauthUserId": "1543c5ac2c5049b18058662da236f011",
-   "managementId": "5e3432ad172644ea8041fe67eb8f5cbd",
-   "clientId": "97ed8f30da014800b92a24d8bed6d5a5",
-   "refreshToken": "14bb353d-e881-4b57-bb14-6ebf6f4be538",
-   "regDate": 1462117442112,
-   "updDate": 1462117442112
-}
-```
-
-View
-
-```
-{
-  "_id": "_design/oauth_access_token",
-  "language": "javascript",
-  "views": {
-    "selectTokenById": {
-      "map": "function(doc) {if(doc.docType == \"oauth_access_token\"){emit([doc._id],doc); }}"
-    },
-    "selectTokenByToken": {
-      "map": "function(doc) {if(doc.docType == \"oauth_access_token\"){emit([doc.token],doc); }}"
-    },
-    "selectTokenByRefreshToken": {
-      "map": "function(doc) {if(doc.docType == \"oauth_access_token\"){emit([doc.refreshToken],doc); }}"
-    },
-    "selectTokenByManagementIdAndId": {
-      "map": "function(doc) {if(doc.docType == \"oauth_access_token\"){emit([doc.managementId,doc._id],doc); }}"
-    }
-  }
-}
-```
-
-### Management
-
-Document
-
-```
-{
-   "_id": "5e3432ad172644ea8041fe67eb8f5cbd",
-   "_rev": "2-1a87b4a0046609b160956a2d08214be5",
-   "docType": "management",
-   "userId": "5e7f277ef2f34f62ad97b3665e2dbd9a",
-   "managementName": "forcs",
-   "managementKey": "bd0380d0-1220-4676-91dc-c6d6f444136c",
-   "managementSecret": "6abc6003-b181-465f-9027-b5824c1a3ecd",
-   "managementJwtSecret": "b970e761-6051-4ecf-86e0-6e4f642972f0",
-   "sessionTokenLifetime": 0,
-   "scopeCheckLifetime": 0,
-   "description": "forcs",
-   "regDate": 1462087977782,
-   "updDate": 1462117586882
-}
-```
-
-View
-
-```
-{
-  "_id": "_design/management",
-  "language": "javascript",
-  "views": {
     "selectById": {
-      "map": "function(doc) {if(doc.docType == \"management\"){emit([doc._id],doc); }}"
+      "map": "function(doc) { if(doc.docType == \"workflow_history\"){ emit([doc._id], doc); }}"
     },
-    "selectByKey": {
-      "map": "function(doc) {if(doc.docType == \"management\"){emit([doc.managementKey],doc); }}"
+    "selectLikeName": {
+      "map": "function(doc) { if(doc.docType == \"workflow_history\"){ var words = {}; doc.name.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}"
     },
-    "selectByUserIdAndId": {
-      "map": "function(doc) {if(doc.docType == \"management\"){emit([doc.userId,doc._id],doc); }}"
+    "count": {
+      "map": "function(doc) { if(doc.docType == \"workflow_history\"){ emit(null, null); }}",
+      "reduce": "_count"
     },
-    "selectByUserId": {
-      "map": "function(doc) {if(doc.docType == \"management\"){emit([doc.userId],doc); }}"
-    },
-    "selectByCredential": {
-      "map": "function(doc) {if(doc.docType == \"management\"){emit([doc.managementKey,doc.managementSecret],doc); }}"
+    "countLikeName": {
+      "map": "function(doc) { if(doc.docType == \"workflow_history\"){ var words = {}; doc.name.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}",
+      "reduce": "_count"
     }
   }
 }
 ```
 
-### Management User
+### task_history
 
 Document
 
 ```
 {
-   "_id": "4df80d3f8e5b4015bfd23b0e91faa7f5",
-   "_rev": "2-7924ba5df13181c9b47a39ef19127d60",
-   "docType": "management_user",
-   "email": "darkgodarkgo@gmail.com",
-   "password": "pdtMP3ZhsRtygBZmqA08sQ==",
-   "authority": "ROLE_USER",
-   "enabled": true,
-   "regDate": 1462112923661,
-   "updDate": 1462112941451,
-   "level": "5",
-   "country": "US",
-   "admin": false
+   "_id": "662c26de92714d12a6ff1702ef946355",
+   "_rev": "2-0a86f16b155a771a27b26ee677d65baa",
+   "identifier": "b822b5bd-c876-4274-9918-1ca75aae0b90",
+   "wid": "f3be41747fd947b9a14df32efd0bb5b1",
+   "taskId": "OG_2909_4",
+   "taskName": "Authentication",
+   "startDate": 1467941581229,
+   "endDate": 1467941582587,
+   "duration": 1358,
+   "status": "FINISHED",
+   "input": "{\"tokenLocation\":\"header\",\"tokenName\":\"ACCESS-TOKEN\"}",
+   "output": "{\"tokenName\":\"ACCESS-TOKEN\",\"tokenLocation\"....",
+   "docType": "task_history"
 }
 ```
 
@@ -334,44 +273,14 @@ View
 
 ```
 {
-  "_id": "_design/management_user",
+  "_id": "_design/task_history",
   "language": "javascript",
   "views": {
-    "selectByUserId": {
-      "map": "function(doc) {if(doc.docType == \"management_user\"){emit([doc._id],doc); }}"
+    "selectByIdentifier": {
+      "map": "function(doc) { if(doc.docType == \"task_history\"){ emit([doc.identifier], doc); }}"
     },
-    "selectByUserEmail": {
-      "map": "function(doc) {if(doc.docType == \"management_user\"){emit([doc.email],doc); }}"
-    }
-  }
-}
-```
-
-### Regist
-
-Document
-
-```
-{
-   "_id": "2bc926c4e3c94bde8114cf1faa109e5c",
-   "_rev": "1-4327c5f24565277b6c0d1d36f22a16a9",
-   "docType": "registe",
-   "userId": "4df80d3f8e5b4015bfd23b0e91faa7f5",
-   "token": "MTQ2MjExMjkyMzc2MQ==",
-   "regDate": 1462112923763,
-   "updDate": 1462112923763
-}
-```
-
-View
-
-```
-{
-  "_id": "_design/registe",
-  "language": "javascript",
-  "views": {
-    "selectByUserIdAndToken": {
-      "map": "function(doc) {if(doc.docType == \"registe\"){emit([doc.userId,doc.token],doc); }}"
+    "selectById": {
+      "map": "function(doc) { if(doc.docType == \"task_history\"){ emit([doc._id], doc); }}"
     }
   }
 }
