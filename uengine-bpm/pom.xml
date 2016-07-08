@@ -64,6 +64,17 @@
             <name>Eclipse Repository</name>
             <url>https://repo.eclipse.org/content/groups/eclipse/</url>
         </repository>
+        <repository>
+            <id>central2</id>
+            <name>Open Cloud Engine Maven Repository</name>
+            <url>http://maven.opencloudengine.org/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <distributionManagement>

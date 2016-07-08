@@ -258,7 +258,7 @@ $ sudo initctl stop tomcat
 $ sudo rm -rf /opt/tomcat/webapps/ROOT
 $ sudo rm -rf /opt/tomcat/webapps/ROOT.war 
 
-$ cd oceIAM
+$ cd OCEIAM-SERVICEWARRPER
 
 $ mvn clean install
 

@@ -8,16 +8,6 @@
 	</parent>
 	<artifactId>uengine-modeling</artifactId>
 
-	<!--<dependencies>-->
-		<!--&lt;!&ndash; <dependency>-->
-			<!--<groupId>javax.persistence</groupId>-->
-			<!--<artifactId>persistence-api</artifactId>-->
-			<!--<version>1.0.2</version>-->
-		<!--</dependency> &ndash;&gt;-->
-	<!--</dependencies>-->
-
-
-	
 	<build>
 	  <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
 	  <resources>
