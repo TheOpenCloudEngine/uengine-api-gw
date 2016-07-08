@@ -128,3 +128,156 @@ if(user.tenant ==! 'KR'){
  - After Use : 프락시 동작 후 실행될 스크립트 입니다. Before Use 와 사용법은 동일하지만, 결과값에 영향을 받지 않으므로 return 을 줄 필요가 없습니다.
  
 
+### URIS
+
+URIS 메뉴에서는 서비스래퍼의 / 패스로 들어오는 모든 리퀘스트에 대하여 어떤 PathInfo 로 들어오냐에 따라 실행할 프로세스 를 매핑시키는 기능을 수행합니다.
+ 
+다음은 몇가지 URIS 를 등록한 화면입니다.
+
+![](images/wrapper-uri-list.png)
+
+Order 순차로 나열되어 있는 Uri 값의 표현은 서블릿의 web.xml 과 같은 방식으로 구성됩니다.
+
+예) web.xml 서블릿 매핑 의 구성
+
+```
+<servlet-mapping>
+    <servlet-name>rule1</servlet-name>
+    <url-pattern>/rule1/*</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+    <servlet-name>rule2</servlet-name>
+    <url-pattern>/rule2/*</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+    <servlet-name>rule3</servlet-name>
+    <url-pattern>/rule3/*</url-pattern>
+</servlet-mapping>
+.
+.
+```
+
+서비스래퍼의 / 패스 로 들어오는 리퀘스트의 Uri 와 Method 가 일치한다면 Runwith 에 위치한 프로세스를 수행하는데, Order 순으로 먼저 일치하는 프로세스를 수행하게 됩니다.
+
+다음은 Uri Mapping 을 설정하는 화면입니다.
+
+![](images/wrapper-uri-create.png)
+
+ - Order : 서블릿 매핑 순서
+ 
+ - Uri : 서블릿 url 패턴
+
+Uri 패턴은 Path Variable 표현도 가능합니다.
+
+예) Path Variable 패턴
+
+```
+/{tenantId}/api/{userId}/*
+```
+
+ - Method : 해당하는 메소드일 경우만 매핑이 성립합니다.
+ 
+ - Run with : 어떠한 프로세스를 수행할지 결정합니다. Class, Policy, Workflow 를 선택할 수 있습니다.
+ 
+#### Class Process
+
+Run with 를 Class Process 로 설정할 경우, 클래스 이름을 등록하면 해당 클래스 프로세스를 수행합니다.
+ 
+등록한 클래스 이름은 소스코드의 org/opencloudengine/garuda/handler/activity/classhandler 폴더 하위에 생성을 해야 합니다.
+
+예) CloudantHandler, DefaultHandler, S3Handler, SwiftHandler 를 등록하였을 경우
+
+![](images/wrapper-class.png)
+
+클래스의 작성법의 기본 템플릿 예제를 살펴보겠습니다.
+
+**CloudantHandler.java**
+
+```
+package org.opencloudengine.garuda.handler.activity.classhandler;
+
+import org.opencloudengine.garuda.gateway.GateException;
+import org.opencloudengine.garuda.handler.AbstractHandler;
+import org.opencloudengine.garuda.model.AuthInformation;
+import org.opencloudengine.garuda.proxy.ProxyRequest;
+
+/**
+ * Created by uengine on 2016. 6. 16..
+ */
+public class CloudantHandler extends AbstractHandler {
+
+    @Override
+    public void doAction() {
+
+        //토큰을 인증한다.
+        AuthInformation authInformation = securityService.validateRequest(
+                servletRequest,
+                "ACCESS-TOKEN",  : 토큰 파라미터 이름
+                AuthInformation.LOCATION_HEADER, : 토큰의 위치
+                AuthInformation.TOKEN_TYPE_JWT); : 토큰의 타입(TOKEN_TYPE_JWT,TOKEN_TYPE_BEARER)
+
+        //인증이 실패한경우의 처리.
+        if (authInformation.getError() != null) {
+            gatewayService.errorResponse(
+                    GateException.AUTHENTICATION_FAIL,
+                    servletRequest,
+                    servletResponse,
+                    null);
+            return;
+        }
+        
+        /**
+        * 이 구간에 커스텀한 로직을 사용할 수 있습니다.
+        **/
+
+        //인증이 성공할 경우 프록시 처리
+        ProxyRequest proxyRequest = new ProxyRequest();
+        proxyRequest.setProxyServlet(gatewayServlet);
+        proxyRequest.setRequest(servletRequest);
+        proxyRequest.setResponse(servletResponse);
+        proxyRequest.setHost("http://52.79.164.208:5984"); : 프록시 타켓 호스트
+
+        proxyRequest.setPath(servletRequest.getPathInfo().replace("/cloudant", "")); : 프록시 Path 등록
+        proxyService.doProxy(proxyRequest);
+        
+        /**
+        * 이 구간에 커스텀한 로직을 사용할 수 있습니다.
+        **/
+    }
+}
+```
+
+Policy 메뉴에서 설정하는 값들을 직접 클래스 내에서 줄 수 있고, Policy 메뉴에서의 Script 방식을 원하지 않을 경우 추천드립니다.
+
+또한 Class 를 등록하실 경우는 소스를 다시 빌드하여 재배포하여야 합니다.
+
+#### Policy Process
+
+Run with 를 Policy 로 설정할 경우 Policy 메뉴를 통해 등록한 규칙을 수행합니다.
+
+#### Workflow Process
+
+Run with 를 Workflow 로 설정할 경우 Workflow 메뉴를 통해 등록한 규칙을 수행합니다.
+
+
+### Workflow
+
+워크플로우를 사용할 경우 다음과 같은 이점이 있습니다.
+
+- 트랜잭션의 구간별 추적
+
+- 트랜잭션의 Duration 타임 측정
+
+- Api 의 메세지 컨버트
+
+- 다수의 Api 를 콜하여 하나의 리스폰스로 전달
+
+- 설정 규칙의 export, import
+
+![](images/wrapper-workflow.png)
+
+**현재 성능개선 작업중이므로 추후 가이드를 등록**
+
+### ANALYSIS
+
+**개발중**
