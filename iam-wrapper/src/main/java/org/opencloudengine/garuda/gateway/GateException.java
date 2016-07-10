@@ -19,6 +19,7 @@ public class GateException {
     public static String BEFORE_USE_SCRIPT = "before_use_script_error";
     public static String AFTER_USE_SCRIPT = "after_use_script_error";
     public static String WORKFLOW_FAILED = "workflow_failed";
+    public static String PROXY_FAILED = "proxy_failed";
 
     public GateResponse getResponse(String code, HttpServletRequest request, String msg) {
         GateResponse response = new GateResponse();
@@ -65,6 +66,11 @@ public class GateException {
             case "after_use_script_error":
                 response.setError(AFTER_USE_SCRIPT);
                 response.setError_description("after_use_script_error while execute " + request.getPathInfo());
+                break;
+
+            case "proxy_failed":
+                response.setError(PROXY_FAILED);
+                response.setError_description("proxy_failed while execute " + request.getPathInfo());
                 break;
 
             default:

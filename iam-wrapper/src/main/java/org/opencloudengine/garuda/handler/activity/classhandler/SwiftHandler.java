@@ -38,6 +38,10 @@ public class SwiftHandler extends AbstractHandler {
         proxyRequest.setHost("http://52.79.125.242:9090");
 
         proxyRequest.setPath(servletRequest.getPathInfo().replace("/swift", ""));
-        proxyService.doProxy(proxyRequest);
+        try {
+            proxyService.doProxy(proxyRequest);
+        } catch (Exception ex) {
+            gatewayService.errorResponse(GateException.PROXY_FAILED, servletRequest, servletResponse, null);
+        }
     }
 }

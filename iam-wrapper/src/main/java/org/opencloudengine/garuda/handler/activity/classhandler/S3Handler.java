@@ -37,6 +37,10 @@ public class S3Handler extends AbstractHandler {
         proxyRequest.setHost("https://s3.ap-northeast-2.amazonaws.com");
 
         proxyRequest.setPath(servletRequest.getPathInfo().replace("/s3", ""));
-        proxyService.doProxy(proxyRequest);
+        try {
+            proxyService.doProxy(proxyRequest);
+        } catch (Exception ex) {
+            gatewayService.errorResponse(GateException.PROXY_FAILED, servletRequest, servletResponse, null);
+        }
     }
 }

@@ -56,11 +56,12 @@ public class ProxyServiceImpl implements ProxyService {
     private Logger logger = LoggerFactory.getLogger(ProxyServiceImpl.class);
 
     @Override
-    public void doProxy(ProxyRequest proxyRequest) {
+    public void doProxy(ProxyRequest proxyRequest) throws Exception{
         try {
             new ProxyAction(proxyRequest).service();
         } catch (Exception ex) {
             logger.error("error", ex);
+            throw new Exception(ex);
         }
     }
 }

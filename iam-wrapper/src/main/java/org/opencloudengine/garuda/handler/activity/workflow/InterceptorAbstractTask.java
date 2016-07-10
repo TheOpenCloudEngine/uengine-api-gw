@@ -19,8 +19,7 @@ public abstract class InterceptorAbstractTask extends AbstractTask {
             updateTaskHistoryAsFinished();
             fireComplete(instance);
         } catch (Exception ex) {
-            taskHistory.setStderr(ExceptionUtils.getFullStackTrace(ex));
-            //taskHistory.setStderr(ex.getCause().toString());
+            stderr = ExceptionUtils.getFullStackTrace(ex);
             updateTaskHistoryData();
             updateTaskHistoryAsFailed();
         }
@@ -31,23 +30,22 @@ public abstract class InterceptorAbstractTask extends AbstractTask {
         /**
          * 워크플로우 히스토리를 업데이트한다.
          */
-        this.workflowHistory = updateCurrentStep();
+        this.updateCurrentStep();
 
         /**
-         * 타스크 히스토리를 인서트한다.
+         * 타스크 히스토리를 등록한다.
          */
-        this.insertTaskHistory();
+        this.initTaskHistory();
 
         /**
          * globalAttributes 저장소에 타스크의 시작 시그널을 남긴다.
          */
         globalAttributes.setTaskStatus(instance, taskId, "RUNNING");
-
     }
 
     public abstract void runTask() throws Exception;
 
-    private void insertTaskHistory() throws Exception {
+    private void initTaskHistory() throws Exception {
         taskHistory = new TaskHistory();
         taskHistory.setTaskId(taskId);
         taskHistory.setTaskName(taskName);
@@ -56,16 +54,24 @@ public abstract class InterceptorAbstractTask extends AbstractTask {
         taskHistory.setIdentifier(identifier);
         taskHistory.setWid(wid);
 
-        taskHistory = taskHistoryRepository.insert(taskHistory);
+        //instance 에 타스크 히스토리를 등록한다.
+        globalAttributes.setTaskHistory(instance, taskId, taskHistory);
     }
 
-    private WorkflowHistory updateCurrentStep() throws Exception {
-        return workflowHistoryRepository.updateCurrentStep(workflowHistory, taskId, taskName);
+    private void updateCurrentStep() throws Exception {
+        workflowHistory.setCurrentTaskId(taskId);
+        workflowHistory.setCurrentTaskName(taskName);
+        instance.set("wh", workflowHistory);
     }
 
     private void updateTaskHistoryAsFinished() throws Exception {
+        long time = new Date().getTime();
+        taskHistory.setEndDate(time);
+        taskHistory.setDuration(time - taskHistory.getStartDate());
+        taskHistory.setStatus("FINISHED");
 
-        taskHistoryRepository.updateAsFinished(taskHistory);
+        //instance 에 타스크 히스토리를 등록한다.
+        globalAttributes.setTaskHistory(instance, taskId, taskHistory);
 
         //globalAttributes 저장소에 타스크의 성공 시그널을 남긴다.
         globalAttributes.setTaskStatus(instance, taskId, "FINISHED");
@@ -73,7 +79,13 @@ public abstract class InterceptorAbstractTask extends AbstractTask {
     }
 
     public void updateTaskHistoryAsFailed() throws Exception {
-        taskHistoryRepository.updateAsFinished(taskHistory);
+        long time = new Date().getTime();
+        taskHistory.setEndDate(time);
+        taskHistory.setDuration(time - taskHistory.getStartDate());
+        taskHistory.setStatus("FAILED");
+
+        //instance 에 타스크 히스토리를 등록한다.
+        globalAttributes.setTaskHistory(instance, taskId, taskHistory);
 
         //globalAttributes 저장소에 타스크의 성공 시그널을 남긴다.
         globalAttributes.setTaskStatus(instance, taskId, "FAILED");
@@ -81,14 +93,15 @@ public abstract class InterceptorAbstractTask extends AbstractTask {
 
     private void updateTaskHistoryData() throws Exception {
         taskHistory.setStdout(stdout);
+        taskHistory.setStderr(stderr);
         taskHistory.setInput(JsonUtils.marshal(inputData));
         taskHistory.setOutput(JsonUtils.marshal(outputData));
 
-        if(inputData != null){
-            globalAttributes.setTaskInput(instance,taskId,inputData);
+        if (inputData != null) {
+            globalAttributes.setTaskInput(instance, taskId, inputData);
         }
-        if(outputData != null){
-            globalAttributes.setTaskOutput(instance,taskId,outputData);
+        if (outputData != null) {
+            globalAttributes.setTaskOutput(instance, taskId, outputData);
         }
     }
 }

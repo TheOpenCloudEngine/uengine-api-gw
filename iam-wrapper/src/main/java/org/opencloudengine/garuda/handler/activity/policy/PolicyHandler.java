@@ -55,6 +55,8 @@ public class PolicyHandler extends AbstractHandler {
                 gatewayService.errorResponse(GateException.BEFORE_USE_SCRIPT, servletRequest, servletResponse, ex.getCause().toString());
                 return;
             }
+        } else {
+            continueProxy = true;
         }
 
         if (!continueProxy) {
@@ -74,9 +76,13 @@ public class PolicyHandler extends AbstractHandler {
         String to = split[1];
         proxyRequest.setHost(policy.getProxyUri());
         proxyRequest.setPath(this.getServletRequest().getPathInfo());
-
         proxyRequest.setPath(servletRequest.getPathInfo().replaceFirst(from, to));
-        proxyService.doProxy(proxyRequest);
+        try {
+            proxyService.doProxy(proxyRequest);
+        } catch (Exception ex) {
+            gatewayService.errorResponse(GateException.PROXY_FAILED, servletRequest, servletResponse, null);
+            return;
+        }
 
 
         if (!StringUtils.isEmpty(policy.getAfterUse())) {

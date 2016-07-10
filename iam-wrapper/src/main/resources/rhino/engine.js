@@ -1,4 +1,16 @@
 function run() {
+    inputData = JSON.parse(inputData);
+    var normal = inputData.normal;
+    var json = inputData.json;
+    for (var key in normal) {
+        var value = normal[key];
+        eval('var ' + key + ' = value;');
+    }
+    for (var key in json) {
+        var value = JSON.parse(json[key]);
+        eval('var ' + key + ' = value;');
+    }
+
     var stdout = '';
     var log = function (obj) {
         console.log(obj);
@@ -26,6 +38,13 @@ function run() {
             status: status,
             headers: headers,
             entity: entity
+        }
+    };
+
+    var ProxyRequest = function (host, path) {
+        return {
+            host: host,
+            path: path
         }
     };
 

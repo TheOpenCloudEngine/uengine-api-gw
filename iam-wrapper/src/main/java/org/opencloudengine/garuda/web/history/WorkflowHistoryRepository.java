@@ -29,4 +29,6 @@ public interface WorkflowHistoryRepository {
 
     void deleteById(String id);
 
+    void bulk(WorkflowHistory workflowHistory, List<TaskHistory> taskHistories);
+
 }

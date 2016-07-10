@@ -2,6 +2,7 @@ package org.opencloudengine.garuda.handler;
 
 import org.opencloudengine.garuda.gateway.GatewayServlet;
 import org.opencloudengine.garuda.model.HttpObjectSet;
+import org.opencloudengine.garuda.web.history.TaskHistory;
 import org.opencloudengine.garuda.web.uris.ResourceUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -185,5 +186,31 @@ public class GlobalAttributesImpl implements GlobalAttributes {
             outputMap.put(taskName, this.getTaskOutput(instance, taskId));
         }
         return outputMap;
+    }
+
+    @Override
+    public void setTaskHistory(ProcessInstance instance, String taskId, TaskHistory history) throws Exception {
+        this.setTaskParam(instance, taskId, "history", history);
+    }
+
+    @Override
+    public TaskHistory getTaskHistory(ProcessInstance instance, String taskId) throws Exception {
+        return (TaskHistory) this.getTaskParam(instance, taskId, "history", null);
+    }
+
+    @Override
+    public List<TaskHistory> getAllTaskHistories(ProcessInstance instance) throws Exception {
+        List<TaskHistory> taskHistories = new ArrayList<>();
+        Map jobMap = this.getJobMap(instance);
+        Set set = jobMap.keySet();
+        Iterator iterator = set.iterator();
+        while (iterator.hasNext()) {
+            String taskId = (String) iterator.next();
+            TaskHistory taskHistory = this.getTaskHistory(instance, taskId);
+            if (taskHistory != null) {
+                taskHistories.add(taskHistory);
+            }
+        }
+        return taskHistories;
     }
 }

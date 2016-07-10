@@ -1,5 +1,6 @@
 package org.opencloudengine.garuda.gateway;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.opencloudengine.garuda.handler.GateHandlerService;
 import org.opencloudengine.garuda.model.GateResponse;
 import org.opencloudengine.garuda.proxy.ProxyService;
@@ -45,7 +46,7 @@ public class GatewayServiceImpl implements GatewayService {
     @Override
     public void start(GatewayServlet servlet, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
 
-        ResourceUri reourceUri = this.getReourceUri(servletRequest.getPathInfo());
+        ResourceUri reourceUri = this.getReourceUri(servletRequest.getPathInfo(), servletRequest.getMethod());
         if (reourceUri == null) {
             this.errorResponse(GateException.NO_MAPPING_URI, servletRequest, servletResponse, null);
         } else if (reourceUri.getRunWith().equals("workflow")) {
@@ -96,7 +97,7 @@ public class GatewayServiceImpl implements GatewayService {
         }
     }
 
-    private ResourceUri getReourceUri(String pathInfo) {
+    private ResourceUri getReourceUri(String pathInfo, String method) {
 
         ResourceUri matchUri = null;
 
@@ -197,10 +198,13 @@ public class GatewayServiceImpl implements GatewayService {
                 }
             }
 
-            //TODO 메소드 매칭 확인 절차가 필요
-
             if (match) {
-                matchUri = resourceUri;
+                //메소드 매칭 확인 절차
+                String[] methods = resourceUri.getMethod().split(",");
+                List<String> methodsArray = Arrays.asList(methods);
+                if (methodsArray.contains(method.toUpperCase())) {
+                    matchUri = resourceUri;
+                }
                 break;
             }
         }

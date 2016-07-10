@@ -8,6 +8,7 @@ import org.opencloudengine.garuda.handler.activity.policy.PolicyHandler;
 import org.opencloudengine.garuda.util.ApplicationContextRegistry;
 import org.opencloudengine.garuda.util.JsonUtils;
 import org.opencloudengine.garuda.web.configuration.ConfigurationHelper;
+import org.opencloudengine.garuda.web.history.TaskHistory;
 import org.opencloudengine.garuda.web.history.WorkflowHistory;
 import org.opencloudengine.garuda.web.history.WorkflowHistoryRepository;
 import org.opencloudengine.garuda.web.uris.ResourceUri;
@@ -77,13 +78,22 @@ public class GateHandlerServiceImpl implements GateHandlerService {
         history.setVars(workflow.getVars());
         history.setStartDate(currentDate.getTime());
         history.setStatus("RUNNING");
-        history = workflowHistoryRepository.insert(history);
+
+        /**
+         * 타스크 히스토리 객체
+         */
+        List<TaskHistory> taskHistories = new ArrayList<>();
 
 
         /**
          * 임시저장소에 통신관련 객체들을 저장한다.
          */
         globalAttributes.setHttpObjects(identifier, servlet, servletRequest, servletResponse, resourceUri);
+
+        /**
+         * 프로세스 객체
+         */
+        org.uengine.kernel.ProcessInstance instance = null;
 
         /**
          * 프로세스를 시작한다.
@@ -134,7 +144,7 @@ public class GateHandlerServiceImpl implements GateHandlerService {
                     }
             });
 
-            org.uengine.kernel.ProcessInstance instance = processDefinition.createInstance();
+            instance = processDefinition.createInstance();
             instance.setInstanceId(identifier);
             instance.set("workflow", workflow);
             instance.set("wh", history);
@@ -146,20 +156,42 @@ public class GateHandlerServiceImpl implements GateHandlerService {
             //워크플로우를 실행한다.
             instance.execute();
 
+            //워크플로우 히스토리와 타스크 히스토리의 결과물을 얻는다.
+            taskHistories = globalAttributes.getAllTaskHistories(instance);
+            history = (WorkflowHistory) instance.get("wh");
+
             if (instance.get("finishEvent") == null) {
-                workflowHistoryRepository.updateAsFailed(history);
                 gatewayService.errorResponse(GateException.WORKFLOW_FAILED, servletRequest, servletResponse, null);
+                this.updateAsFailed(history, taskHistories);
             } else {
-                workflowHistoryRepository.updateAsFinished(history);
+                this.updateAsFinished(history, taskHistories);
             }
 
         } catch (Exception ex) {
-            workflowHistoryRepository.updateAsFailed(history);
             gatewayService.errorResponse(GateException.WORKFLOW_FAILED, servletRequest, servletResponse, null);
+            this.updateAsFailed(history, taskHistories);
         } finally {
             //임시저장소에 통신관련 객체들을 삭제한다.
             globalAttributes.removeHttpObjects(identifier);
         }
+    }
+
+    private void updateAsFailed(WorkflowHistory history, List<TaskHistory> taskHistories) {
+        long time = new Date().getTime();
+        history.setEndDate(time);
+        history.setDuration(time - history.getStartDate());
+        history.setStatus("FAILED");
+
+        workflowHistoryRepository.bulk(history, taskHistories);
+    }
+
+    private void updateAsFinished(WorkflowHistory history, List<TaskHistory> taskHistories) {
+        long time = new Date().getTime();
+        history.setEndDate(time);
+        history.setDuration(time - history.getStartDate());
+        history.setStatus("FINISHED");
+
+        workflowHistoryRepository.bulk(history, taskHistories);
     }
 
     @Override

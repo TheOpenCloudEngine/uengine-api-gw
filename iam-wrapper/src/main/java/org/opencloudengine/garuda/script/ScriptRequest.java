@@ -2,15 +2,13 @@ package org.opencloudengine.garuda.script;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.tools.shell.Global;
 import org.mozilla.javascript.tools.shell.Main;
 import org.opencloudengine.garuda.common.exception.ServiceException;
-import org.opencloudengine.garuda.util.ApplicationContextRegistry;
-import org.opencloudengine.garuda.util.JsonUtils;
-import org.opencloudengine.garuda.util.ResourceUtils;
-import org.opencloudengine.garuda.util.StringUtils;
+import org.opencloudengine.garuda.util.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
@@ -59,7 +57,7 @@ public class ScriptRequest {
         velocityEngine = context.getBean(VelocityEngine.class);
         ScriptResponse response = this.runScript(args, script);
 
-        if (!StringUtils.isEmpty(response.getError())) {
+        if (response.getError() != null) {
             throw new Exception("Script Error", new Throwable(response.getError()));
         }
         /**
@@ -77,7 +75,6 @@ public class ScriptRequest {
     private ScriptResponse runScript(Map<String, Object> args, String script) {
         ScriptResponse response = new ScriptResponse();
         try {
-            Map map = new HashMap();
             File file = ResourceUtils.getFile("classpath:rhino");
             String path = file.getAbsolutePath();
 
@@ -88,14 +85,24 @@ public class ScriptRequest {
 
             Main.processFile(cx, global, path + "/env.rhino.1.2.js");
 
+            Map inputData = new HashMap();
+            Map normal = new HashMap();
+            Map json = new HashMap();
             Set<Map.Entry<String, Object>> entries = args.entrySet();
             Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
-
             while (iterator.hasNext()) {
                 Map.Entry<String, Object> next = iterator.next();
-                Object jsObject = Context.javaToJS(next.getValue(), global);
-                ScriptableObject.putProperty(global, next.getKey(), jsObject);
+                Object value = next.getValue();
+
+                if (value instanceof Map) {
+                    json.put(next.getKey(), JsonUtils.marshal(value));
+                } else {
+                    normal.put(next.getKey(), value);
+                }
             }
+            inputData.put("normal", normal);
+            inputData.put("json", json);
+            ScriptableObject.putProperty(global, "inputData", JsonUtils.marshal(inputData));
 
             Map model = new HashMap();
             model.put("script", script);
@@ -106,7 +113,7 @@ public class ScriptRequest {
             org.mozilla.javascript.Function run = (org.mozilla.javascript.Function) global.get("run", global);
             Object result = run.call(cx, global, global, new Object[]{});
 
-            map = (Map) Context.jsToJava(result, Map.class);
+            Map map = (Map) Context.jsToJava(result, Map.class);
 
             response.setLog(map.get("log").toString());
             response.setValue(map.get("value"));
@@ -116,7 +123,7 @@ public class ScriptRequest {
             response.setLog("");
             response.setValue(null);
             response.setType(ScriptResponse.UNDEFINED);
-            response.setError(ex.getMessage());
+            response.setError(ex.getMessage() + "");
 
             if (ex instanceof RhinoException) {
                 response.setErrorLine(((RhinoException) ex).lineNumber());

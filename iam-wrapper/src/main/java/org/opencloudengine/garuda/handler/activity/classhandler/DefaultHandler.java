@@ -1,5 +1,6 @@
 package org.opencloudengine.garuda.handler.activity.classhandler;
 
+import org.opencloudengine.garuda.gateway.GateException;
 import org.opencloudengine.garuda.handler.AbstractHandler;
 import org.opencloudengine.garuda.proxy.ProxyRequest;
 
@@ -21,7 +22,11 @@ public class DefaultHandler extends AbstractHandler {
         proxyRequest.setHost("http://www.essencia.live");
 
         proxyRequest.setPath(this.getServletRequest().getPathInfo());
-        proxyService.doProxy(proxyRequest);
+        try {
+            proxyService.doProxy(proxyRequest);
+        } catch (Exception ex) {
+            gatewayService.errorResponse(GateException.PROXY_FAILED, servletRequest, servletResponse, null);
+        }
     }
 
 

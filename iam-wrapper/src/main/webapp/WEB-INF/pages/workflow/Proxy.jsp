@@ -82,7 +82,7 @@
                                             <div class="col-md-12 md-margin-bottom-10">
                                                 <h4>This Script must return ProxyRequest </h4>
 
-                                                <p>return ProxyRequest(uri,path)</p>
+                                                <p>return ProxyRequest(host,path)</p>
 
                                                 <table class="table">
                                                     <thead>
@@ -93,11 +93,11 @@
                                                     </thead>
                                                     <tbody>
                                                     <tr>
-                                                        <td>uri</td>
+                                                        <td>host</td>
                                                         <td>String</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>path(optional)</td>
+                                                        <td>path</td>
                                                         <td>String</td>
                                                     </tr>
                                                     </tbody>

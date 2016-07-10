@@ -38,6 +38,10 @@ public class CloudantHandler extends AbstractHandler {
         proxyRequest.setHost("http://52.79.164.208:5984");
 
         proxyRequest.setPath(servletRequest.getPathInfo().replace("/cloudant", ""));
-        proxyService.doProxy(proxyRequest);
+        try {
+            proxyService.doProxy(proxyRequest);
+        } catch (Exception ex) {
+            gatewayService.errorResponse(GateException.PROXY_FAILED, servletRequest, servletResponse, null);
+        }
     }
 }

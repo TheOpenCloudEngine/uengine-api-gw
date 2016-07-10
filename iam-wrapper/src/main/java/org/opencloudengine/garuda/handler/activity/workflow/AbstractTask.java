@@ -73,6 +73,8 @@ public abstract class AbstractTask extends AbstractHandler {
 
     String stdout;
 
+    String stderr;
+
     Object inputData;
 
     Object outputData;

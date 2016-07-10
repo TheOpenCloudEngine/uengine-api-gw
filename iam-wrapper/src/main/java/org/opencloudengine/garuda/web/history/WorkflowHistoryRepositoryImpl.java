@@ -24,6 +24,19 @@ public class WorkflowHistoryRepositoryImpl implements WorkflowHistoryRepository 
     CouchServiceFactory serviceFactory;
 
     @Override
+    public void bulk(WorkflowHistory workflowHistory, List<TaskHistory> taskHistories) {
+        workflowHistory.setDocType(NAMESPACE);
+        for (TaskHistory taskHistory : taskHistories) {
+            taskHistory.setDocType("task_history");
+        }
+
+        List<Object> list = new ArrayList<>();
+        list.add(workflowHistory);
+        list.addAll(taskHistories);
+        serviceFactory.getDb().bulk(list);
+    }
+
+    @Override
     public WorkflowHistory insert(WorkflowHistory history) {
         long time = new Date().getTime();
         history.setDocType(NAMESPACE);

@@ -9,5 +9,5 @@ import java.io.IOException;
 
 public interface ProxyService {
 
-    void doProxy(ProxyRequest proxyRequest);
+    void doProxy(ProxyRequest proxyRequest) throws Exception;
 }

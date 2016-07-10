@@ -2,6 +2,7 @@ package org.opencloudengine.garuda.script;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.opencloudengine.garuda.model.AuthInformation;
+import org.opencloudengine.garuda.util.JsonUtils;
 import org.opencloudengine.garuda.web.configuration.ConfigurationHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +36,10 @@ public class ScriptServiceImpl implements ScriptService {
     public boolean beforeUseScript(String script, AuthInformation authInformation) throws Exception {
         ScriptRequest request = new ScriptRequest();
 
-        Boolean value = request.embed("client", authInformation.getOauthClient()).
-                embed("user", authInformation.getOauthUser()).
+        Map<String, Object> map = JsonUtils.convertClassToMap(null);
+
+        Boolean value = request.embed("client", JsonUtils.convertClassToMap(authInformation.getOauthClient())).
+                embed("user", JsonUtils.convertClassToMap(authInformation.getOauthUser())).
                 embed("scope", authInformation.getScopes()).
                 embed("token_type", authInformation.getTokenType()).
                 embed("claim", authInformation.getClaim()).
@@ -51,8 +54,8 @@ public class ScriptServiceImpl implements ScriptService {
     public void afterUseScript(String script, AuthInformation authInformation) throws Exception {
         ScriptRequest request = new ScriptRequest();
 
-        request.embed("client", authInformation.getOauthClient()).
-                embed("user", authInformation.getOauthUser()).
+        request.embed("client", JsonUtils.convertClassToMap(authInformation.getOauthClient())).
+                embed("user", JsonUtils.convertClassToMap(authInformation.getOauthUser())).
                 embed("scope", authInformation.getScopes()).
                 embed("token_type", authInformation.getTokenType()).
                 embed("claim", authInformation.getClaim()).
@@ -70,7 +73,7 @@ public class ScriptServiceImpl implements ScriptService {
         while (iterator.hasNext()) {
             String taskName = iterator.next();
             Object data = taskOutputData.get(taskName);
-            request = request.embed(taskName, data);
+            request = request.embed(taskName, JsonUtils.convertClassToMap(data));
         }
         return request.setScript(script).build();
     }
