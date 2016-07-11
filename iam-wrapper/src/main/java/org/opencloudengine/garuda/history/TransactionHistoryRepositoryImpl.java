@@ -1,4 +1,4 @@
-package org.opencloudengine.garuda.web.history;
+package org.opencloudengine.garuda.history;
 
 import com.cloudant.client.api.model.Response;
 import com.cloudant.client.api.views.Key;
@@ -6,25 +6,21 @@ import com.cloudant.client.api.views.ViewRequestBuilder;
 import com.cloudant.client.api.views.ViewResponse;
 import org.opencloudengine.garuda.couchdb.CouchServiceFactory;
 import org.opencloudengine.garuda.util.JsonUtils;
-import org.opencloudengine.garuda.web.policy.Policy;
-import org.opencloudengine.garuda.web.policy.PolicyRepository;
-import org.opencloudengine.garuda.web.uris.ResourceUri;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
 @Repository
-public class WorkflowHistoryRepositoryImpl implements WorkflowHistoryRepository {
+public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepository {
 
-    private String NAMESPACE = "workflow_history";
+    private String NAMESPACE = "transaction_history";
 
     @Autowired
     CouchServiceFactory serviceFactory;
 
     @Override
-    public void bulk(WorkflowHistory workflowHistory, List<TaskHistory> taskHistories) {
+    public void bulk(TransactionHistory workflowHistory, List<TaskHistory> taskHistories) {
         workflowHistory.setDocType(NAMESPACE);
         for (TaskHistory taskHistory : taskHistories) {
             taskHistory.setDocType("task_history");
@@ -37,7 +33,7 @@ public class WorkflowHistoryRepositoryImpl implements WorkflowHistoryRepository 
     }
 
     @Override
-    public WorkflowHistory insert(WorkflowHistory history) {
+    public TransactionHistory insert(TransactionHistory history) {
         long time = new Date().getTime();
         history.setDocType(NAMESPACE);
         history.setStartDate(time);
@@ -50,16 +46,16 @@ public class WorkflowHistoryRepositoryImpl implements WorkflowHistoryRepository 
     }
 
     @Override
-    public List<WorkflowHistory> select(int limit, Long skip) {
-        List<WorkflowHistory> list = new ArrayList<>();
+    public List<TransactionHistory> select(int limit, Long skip) {
+        List<TransactionHistory> list = new ArrayList<>();
         try {
             ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "select");
-            List<ViewResponse.Row<Key.ComplexKey, WorkflowHistory>> rows = builder.newRequest(Key.Type.COMPLEX, WorkflowHistory.class).
+            List<ViewResponse.Row<Key.ComplexKey, TransactionHistory>> rows = builder.newRequest(Key.Type.COMPLEX, TransactionHistory.class).
                     //keys(complex).
                             limit(limit).skip(skip).
                     build().getResponse().getRows();
 
-            for (ViewResponse.Row<Key.ComplexKey, WorkflowHistory> row : rows) {
+            for (ViewResponse.Row<Key.ComplexKey, TransactionHistory> row : rows) {
                 list.add(row.getValue());
             }
             list = this.sortStartDate(list);
@@ -71,14 +67,14 @@ public class WorkflowHistoryRepositoryImpl implements WorkflowHistoryRepository 
     }
 
     @Override
-    public WorkflowHistory updateCurrentStep(WorkflowHistory history, String taskId, String taskName) {
+    public TransactionHistory updateCurrentStep(TransactionHistory history, String taskId, String taskName) {
         history.setCurrentTaskId(taskId);
         history.setCurrentTaskName(taskName);
         return this.updateById(history);
     }
 
     @Override
-    public WorkflowHistory updateAsFailed(WorkflowHistory history) {
+    public TransactionHistory updateAsFailed(TransactionHistory history) {
         long time = new Date().getTime();
         history.setEndDate(time);
         history.setDuration(time - history.getStartDate());
@@ -87,7 +83,7 @@ public class WorkflowHistoryRepositoryImpl implements WorkflowHistoryRepository 
     }
 
     @Override
-    public WorkflowHistory updateAsFinished(WorkflowHistory history) {
+    public TransactionHistory updateAsFinished(TransactionHistory history) {
         long time = new Date().getTime();
         history.setEndDate(time);
         history.setDuration(time - history.getStartDate());
@@ -96,11 +92,11 @@ public class WorkflowHistoryRepositoryImpl implements WorkflowHistoryRepository 
     }
 
     @Override
-    public WorkflowHistory selectByIdentifier(String identifier) {
+    public TransactionHistory selectByIdentifier(String identifier) {
         try {
             ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "selectByIdentifier");
             Key.ComplexKey complex = new Key().complex(identifier);
-            return builder.newRequest(Key.Type.COMPLEX, WorkflowHistory.class).
+            return builder.newRequest(Key.Type.COMPLEX, TransactionHistory.class).
                     keys(complex).
                     build().getResponse().getRows().get(0).getValue();
         } catch (Exception ex) {
@@ -109,11 +105,11 @@ public class WorkflowHistoryRepositoryImpl implements WorkflowHistoryRepository 
     }
 
     @Override
-    public WorkflowHistory selectById(String id) {
+    public TransactionHistory selectById(String id) {
         try {
             ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "selectById");
             Key.ComplexKey complex = new Key().complex(id);
-            return builder.newRequest(Key.Type.COMPLEX, WorkflowHistory.class).
+            return builder.newRequest(Key.Type.COMPLEX, TransactionHistory.class).
                     keys(complex).
                     build().getResponse().getRows().get(0).getValue();
         } catch (Exception ex) {
@@ -122,20 +118,20 @@ public class WorkflowHistoryRepositoryImpl implements WorkflowHistoryRepository 
     }
 
     @Override
-    public List<WorkflowHistory> selectLikeName(String name, int limit, Long skip) {
-        List<WorkflowHistory> list = new ArrayList<>();
+    public List<TransactionHistory> selectLikeUri(String uri, int limit, Long skip) {
+        List<TransactionHistory> list = new ArrayList<>();
         Key.ComplexKey startKey;
         Key.ComplexKey endKey;
 
         try {
-            ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "selectLikeName");
-            startKey = new Key().complex(name);
-            endKey = new Key().complex(name + "Z");
-            List<ViewResponse.Row<Key.ComplexKey, WorkflowHistory>> rows = builder.newRequest(Key.Type.COMPLEX, WorkflowHistory.class).
+            ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "selectLikeUri");
+            startKey = new Key().complex(uri);
+            endKey = new Key().complex(uri + "Z");
+            List<ViewResponse.Row<Key.ComplexKey, TransactionHistory>> rows = builder.newRequest(Key.Type.COMPLEX, TransactionHistory.class).
                     startKey(startKey).endKey(endKey).limit(limit).skip(skip).
                     build().getResponse().getRows();
 
-            for (ViewResponse.Row<Key.ComplexKey, WorkflowHistory> row : rows) {
+            for (ViewResponse.Row<Key.ComplexKey, TransactionHistory> row : rows) {
                 list.add(row.getValue());
             }
             list = this.sortStartDate(list);
@@ -164,15 +160,15 @@ public class WorkflowHistoryRepositoryImpl implements WorkflowHistoryRepository 
     }
 
     @Override
-    public Long countLikeName(String name) {
+    public Long countLikeUri(String uri) {
         Long count = null;
         Key.ComplexKey startKey;
         Key.ComplexKey endKey;
 
         try {
             ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "countLikeName");
-            startKey = new Key().complex(name);
-            endKey = new Key().complex(name + "Z");
+            startKey = new Key().complex(uri);
+            endKey = new Key().complex(uri + "Z");
             count = builder.newRequest(Key.Type.COMPLEX, Long.class).
                     startKey(startKey).endKey(endKey).reduce(true).
                     build().getResponse().getRows().get(0).getValue();
@@ -184,10 +180,10 @@ public class WorkflowHistoryRepositoryImpl implements WorkflowHistoryRepository 
     }
 
     @Override
-    public WorkflowHistory updateById(WorkflowHistory history) {
-        WorkflowHistory existHistory = this.selectById(history.get_id());
+    public TransactionHistory updateById(TransactionHistory history) {
+        TransactionHistory existHistory = this.selectById(history.get_id());
 
-        existHistory = (WorkflowHistory) JsonUtils.merge(existHistory, history);
+        existHistory = (TransactionHistory) JsonUtils.merge(existHistory, history);
 
         Response update = serviceFactory.getDb().update(existHistory);
         existHistory.set_rev(update.getRev());
@@ -197,13 +193,13 @@ public class WorkflowHistoryRepositoryImpl implements WorkflowHistoryRepository 
 
     @Override
     public void deleteById(String id) {
-        WorkflowHistory history = this.selectById(id);
+        TransactionHistory history = this.selectById(id);
         serviceFactory.getDb().remove(history);
     }
 
-    private List<WorkflowHistory> sortStartDate(List<WorkflowHistory> histories) {
-        Collections.sort(histories, new Comparator<WorkflowHistory>() {
-            public int compare(WorkflowHistory o1, WorkflowHistory o2) {
+    private List<TransactionHistory> sortStartDate(List<TransactionHistory> histories) {
+        Collections.sort(histories, new Comparator<TransactionHistory>() {
+            public int compare(TransactionHistory o1, TransactionHistory o2) {
                 if (o1.getStartDate() == o2.getStartDate())
                     return 0;
                 return o1.getStartDate() > o2.getStartDate() ? -1 : 1;

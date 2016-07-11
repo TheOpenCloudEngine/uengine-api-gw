@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 public class GateException {
 
     public static String POLICY_NOT_FOUND = "policy_not_found";
+    public static String WORKFLOW_NOT_FOUND = "workflow_not_found";
     public static String NO_MAPPING_URI = "no_mapping_uri";
     public static String CLASS_NOT_FOUND = "class_not_found";
     public static String WORKFLOW_NOT_SUPPORT = "workflow_not_support";
@@ -28,6 +29,12 @@ public class GateException {
                 response.setError(POLICY_NOT_FOUND);
                 response.setError_description("policy not found while execute " + request.getPathInfo());
                 break;
+
+            case "workflow_not_found":
+                response.setError(WORKFLOW_NOT_FOUND);
+                response.setError_description("workflow not found while execute " + request.getPathInfo());
+                break;
+
             case "no_mapping_uri":
                 response.setError(NO_MAPPING_URI);
                 response.setError_description("No mapping uri found for" + request.getPathInfo());

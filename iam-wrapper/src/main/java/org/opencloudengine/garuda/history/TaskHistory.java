@@ -1,9 +1,6 @@
-package org.opencloudengine.garuda.web.history;
+package org.opencloudengine.garuda.history;
 
 import org.opencloudengine.garuda.couchdb.CouchDAO;
-
-import java.io.Serializable;
-import java.util.Date;
 
 public class TaskHistory extends CouchDAO {
 

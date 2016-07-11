@@ -1,18 +1,12 @@
 package org.opencloudengine.garuda.handler.activity.workflow;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.Header;
-import org.apache.http.util.EntityUtils;
-import org.opencloudengine.garuda.handler.activity.workflow.data.ApiOutput;
 import org.opencloudengine.garuda.handler.activity.workflow.data.ResponseInput;
 import org.opencloudengine.garuda.handler.activity.workflow.data.ResponseOutput;
-import org.opencloudengine.garuda.handler.activity.workflow.script.HttpRequest;
 import org.opencloudengine.garuda.handler.activity.workflow.script.HttpResponse;
 import org.opencloudengine.garuda.script.ScriptResponse;
-import org.opencloudengine.garuda.util.HttpUtils;
 import org.opencloudengine.garuda.util.StringUtils;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +14,7 @@ import java.util.Set;
 /**
  * Created by uengine on 2016. 7. 5..
  */
-public class ResponseTask extends InterceptorAbstractTask {
+public class ResponseTask extends WorkflowInterceptorTask {
 
     @Override
     public void runTask() throws Exception {

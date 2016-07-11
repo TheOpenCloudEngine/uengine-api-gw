@@ -7,6 +7,10 @@ import org.opencloudengine.garuda.couchdb.CouchDAO;
  */
 public class ResourceUri extends CouchDAO {
 
+    public static String WORKFLOW = "workflow";
+    public static String CLASS = "class";
+    public static String POLICY = "policy";
+
     private int order;
     private String uri;
     private String method;

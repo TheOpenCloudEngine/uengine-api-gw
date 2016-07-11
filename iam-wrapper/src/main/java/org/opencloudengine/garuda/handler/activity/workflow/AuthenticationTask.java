@@ -1,16 +1,13 @@
 package org.opencloudengine.garuda.handler.activity.workflow;
 
-import org.opencloudengine.garuda.gateway.GateException;
 import org.opencloudengine.garuda.handler.activity.workflow.data.AuthenticationInput;
 import org.opencloudengine.garuda.handler.activity.workflow.data.AuthenticationOutput;
 import org.opencloudengine.garuda.model.AuthInformation;
-import org.opencloudengine.garuda.util.JsonUtils;
-import org.uengine.kernel.ProcessInstance;
 
 /**
  * Created by uengine on 2016. 7. 5..
  */
-public class AuthenticationTask extends InterceptorAbstractTask {
+public class AuthenticationTask extends WorkflowInterceptorTask {
 
     @Override
     public void runTask() throws Exception {

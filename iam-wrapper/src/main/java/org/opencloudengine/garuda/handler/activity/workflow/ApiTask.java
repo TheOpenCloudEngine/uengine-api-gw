@@ -6,9 +6,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.opencloudengine.garuda.handler.activity.workflow.data.ApiInput;
 import org.opencloudengine.garuda.handler.activity.workflow.data.ApiOutput;
-import org.opencloudengine.garuda.handler.activity.workflow.data.FunctionInput;
-import org.opencloudengine.garuda.handler.activity.workflow.data.FunctionOutput;
-import org.opencloudengine.garuda.handler.activity.workflow.script.FunctionResponse;
 import org.opencloudengine.garuda.handler.activity.workflow.script.HttpRequest;
 import org.opencloudengine.garuda.script.ScriptResponse;
 import org.opencloudengine.garuda.util.HttpUtils;
@@ -20,7 +17,7 @@ import java.util.Map;
 /**
  * Created by uengine on 2016. 7. 5..
  */
-public class ApiTask extends InterceptorAbstractTask {
+public class ApiTask extends WorkflowInterceptorTask {
 
     @Override
     public void runTask() throws Exception {

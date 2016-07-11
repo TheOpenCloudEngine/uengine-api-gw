@@ -6,14 +6,13 @@ import org.opencloudengine.garuda.handler.activity.workflow.data.FunctionOutput;
 import org.opencloudengine.garuda.handler.activity.workflow.script.FunctionResponse;
 import org.opencloudengine.garuda.script.ScriptResponse;
 import org.opencloudengine.garuda.util.StringUtils;
-import org.uengine.kernel.ProcessInstance;
 
 import java.util.Map;
 
 /**
  * Created by uengine on 2016. 7. 5..
  */
-public class FunctionTask extends InterceptorAbstractTask {
+public class FunctionTask extends WorkflowInterceptorTask {
 
     @Override
     public void runTask() throws Exception {

@@ -2,12 +2,11 @@ package org.opencloudengine.garuda.handler.activity.workflow;
 
 import org.opencloudengine.garuda.util.ExceptionUtils;
 import org.opencloudengine.garuda.util.JsonUtils;
-import org.opencloudengine.garuda.web.history.TaskHistory;
-import org.opencloudengine.garuda.web.history.WorkflowHistory;
+import org.opencloudengine.garuda.history.TaskHistory;
 
 import java.util.Date;
 
-public abstract class InterceptorAbstractTask extends AbstractTask {
+public abstract class WorkflowInterceptorTask extends WorkflowTask {
 
     @Override
     public void doExecute() throws Exception {
@@ -59,9 +58,9 @@ public abstract class InterceptorAbstractTask extends AbstractTask {
     }
 
     private void updateCurrentStep() throws Exception {
-        workflowHistory.setCurrentTaskId(taskId);
-        workflowHistory.setCurrentTaskName(taskName);
-        instance.set("wh", workflowHistory);
+        transactionHistory.setCurrentTaskId(taskId);
+        transactionHistory.setCurrentTaskName(taskName);
+        instance.set("transactionHistory", transactionHistory);
     }
 
     private void updateTaskHistoryAsFinished() throws Exception {

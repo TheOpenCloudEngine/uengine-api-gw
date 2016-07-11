@@ -1,0 +1,26 @@
+{
+  "_id": "_design/transaction_history",
+  "language": "javascript",
+  "views": {
+    "select": {
+      "map": "function(doc) { if(doc.docType == \"transaction_history\"){ emit(null, doc); }}"
+    },
+    "selectByIdentifier": {
+      "map": "function(doc) { if(doc.docType == \"transaction_history\"){ emit([doc.identifier], doc); }}"
+    },
+    "selectById": {
+      "map": "function(doc) { if(doc.docType == \"transaction_history\"){ emit([doc._id], doc); }}"
+    },
+    "selectLikeUri": {
+      "map": "function(doc) { if(doc.docType == \"transaction_history\"){ var words = {}; doc.uri.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}"
+    },
+    "count": {
+      "map": "function(doc) { if(doc.docType == \"transaction_history\"){ emit(null, null); }}",
+      "reduce": "_count"
+    },
+    "countLikeUri": {
+      "map": "function(doc) { if(doc.docType == \"transaction_history\"){ var words = {}; doc.uri.replace(/\\w+/g, function(word) { words[word.toLowerCase()] = true}); for(w in words) { emit([w], doc); }}}",
+      "reduce": "_count"
+    }
+  }
+}

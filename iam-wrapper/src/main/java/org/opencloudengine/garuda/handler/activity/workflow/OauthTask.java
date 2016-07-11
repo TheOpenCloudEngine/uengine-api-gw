@@ -1,11 +1,9 @@
 package org.opencloudengine.garuda.handler.activity.workflow;
 
-import org.uengine.kernel.ProcessInstance;
-
 /**
  * Created by uengine on 2016. 7. 5..
  */
-public class OauthTask extends InterceptorAbstractTask {
+public class OauthTask extends WorkflowInterceptorTask {
 
     @Override
     public void runTask() throws Exception {

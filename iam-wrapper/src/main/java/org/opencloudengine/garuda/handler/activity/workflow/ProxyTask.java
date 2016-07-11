@@ -1,27 +1,20 @@
 package org.opencloudengine.garuda.handler.activity.workflow;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.opencloudengine.garuda.gateway.GateException;
-import org.opencloudengine.garuda.handler.activity.workflow.data.ApiOutput;
 import org.opencloudengine.garuda.handler.activity.workflow.data.ProxyInput;
 import org.opencloudengine.garuda.handler.activity.workflow.data.ProxyOutput;
 import org.opencloudengine.garuda.handler.activity.workflow.script.ProxyRequest;
 import org.opencloudengine.garuda.script.ScriptResponse;
 import org.opencloudengine.garuda.util.ExceptionUtils;
-import org.opencloudengine.garuda.util.HttpUtils;
 import org.opencloudengine.garuda.util.StringUtils;
-import org.uengine.kernel.ProcessInstance;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by uengine on 2016. 7. 5..
  */
-public class ProxyTask extends InterceptorAbstractTask {
+public class ProxyTask extends WorkflowInterceptorTask {
 
     @Override
     public void runTask() throws Exception {

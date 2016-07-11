@@ -1,6 +1,8 @@
 package org.opencloudengine.garuda.script;
 
 import org.apache.velocity.app.VelocityEngine;
+import org.opencloudengine.garuda.handler.activity.policy.data.BeforeInput;
+import org.opencloudengine.garuda.handler.activity.workflow.data.RequestInput;
 import org.opencloudengine.garuda.model.AuthInformation;
 import org.opencloudengine.garuda.util.JsonUtils;
 import org.opencloudengine.garuda.web.configuration.ConfigurationHelper;
@@ -33,35 +35,33 @@ public class ScriptServiceImpl implements ScriptService {
     private Logger logger = LoggerFactory.getLogger(ScriptServiceImpl.class);
 
     @Override
-    public boolean beforeUseScript(String script, AuthInformation authInformation) throws Exception {
+    public ScriptResponse beforeUseScript(String script, BeforeInput beforeInput) throws Exception {
         ScriptRequest request = new ScriptRequest();
+        Map<String, Object> scriptData = beforeInput.getScriptData();
 
-        Map<String, Object> map = JsonUtils.convertClassToMap(null);
-
-        Boolean value = request.embed("client", JsonUtils.convertClassToMap(authInformation.getOauthClient())).
-                embed("user", JsonUtils.convertClassToMap(authInformation.getOauthUser())).
-                embed("scope", authInformation.getScopes()).
-                embed("token_type", authInformation.getTokenType()).
-                embed("claim", authInformation.getClaim()).
-                embed("type", authInformation.getType()).
-                setScript(script).
-                build().castValue(Boolean.class);
-
-        return value;
+        Set<String> keySet = scriptData.keySet();
+        Iterator<String> iterator = keySet.iterator();
+        while (iterator.hasNext()) {
+            String taskName = iterator.next();
+            Object data = scriptData.get(taskName);
+            request = request.embed(taskName, data);
+        }
+        return request.setScript(script).build();
     }
 
     @Override
-    public void afterUseScript(String script, AuthInformation authInformation) throws Exception {
+    public ScriptResponse afterUseScript(String script, BeforeInput beforeInput) throws Exception {
         ScriptRequest request = new ScriptRequest();
+        Map<String, Object> scriptData = beforeInput.getScriptData();
 
-        request.embed("client", JsonUtils.convertClassToMap(authInformation.getOauthClient())).
-                embed("user", JsonUtils.convertClassToMap(authInformation.getOauthUser())).
-                embed("scope", authInformation.getScopes()).
-                embed("token_type", authInformation.getTokenType()).
-                embed("claim", authInformation.getClaim()).
-                embed("type", authInformation.getType()).
-                setScript(script).
-                build();
+        Set<String> keySet = scriptData.keySet();
+        Iterator<String> iterator = keySet.iterator();
+        while (iterator.hasNext()) {
+            String taskName = iterator.next();
+            Object data = scriptData.get(taskName);
+            request = request.embed(taskName, data);
+        }
+        return request.setScript(script).build();
     }
 
     @Override

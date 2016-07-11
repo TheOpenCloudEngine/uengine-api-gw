@@ -2,7 +2,7 @@ package org.opencloudengine.garuda.handler;
 
 import org.opencloudengine.garuda.gateway.GatewayServlet;
 import org.opencloudengine.garuda.model.HttpObjectSet;
-import org.opencloudengine.garuda.web.history.TaskHistory;
+import org.opencloudengine.garuda.history.TaskHistory;
 import org.opencloudengine.garuda.web.uris.ResourceUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package org.opencloudengine.garuda.web.history;
+package org.opencloudengine.garuda.history;
 
 import com.cloudant.client.api.model.Response;
 import com.cloudant.client.api.views.Key;

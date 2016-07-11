@@ -49,11 +49,11 @@ public class GatewayServiceImpl implements GatewayService {
         ResourceUri reourceUri = this.getReourceUri(servletRequest.getPathInfo(), servletRequest.getMethod());
         if (reourceUri == null) {
             this.errorResponse(GateException.NO_MAPPING_URI, servletRequest, servletResponse, null);
-        } else if (reourceUri.getRunWith().equals("workflow")) {
+        } else if (reourceUri.getRunWith().equals(ResourceUri.WORKFLOW)) {
             handlerService.doWorkflowHandler(reourceUri, servlet, servletRequest, servletResponse);
-        } else if (reourceUri.getRunWith().equals("policy")) {
+        } else if (reourceUri.getRunWith().equals(ResourceUri.POLICY)) {
             handlerService.doPolicyHandler(reourceUri, servlet, servletRequest, servletResponse);
-        } else if (reourceUri.getRunWith().equals("class")) {
+        } else if (reourceUri.getRunWith().equals(ResourceUri.CLASS)) {
             handlerService.doClassHandler(reourceUri, servlet, servletRequest, servletResponse);
         } else {
             this.errorResponse(GateException.NO_MAPPING_URI, servletRequest, servletResponse, null);

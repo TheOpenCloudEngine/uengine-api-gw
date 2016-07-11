@@ -1,16 +1,16 @@
 package org.opencloudengine.garuda.handler;
 
-import org.opencloudengine.garuda.common.exception.ServiceException;
 import org.opencloudengine.garuda.gateway.GateException;
 import org.opencloudengine.garuda.gateway.GatewayService;
 import org.opencloudengine.garuda.gateway.GatewayServlet;
 import org.opencloudengine.garuda.handler.activity.policy.PolicyHandler;
-import org.opencloudengine.garuda.util.ApplicationContextRegistry;
+import org.opencloudengine.garuda.history.TaskHistory;
+import org.opencloudengine.garuda.history.TransactionHistory;
+import org.opencloudengine.garuda.history.TransactionHistoryRepository;
 import org.opencloudengine.garuda.util.JsonUtils;
 import org.opencloudengine.garuda.web.configuration.ConfigurationHelper;
-import org.opencloudengine.garuda.web.history.TaskHistory;
-import org.opencloudengine.garuda.web.history.WorkflowHistory;
-import org.opencloudengine.garuda.web.history.WorkflowHistoryRepository;
+import org.opencloudengine.garuda.web.policy.Policy;
+import org.opencloudengine.garuda.web.policy.PolicyService;
 import org.opencloudengine.garuda.web.uris.ResourceUri;
 import org.opencloudengine.garuda.web.workflow.Workflow;
 import org.opencloudengine.garuda.web.workflow.WorkflowService;
@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.uengine.kernel.*;
 import org.uengine.processpublisher.BPMNUtil;
@@ -26,7 +25,6 @@ import org.uengine.processpublisher.BPMNUtil;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -49,7 +47,10 @@ public class GateHandlerServiceImpl implements GateHandlerService {
     GlobalAttributes globalAttributes;
 
     @Autowired
-    WorkflowHistoryRepository workflowHistoryRepository;
+    PolicyService policyService;
+
+    @Autowired
+    TransactionHistoryRepository transactionHistoryRepository;
 
     /**
      * SLF4J Logging
@@ -61,20 +62,24 @@ public class GateHandlerServiceImpl implements GateHandlerService {
 
         String wid = resourceUri.getWid();
         Workflow workflow = workflowService.cashById(wid);
+        if (workflow == null) {
+            gatewayService.errorResponse(GateException.WORKFLOW_NOT_FOUND, servletRequest, servletResponse, null);
+            return;
+        }
 
         String identifier = UUID.randomUUID().toString();
-        final String name = workflow.getName();
-        String bpmn_xml = workflow.getBpmn_xml();
         Date currentDate = new Date();
 
         /**
-         * 워크플로우 히스토리를 인서트한다.
+         * 트랜잭션 히스토리를 인서트한다.
          */
-        //TODO request 꾸미기
-        WorkflowHistory history = new WorkflowHistory();
+        TransactionHistory history = new TransactionHistory();
         history.setIdentifier(identifier);
+        history.setUri(servletRequest.getPathInfo());
+        history.setMethod(servletRequest.getMethod());
+        history.setRunWith(TransactionHistory.WORKFLOW);
         history.setWid(wid);
-        history.setName(name);
+        history.setWorkflowName(workflow.getName());
         history.setVars(workflow.getVars());
         history.setStartDate(currentDate.getTime());
         history.setStatus("RUNNING");
@@ -100,7 +105,7 @@ public class GateHandlerServiceImpl implements GateHandlerService {
          */
         try {
             org.uengine.kernel.ProcessInstance.USE_CLASS = DefaultProcessInstance.class;
-            ByteArrayInputStream bis = new ByteArrayInputStream(bpmn_xml.getBytes());
+            ByteArrayInputStream bis = new ByteArrayInputStream(workflow.getBpmn_xml().getBytes());
             org.uengine.kernel.ProcessDefinition processDefinition = BPMNUtil.adapt(bis);
             processDefinition.afterDeserialization();
 
@@ -147,7 +152,7 @@ public class GateHandlerServiceImpl implements GateHandlerService {
             instance = processDefinition.createInstance();
             instance.setInstanceId(identifier);
             instance.set("workflow", workflow);
-            instance.set("wh", history);
+            instance.set("transactionHistory", history);
             instance.set("vars", JsonUtils.unmarshal(workflow.getVars()));
 
             //워크플로우 각 타스크 결과물들을 저장할 임시저장소를 등록한다.
@@ -156,9 +161,11 @@ public class GateHandlerServiceImpl implements GateHandlerService {
             //워크플로우를 실행한다.
             instance.execute();
 
-            //워크플로우 히스토리와 타스크 히스토리의 결과물을 얻는다.
+            /**
+             * 워크플로우 히스토리와 타스크 히스토리의 결과물을 얻는다.
+             */
             taskHistories = globalAttributes.getAllTaskHistories(instance);
-            history = (WorkflowHistory) instance.get("wh");
+            history = (TransactionHistory) instance.get("transactionHistory");
 
             if (instance.get("finishEvent") == null) {
                 gatewayService.errorResponse(GateException.WORKFLOW_FAILED, servletRequest, servletResponse, null);
@@ -176,37 +183,62 @@ public class GateHandlerServiceImpl implements GateHandlerService {
         }
     }
 
-    private void updateAsFailed(WorkflowHistory history, List<TaskHistory> taskHistories) {
-        long time = new Date().getTime();
-        history.setEndDate(time);
-        history.setDuration(time - history.getStartDate());
-        history.setStatus("FAILED");
-
-        workflowHistoryRepository.bulk(history, taskHistories);
-    }
-
-    private void updateAsFinished(WorkflowHistory history, List<TaskHistory> taskHistories) {
-        long time = new Date().getTime();
-        history.setEndDate(time);
-        history.setDuration(time - history.getStartDate());
-        history.setStatus("FINISHED");
-
-        workflowHistoryRepository.bulk(history, taskHistories);
-    }
-
     @Override
     public void doPolicyHandler(ResourceUri resourceUri, GatewayServlet servlet, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+        Policy policy = policyService.cashById(resourceUri.getPolicyId());
+        if (policy == null) {
+            gatewayService.errorResponse(GateException.POLICY_NOT_FOUND, servletRequest, servletResponse, null);
+            return;
+        }
+        String identifier = UUID.randomUUID().toString();
+        Date currentDate = new Date();
+
+        /**
+         * 타스크 히스토리 객체
+         */
+        List<TaskHistory> taskHistories = new ArrayList<>();
+
+        /**
+         * 트랜잭션 히스토리를 인서트한다.
+         */
+        TransactionHistory history = new TransactionHistory();
+        history.setIdentifier(identifier);
+        history.setUri(servletRequest.getPathInfo());
+        history.setMethod(servletRequest.getMethod());
+        history.setRunWith(TransactionHistory.POLICY);
+        history.setPolicyId(policy.get_id());
+        history.setPolicyName(policy.getName());
+        history.setStartDate(currentDate.getTime());
+        history.setStatus("RUNNING");
+
+        PolicyHandler policyHandler = new PolicyHandler();
+        policyHandler.transactionHistory = history;
+
         try {
-            PolicyHandler policyHandler = new PolicyHandler();
-            policyHandler.init(resourceUri, servlet, servletRequest, servletResponse);
+            policyHandler.init(resourceUri, servlet, servletRequest, servletResponse, identifier, policy);
             policyHandler.doAction();
+            /**
+             * 워크플로우 히스토리와 타스크 히스토리의 결과물을 얻는다.
+             */
+            history = policyHandler.transactionHistory;
+            taskHistories = policyHandler.getTaskHistories();
+            this.updateAsFinished(history, taskHistories);
+
         } catch (Exception ex) {
             gatewayService.errorResponse(GateException.SERVER_ERROR, servletRequest, servletResponse, null);
+            /**
+             * 워크플로우 히스토리와 타스크 히스토리의 결과물을 얻는다.
+             */
+            history = policyHandler.transactionHistory;
+            taskHistories = policyHandler.getTaskHistories();
+            this.updateAsFailed(history, taskHistories);
         }
     }
 
     @Override
     public void doClassHandler(ResourceUri resourceUri, GatewayServlet servlet, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+
+        String identifier = UUID.randomUUID().toString();
 
         String className = "org.opencloudengine.garuda.handler.activity.classhandler." + resourceUri.getClassName();
         Class<?> act = null;
@@ -219,9 +251,9 @@ public class GateHandlerServiceImpl implements GateHandlerService {
 
         try {
             Object obj = act.newInstance();
-            Method init = act.getMethod("init", ResourceUri.class, GatewayServlet.class, HttpServletRequest.class, HttpServletResponse.class);
+            Method init = act.getMethod("init", ResourceUri.class, GatewayServlet.class, HttpServletRequest.class, HttpServletResponse.class, String.class);
             init.setAccessible(true);
-            init.invoke(obj, new Object[]{resourceUri, servlet, servletRequest, servletResponse});
+            init.invoke(obj, new Object[]{resourceUri, servlet, servletRequest, servletResponse,identifier});
 
             Method doAction = act.getMethod("doAction");
             doAction.setAccessible(true);
@@ -229,5 +261,23 @@ public class GateHandlerServiceImpl implements GateHandlerService {
         } catch (Exception ex) {
             gatewayService.errorResponse(GateException.SERVER_ERROR, servletRequest, servletResponse, null);
         }
+    }
+
+    private void updateAsFailed(TransactionHistory history, List<TaskHistory> taskHistories) {
+        long time = new Date().getTime();
+        history.setEndDate(time);
+        history.setDuration(time - history.getStartDate());
+        history.setStatus("FAILED");
+
+        transactionHistoryRepository.bulk(history, taskHistories);
+    }
+
+    private void updateAsFinished(TransactionHistory history, List<TaskHistory> taskHistories) {
+        long time = new Date().getTime();
+        history.setEndDate(time);
+        history.setDuration(time - history.getStartDate());
+        history.setStatus("FINISHED");
+
+        transactionHistoryRepository.bulk(history, taskHistories);
     }
 }
