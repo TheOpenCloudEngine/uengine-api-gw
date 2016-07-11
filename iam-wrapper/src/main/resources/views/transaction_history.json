@@ -3,7 +3,7 @@
   "language": "javascript",
   "views": {
     "select": {
-      "map": "function(doc) { if(doc.docType == \"transaction_history\"){ emit(null, doc); }}"
+      "map": "function(doc) { if(doc.docType == \"transaction_history\"){ emit([doc.startDate], doc); }}"
     },
     "selectByIdentifier": {
       "map": "function(doc) { if(doc.docType == \"transaction_history\"){ emit([doc.identifier], doc); }}"

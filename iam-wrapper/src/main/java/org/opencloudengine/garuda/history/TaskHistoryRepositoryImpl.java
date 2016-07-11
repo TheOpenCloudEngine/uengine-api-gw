@@ -101,12 +101,20 @@ public class TaskHistoryRepositoryImpl implements TaskHistoryRepository {
         serviceFactory.getDb().remove(history);
     }
 
+    @Override
+    public void deleteByIdentifier(String identifier) {
+        List<TaskHistory> taskHistories = this.selectByIdentifier(identifier);
+        for (TaskHistory taskHistory : taskHistories) {
+            serviceFactory.getDb().remove(taskHistory);
+        }
+    }
+
     private List<TaskHistory> sortStartDate(List<TaskHistory> histories) {
         Collections.sort(histories, new Comparator<TaskHistory>() {
             public int compare(TaskHistory o1, TaskHistory o2) {
                 if (o1.getStartDate() == o2.getStartDate())
                     return 0;
-                return o1.getStartDate() > o2.getStartDate() ? -1 : 1;
+                return o1.getStartDate() < o2.getStartDate() ? -1 : 1;
             }
         });
         return histories;

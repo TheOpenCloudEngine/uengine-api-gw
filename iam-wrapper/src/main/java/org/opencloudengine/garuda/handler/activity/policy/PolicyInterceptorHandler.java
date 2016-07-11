@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class PolicyInterceptorHandler extends AbstractHandler {
 
-    public void initTaskHistory(String taskName){
+    public void initTaskHistory(String taskName) {
         taskHistory = new TaskHistory();
         taskHistory.setTaskId(taskName);
         taskHistory.setTaskName(taskName);
@@ -23,12 +23,12 @@ public class PolicyInterceptorHandler extends AbstractHandler {
         this.updateCurrentStep(taskName);
     }
 
-    private void updateCurrentStep(String taskName){
+    private void updateCurrentStep(String taskName) {
         transactionHistory.setCurrentTaskId(taskName);
         transactionHistory.setCurrentTaskName(taskName);
     }
 
-    public void updateTaskHistoryAsFinished(String taskName){
+    public void updateTaskHistoryAsFinished(String taskName) {
         taskHistory = taskMap.get(taskName);
         if (taskHistory == null) {
             return;
@@ -42,7 +42,7 @@ public class PolicyInterceptorHandler extends AbstractHandler {
         taskMap.put(taskName, this.taskHistory);
     }
 
-    public void updateTaskHistoryAsFailed(String taskName){
+    public void updateTaskHistoryAsFailed(String taskName) {
         taskHistory = taskMap.get(taskName);
         if (taskHistory == null) {
             return;
@@ -54,9 +54,12 @@ public class PolicyInterceptorHandler extends AbstractHandler {
 
         //taskMap 에 타스크 히스토리를 등록한다.
         taskMap.put(taskName, this.taskHistory);
+
+        //GateHandler 에서 실패처리를 할 수 있도록 한다.
+        transactionSucceeded = false;
     }
 
-    public void updateTaskStdout(String taskName, String stdout){
+    public void updateTaskStdout(String taskName, String stdout) {
         taskHistory = taskMap.get(taskName);
         if (taskHistory == null) {
             return;
@@ -67,7 +70,7 @@ public class PolicyInterceptorHandler extends AbstractHandler {
         taskMap.put(taskName, this.taskHistory);
     }
 
-    public void updateTaskStderr(String taskName, String stderr){
+    public void updateTaskStderr(String taskName, String stderr) {
         taskHistory = taskMap.get(taskName);
         if (taskHistory == null) {
             return;
@@ -78,7 +81,7 @@ public class PolicyInterceptorHandler extends AbstractHandler {
         taskMap.put(taskName, this.taskHistory);
     }
 
-    public void updateTaskInputData(String taskName, Object inputData){
+    public void updateTaskInputData(String taskName, Object inputData) {
         taskHistory = taskMap.get(taskName);
         if (taskHistory == null) {
             return;
@@ -89,7 +92,7 @@ public class PolicyInterceptorHandler extends AbstractHandler {
         taskMap.put(taskName, this.taskHistory);
     }
 
-    public void updateTaskOutputData(String taskName, Object outputData){
+    public void updateTaskOutputData(String taskName, Object outputData) {
         taskHistory = taskMap.get(taskName);
         if (taskHistory == null) {
             return;
@@ -100,11 +103,11 @@ public class PolicyInterceptorHandler extends AbstractHandler {
         taskMap.put(taskName, this.taskHistory);
     }
 
-    private String convertData(Object data){
+    private String convertData(Object data) {
         String result = null;
-        try{
+        try {
             result = JsonUtils.marshal(data);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             result = ex.getCause().toString();
         }
         return result;

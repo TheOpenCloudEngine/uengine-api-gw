@@ -222,7 +222,12 @@ public class GateHandlerServiceImpl implements GateHandlerService {
              */
             history = policyHandler.transactionHistory;
             taskHistories = policyHandler.getTaskHistories();
-            this.updateAsFinished(history, taskHistories);
+            boolean succeeded = policyHandler.transactionSucceeded;
+            if(succeeded){
+                this.updateAsFinished(history, taskHistories);
+            }else{
+                this.updateAsFailed(history, taskHistories);
+            }
 
         } catch (Exception ex) {
             gatewayService.errorResponse(GateException.SERVER_ERROR, servletRequest, servletResponse, null);

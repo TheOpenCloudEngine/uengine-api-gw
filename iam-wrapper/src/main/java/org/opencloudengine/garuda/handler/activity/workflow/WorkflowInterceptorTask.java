@@ -3,8 +3,14 @@ package org.opencloudengine.garuda.handler.activity.workflow;
 import org.opencloudengine.garuda.util.ExceptionUtils;
 import org.opencloudengine.garuda.util.JsonUtils;
 import org.opencloudengine.garuda.history.TaskHistory;
+import org.opencloudengine.garuda.util.StringUtils;
+import org.uengine.kernel.*;
+import org.uengine.kernel.graph.Transition;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public abstract class WorkflowInterceptorTask extends WorkflowTask {
 
@@ -14,9 +20,15 @@ public abstract class WorkflowInterceptorTask extends WorkflowTask {
         preRun();
         try {
             runTask();
-            updateTaskHistoryData();
-            updateTaskHistoryAsFinished();
-            fireComplete(instance);
+            if (!this.validateNextFlow()) {
+                updateTaskHistoryData();
+                updateTaskHistoryAsFailed();
+                fireFault(instance, new Exception("Next flow not exist."));
+            } else {
+                updateTaskHistoryData();
+                updateTaskHistoryAsFinished();
+                fireComplete(instance);
+            }
         } catch (Exception ex) {
             stderr = ExceptionUtils.getFullStackTrace(ex);
             updateTaskHistoryData();
@@ -43,6 +55,41 @@ public abstract class WorkflowInterceptorTask extends WorkflowTask {
     }
 
     public abstract void runTask() throws Exception;
+
+    private boolean validateNextFlow() throws Exception {
+        boolean hasNext = false;
+        String taskNext = globalAttributes.getTaskNext(instance, taskId);
+        ProcessDefinition definition = instance.getProcessDefinition();
+        Activity activity = definition.getActivity(getTracingTag());
+        List<Transition> transitions = activity.getOutgoingTransitions();
+
+        if (transitions.size() == 1) {
+            Transition transition = transitions.get(0);
+            Activity targetActivity = transition.getTargetActivity();
+            if (targetActivity instanceof EndActivity) {
+                return true;
+            }
+        }
+
+        List<String> flows = new ArrayList<>();
+        for (Transition transition : transitions) {
+            ExpressionEvaluteCondition condition = (ExpressionEvaluteCondition) transition.getCondition();
+            String expression = condition.getConditionExpression();
+            Map unmarshal = JsonUtils.unmarshal(expression);
+            String name = unmarshal.get("label").toString();
+
+            flows.add(name);
+            if (!StringUtils.isEmpty(name)) {
+                if (name.equals(taskNext)) {
+                    hasNext = true;
+                }
+            }
+        }
+        if (!hasNext) {
+            stderr = "Next Flow : " + taskNext + " dose not exist. Registered flows are " + JsonUtils.marshal(flows);
+        }
+        return hasNext;
+    }
 
     private void initTaskHistory() throws Exception {
         taskHistory = new TaskHistory();

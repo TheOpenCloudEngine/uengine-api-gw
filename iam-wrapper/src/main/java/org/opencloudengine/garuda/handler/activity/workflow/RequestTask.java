@@ -2,10 +2,6 @@ package org.opencloudengine.garuda.handler.activity.workflow;
 
 import org.opencloudengine.garuda.handler.activity.workflow.data.RequestInput;
 import org.opencloudengine.garuda.handler.activity.workflow.data.RequestOutput;
-import org.opencloudengine.garuda.util.StringUtils;
-
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 
 /**

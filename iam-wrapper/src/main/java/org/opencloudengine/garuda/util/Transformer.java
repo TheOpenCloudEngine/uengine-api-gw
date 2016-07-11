@@ -102,7 +102,7 @@ public class Transformer implements InitializingBean {
                 expressionMap.put("label", label);
                 String conditionsString = JsonUtils.marshal(expressionMap);
 
-                bindConditionalSequenceFlow(model.getMainProcess(), from, to, conditionsString);
+                bindConditionalSequenceFlow(model.getMainProcess(), from, to, conditionsString, label);
                 continue;
             }
 
@@ -121,7 +121,7 @@ public class Transformer implements InitializingBean {
                 String id = cell.getId();
                 String to = cell.getTo();
                 if (StringUtils.isEmpty(to)) {
-                    bindSequenceFlow(model.getMainProcess(), id, endEvent.getId());
+                    bindSequenceFlow(model.getMainProcess(), id, endEvent.getId(), "END");
                 }
             }
 
@@ -136,7 +136,7 @@ public class Transformer implements InitializingBean {
                 bindServiceTask(model.getMainProcess(), id, cell.getLabel(), properties, cell.getShapeId());
 
                 //시작이벤트에서 Request 로 시퀀스를 추가한다.
-                bindSequenceFlow(model.getMainProcess(), startEvent.getId(), id);
+                bindSequenceFlow(model.getMainProcess(), startEvent.getId(), id, "START");
             }
 
             /**
@@ -230,22 +230,24 @@ public class Transformer implements InitializingBean {
         return event;
     }
 
-    private void bindSequenceFlow(Process process, String source, String target) {
+    private void bindSequenceFlow(Process process, String source, String target,String name) {
         SequenceFlow flow = new SequenceFlow();
         flow.setId("SF" + JVMIDUtils.generateUUID());
         flow.setSourceRef(source);
         flow.setTargetRef(target);
+        flow.setName(name);
 
         flow.setConditionExpression("");
         process.addFlowElement(flow);
     }
 
-    private void bindConditionalSequenceFlow(Process process, String source, String target, String script) {
+    private void bindConditionalSequenceFlow(Process process, String source, String target, String script, String label) {
         SequenceFlow flow = new SequenceFlow();
         flow.setId("SF" + JVMIDUtils.generateUUID());
         flow.setSourceRef(source);
         flow.setTargetRef(target);
         flow.setConditionExpression(script);
+        flow.setName(label);
 
         process.addFlowElement(flow);
     }

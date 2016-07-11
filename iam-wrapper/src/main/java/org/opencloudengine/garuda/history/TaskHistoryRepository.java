@@ -34,4 +34,6 @@ public interface TaskHistoryRepository {
 
     void deleteById(String id);
 
+    void deleteByIdentifier(String identifier);
+
 }

@@ -9,8 +9,11 @@ public class TaskHistory extends CouchDAO {
     private String taskId;
     private String taskName;
     private Long startDate;
+    private String humanStartDate;
     private Long endDate;
+    private String humanEndDate;
     private Long duration;
+    private String humanDuration;
     private String status;
     private String input;
     private String output;
@@ -57,6 +60,14 @@ public class TaskHistory extends CouchDAO {
         this.startDate = startDate;
     }
 
+    public String getHumanStartDate() {
+        return humanStartDate;
+    }
+
+    public void setHumanStartDate(String humanStartDate) {
+        this.humanStartDate = humanStartDate;
+    }
+
     public Long getEndDate() {
         return endDate;
     }
@@ -65,12 +76,28 @@ public class TaskHistory extends CouchDAO {
         this.endDate = endDate;
     }
 
+    public String getHumanEndDate() {
+        return humanEndDate;
+    }
+
+    public void setHumanEndDate(String humanEndDate) {
+        this.humanEndDate = humanEndDate;
+    }
+
     public Long getDuration() {
         return duration;
     }
 
     public void setDuration(Long duration) {
         this.duration = duration;
+    }
+
+    public String getHumanDuration() {
+        return humanDuration;
+    }
+
+    public void setHumanDuration(String humanDuration) {
+        this.humanDuration = humanDuration;
     }
 
     public String getStatus() {

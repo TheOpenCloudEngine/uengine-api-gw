@@ -55,10 +55,11 @@ public class AbstractHandler extends DefaultActivity {
     /**
      * 실행중인 트랜잭션 history 관련 객체들
      */
-
     public TaskHistory taskHistory;
 
     public TransactionHistory transactionHistory;
+
+    public boolean transactionSucceeded = true;
 
     public ResourceUri getResourceUri() {
         return resourceUri;

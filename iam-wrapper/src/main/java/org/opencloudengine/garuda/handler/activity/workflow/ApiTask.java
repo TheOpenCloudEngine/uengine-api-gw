@@ -10,6 +10,8 @@ import org.opencloudengine.garuda.handler.activity.workflow.script.HttpRequest;
 import org.opencloudengine.garuda.script.ScriptResponse;
 import org.opencloudengine.garuda.util.HttpUtils;
 import org.opencloudengine.garuda.util.StringUtils;
+import org.uengine.kernel.ActivityInstanceContext;
+import org.uengine.kernel.ProcessDefinition;
 
 import java.util.HashMap;
 import java.util.Map;

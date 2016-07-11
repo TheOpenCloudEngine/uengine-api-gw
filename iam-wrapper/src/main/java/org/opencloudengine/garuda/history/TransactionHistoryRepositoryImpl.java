@@ -52,7 +52,7 @@ public class TransactionHistoryRepositoryImpl implements TransactionHistoryRepos
             ViewRequestBuilder builder = serviceFactory.getDb().getViewRequestBuilder(NAMESPACE, "select");
             List<ViewResponse.Row<Key.ComplexKey, TransactionHistory>> rows = builder.newRequest(Key.Type.COMPLEX, TransactionHistory.class).
                     //keys(complex).
-                            limit(limit).skip(skip).
+                            limit(limit).skip(skip).descending(true).
                     build().getResponse().getRows();
 
             for (ViewResponse.Row<Key.ComplexKey, TransactionHistory> row : rows) {

@@ -23,10 +23,11 @@ public class PolicyHandler extends PolicyInterceptorHandler {
     public void doAction() {
 
         String taskName = "Authentication";
-        this.initTaskHistory(taskName);
         AuthInformation authInformation = new AuthInformation();
         String authentication = policy.getAuthentication();
         if (authentication.equals("Y")) {
+            //타스크 히스토리 등록
+            this.initTaskHistory(taskName);
             //인풋 등록
             AuthenticationInput authenticationInput = new AuthenticationInput();
             authenticationInput.setTokenName(policy.getTokenName());
@@ -49,6 +50,8 @@ public class PolicyHandler extends PolicyInterceptorHandler {
                         servletRequest,
                         servletResponse,
                         null);
+
+                this.updateTaskStderr(taskName, authInformation.getError_description());
                 this.updateTaskHistoryAsFailed(taskName);
                 return;
             }
@@ -65,8 +68,8 @@ public class PolicyHandler extends PolicyInterceptorHandler {
         requestInput.setPathVarialbe(pathVarialbe);
         requestInput.setUri(servletRequest.getPathInfo());
 
-        boolean continueProxy = false;
         if (!StringUtils.isEmpty(policy.getBeforeUse())) {
+            boolean continueProxy = false;
             //인풋 데이터
             taskName = "BeforeScript";
             this.initTaskHistory(taskName);
@@ -89,31 +92,35 @@ public class PolicyHandler extends PolicyInterceptorHandler {
                 beforeOutput.setContinueProxy(continueProxy);
                 this.updateTaskOutputData(taskName, beforeOutput);
 
-                //성공 저장
-                this.updateTaskHistoryAsFinished(taskName);
+                if (!continueProxy) {
+                    //실패 로그 저장
+                    this.updateTaskStderr(taskName, "continueProxy false: Stop by before use script.");
+
+                    //실패 히스토리 저장
+                    this.updateTaskHistoryAsFailed(taskName);
+
+                    gatewayService.errorResponse(GateException.BEFORE_USE_SCRIPT, servletRequest, servletResponse, "continueProxy false: Stop by before use script.");
+                    return;
+                }else{
+                    //성공 저장
+                    this.updateTaskHistoryAsFinished(taskName);
+                }
 
             } catch (Exception ex) {
-                gatewayService.errorResponse(GateException.BEFORE_USE_SCRIPT, servletRequest, servletResponse, ex.getCause().toString());
 
-                //로그 저장
+                //실패 로그 저장
                 this.updateTaskStderr(taskName, ExceptionUtils.getFullStackTrace(ex));
 
                 //아웃풋 저장
                 beforeOutput.setContinueProxy(continueProxy);
                 this.updateTaskOutputData(taskName, beforeOutput);
 
-                //실패 저장
+                //실패 히스토리 저장
                 this.updateTaskHistoryAsFailed(taskName);
 
+                gatewayService.errorResponse(GateException.BEFORE_USE_SCRIPT, servletRequest, servletResponse, ex.getCause().toString());
                 return;
             }
-        } else {
-            continueProxy = true;
-        }
-
-        if (!continueProxy) {
-            gatewayService.errorResponse(GateException.BEFORE_USE_SCRIPT, servletRequest, servletResponse, "Stop by before use script.");
-            return;
         }
 
         ProxyRequest proxyRequest = new ProxyRequest();
