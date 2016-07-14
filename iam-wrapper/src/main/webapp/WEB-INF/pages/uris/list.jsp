@@ -51,18 +51,18 @@
                             resourceUris.data[i]._id = '<a href=/service-console/uris/edit?_id=' + resourceUris.data[i]._id + '>Edit</a>';
                             if (resourceUris.data[i].runWith == 'workflow') {
                                 resourceUris.data[i].runWith = '' +
-                                        '<button class="btn btn-xs rounded btn-primary">workflow</button>  ' +
+                                        '<button class="btn btn-xs rounded btn-primary">Composite Wrapper</button>  ' +
                                         '<a href=/service-console/workflow-edit?_id=' + resourceUris.data[i].wid + '>' +
                                         resourceUris.data[i].workflowName + '</a>';
                             }
                             if (resourceUris.data[i].runWith == 'class') {
                                 resourceUris.data[i].runWith = '' +
-                                        '<button class="btn btn-xs rounded btn-primary">class</button>  ' +
+                                        '<button class="btn btn-xs rounded btn-primary">Class Wrapper</button>  ' +
                                         resourceUris.data[i].className
                             }
                             if (resourceUris.data[i].runWith == 'policy') {
                                 resourceUris.data[i].runWith = '' +
-                                        '<button class="btn btn-xs rounded btn-primary">policy</button>  ' +
+                                        '<button class="btn btn-xs rounded btn-primary">Simple Wrapper</button>  ' +
                                         '<a href=/service-console/policy/edit?_id=' + resourceUris.data[i].policyId + '>' +
                                         resourceUris.data[i].policyName + '</a>';
                             }
@@ -100,10 +100,10 @@
     <!--=== Breadcrumbs ===-->
     <div class="breadcrumbs">
         <div class="container">
-            <h1 class="pull-left">Uri Mapping</h1>
+            <h1 class="pull-left">URI Mapping</h1>
             <ul class="pull-right breadcrumb">
                 <li><a href="/service-console/index">HOME</a></li>
-                <li class="active">Uri Mapping</li>
+                <li class="active">URI Mapping</li>
             </ul>
         </div>
     </div>
@@ -113,9 +113,9 @@
     <div class="container content profile">
         <div class="row">
             <div class="col-md-12">
-                <div class="headline margin-bottom-10"><h4>Uri Mappings </h4></div>
+                <div class="headline margin-bottom-10"><h4>URI Mappings </h4></div>
 
-                <a class="btn-u btn-u-primary" href="/service-console/uris/new">Create Uri Mapping</a>
+                <a class="btn-u btn-u-primary" href="/service-console/uris/new">Create URI Mapping</a>
 
                 <br>
                 <br>
@@ -129,7 +129,7 @@
                             <thead>
                             <tr>
                                 <th>Order</th>
-                                <th>Uri</th>
+                                <th>URI</th>
                                 <th>Method</th>
                                 <th>RunWith</th>
                                 <th></th>

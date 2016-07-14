@@ -94,10 +94,10 @@
     <!--=== Breadcrumbs ===-->
     <div class="breadcrumbs">
         <div class="container">
-            <h1 class="pull-left">Policy</h1>
+            <h1 class="pull-left">Simple Wrappers</h1>
             <ul class="pull-right breadcrumb">
                 <li><a href="/service-console/index">HOME</a></li>
-                <li class="active">Policy</li>
+                <li class="active">Simple Wrappers</li>
             </ul>
         </div>
     </div>
@@ -107,9 +107,9 @@
     <div class="container content profile">
         <div class="row">
             <div class="col-md-12">
-                <div class="headline margin-bottom-10"><h4>Policy </h4></div>
+                <div class="headline margin-bottom-10"><h4>Simple Wrapper </h4></div>
 
-                <a class="btn-u btn-u-primary" href="/service-console/policy/new">Create Policy</a>
+                <a class="btn-u btn-u-primary" href="/service-console/policy/new">Create Simple Wrapper</a>
 
                 <br>
                 <br>

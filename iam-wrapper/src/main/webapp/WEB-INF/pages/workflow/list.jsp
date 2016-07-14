@@ -80,10 +80,10 @@
     <!--=== Breadcrumbs ===-->
     <div class="breadcrumbs">
         <div class="container">
-            <h1 class="pull-left">Workflow</h1>
+            <h1 class="pull-left">Composite Wrappers</h1>
             <ul class="pull-right breadcrumb">
                 <li><a href="/service-console/index">HOME</a></li>
-                <li class="active">Workflow</li>
+                <li class="active">Composite Wrappers</li>
             </ul>
         </div>
     </div>
@@ -93,9 +93,9 @@
     <div class="container content profile">
         <div class="row">
             <div class="col-md-12">
-                <div class="headline margin-bottom-10"><h4>Workflow </h4></div>
+                <div class="headline margin-bottom-10"><h4>Composite Wrappers </h4></div>
 
-                <a class="btn-u btn-u-primary" href="/service-console/workflow-new">Create Workflow</a>
+                <a class="btn-u btn-u-primary" href="/service-console/workflow-new">Create Composite Wrapper</a>
 
                 <br>
                 <br>

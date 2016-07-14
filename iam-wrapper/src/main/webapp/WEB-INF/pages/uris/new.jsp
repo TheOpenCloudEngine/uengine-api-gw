@@ -15,9 +15,6 @@
 
     <!-- CSS Page Style -->
     <link rel="stylesheet" href="/service-console/resources/assets/css/pages/profile.css">
-
-    <link rel="stylesheet" href="/service-console/resources/plugins/select2/select2.css">
-    <script type="text/javascript" src="/service-console/resources/plugins/select2/select2.js"/>
 </head>
 
 
@@ -27,16 +24,14 @@
     <!--=== Breadcrumbs ===-->
     <div class="breadcrumbs">
         <div class="container">
-            <h1 class="pull-left">Uri Mapping</h1>
+            <h1 class="pull-left">URI Mapping</h1>
             <ul class="pull-right breadcrumb">
                 <li><a href="/service-console/index">HOME</a></li>
-                <li class="active">Uri Mapping</li>
+                <li class="active">URI Mapping</li>
             </ul>
         </div>
     </div>
     <!--/breadcrumbs-->
-
-    <%--<%@include file="./banner.jsp" %>--%>
 
     <!--=== Profile ===-->
     <div class="container content profile">
@@ -45,7 +40,7 @@
                 <form action="/service-console/uris/create" class="form-horizontal"
                       role="form"
                       id="resourceUriForm" method="post">
-                    <h4>Create New Uri Mapping </h4>
+                    <h4>Create New URI Mapping </h4>
 
                     <c:choose>
                         <c:when test="${duplicate}">
@@ -65,7 +60,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-md-2 control-label">Uri <span class="color-red">*</span></label>
+                        <label class="col-md-2 control-label">URI <span class="color-red">*</span></label>
 
                         <div class="col-md-6">
                             <input name="uri" type="text" class="form-control" value="">
@@ -93,15 +88,15 @@
 
                         <div class="col-md-6">
                             <select name="runWith" class="form-control">
-                                <option value="class">Class</option>
-                                <option value="policy">Policy</option>
-                                <option value="workflow">Workflow</option>
+                                <option value="class">Class Wrapper</option>
+                                <option value="policy">Simple Wrapper</option>
+                                <option value="workflow">Composite Wrapper</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group" id="classNameForm">
-                        <label class="col-md-2 control-label">Class Name <span class="color-red">*</span></label>
+                        <label class="col-md-2 control-label">Class Wrapper <span class="color-red">*</span></label>
 
                         <div class="col-md-6">
                             <input name="className" type="text" class="form-control" value="">
@@ -109,7 +104,7 @@
                     </div>
 
                     <div class="form-group" id="widForm">
-                        <label class="col-md-2 control-label">Workflow <span
+                        <label class="col-md-2 control-label">Composite Wrapper <span
                                 class="color-red">*</span></label>
 
                         <div class="col-md-6">
@@ -122,7 +117,7 @@
                     </div>
 
                     <div class="form-group" id="policyForm">
-                        <label class="col-md-2 control-label">Policy <span
+                        <label class="col-md-2 control-label">Simple Wrapper <span
                                 class="color-red">*</span></label>
 
                         <div class="col-md-6">
@@ -136,7 +131,7 @@
 
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-10">
-                            <button id="submitBtn" type="submit" class="btn-u btn-u-primary">Create Uri Mapping
+                            <button id="submitBtn" type="submit" class="btn-u btn-u-primary">Create URI Mapping
                             </button>
                         </div>
                     </div>
@@ -152,7 +147,10 @@
 </div>
 <!--/wrapper-->
 
+<link rel="stylesheet" href="/service-console/resources/plugins/select2/select2.css">
+<script type="text/javascript" src="/service-console/resources/plugins/select2/select2.js"/>
 <%@include file="../template/footer_js.jsp" %>
+
 
 <script type="text/javascript">
     $(function () {

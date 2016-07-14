@@ -16,8 +16,6 @@
     <!-- CSS Page Style -->
     <link rel="stylesheet" href="/service-console/resources/assets/css/pages/profile.css">
 
-    <link rel="stylesheet" href="/service-console/resources/plugins/select2/select2.css">
-    <script type="text/javascript" src="/service-console/resources/plugins/select2/select2.js"/>
 </head>
 
 
@@ -27,10 +25,10 @@
     <!--=== Breadcrumbs ===-->
     <div class="breadcrumbs">
         <div class="container">
-            <h1 class="pull-left">Policy</h1>
+            <h1 class="pull-left">Simple Wrappers</h1>
             <ul class="pull-right breadcrumb">
                 <li><a href="/service-console/index">HOME</a></li>
-                <li class="active">Policy</li>
+                <li class="active">Simple Wrappers</li>
             </ul>
         </div>
     </div>
@@ -43,14 +41,14 @@
                 <form action="/service-console/policy/create" class="form-horizontal"
                       role="form"
                       id="policyForm" method="post">
-                    <h4>Create New Policy</h4>
+                    <h4>Create New Simple Wrapper</h4>
 
                     <c:choose>
                         <c:when test="${duplicate}">
-                            <h4 style="color: #ff0000">Policy Name already exist. </h4>
+                            <h4 style="color: #ff0000">Wrapper Name already exist. </h4>
                         </c:when>
                         <c:when test="${failed}">
-                            <h4 style="color: #ff0000">Policy create failed. </h4>
+                            <h4 style="color: #ff0000">Simple Wrapper create failed. </h4>
                         </c:when>
                     </c:choose>
 
@@ -93,10 +91,10 @@
                         </div>
                     </div>
 
-                    <h4 name="customForm">Proxy Option</h4>
+                    <h4 name="customForm">Target Option</h4>
 
                     <div class="form-group">
-                        <label class="col-md-2 control-label">Proxy Uri <span
+                        <label class="col-md-2 control-label">Target URI <span
                                 class="color-red">*</span></label>
 
                         <div class="col-md-6">
@@ -105,7 +103,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-md-2 control-label">Prefix Uri <span
+                        <label class="col-md-2 control-label">Prefix URI <span
                                 class="color-red">*</span></label>
 
                         <div class="col-md-2">
@@ -140,7 +138,7 @@
 
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-10">
-                            <button id="submitBtn" type="submit" class="btn-u btn-u-primary">Create Policy
+                            <button id="submitBtn" type="submit" class="btn-u btn-u-primary">Create Simple Wrapper
                             </button>
                         </div>
                     </div>
@@ -156,6 +154,8 @@
 </div>
 <!--/wrapper-->
 
+<link rel="stylesheet" href="/service-console/resources/plugins/select2/select2.css">
+<script type="text/javascript" src="/service-console/resources/plugins/select2/select2.js"/>
 <%@include file="../template/footer_js.jsp" %>
 
 <script type="text/javascript">

@@ -24,10 +24,10 @@
     <!--=== Breadcrumbs ===-->
     <div class="breadcrumbs">
         <div class="container">
-            <h1 class="pull-left">Transactions analysis</h1>
+            <h1 class="pull-left">Transactions Logs</h1>
             <ul class="pull-right breadcrumb">
                 <li><a href="/service-console/index">HOME</a></li>
-                <li class="active">Transactions analysis</li>
+                <li class="active">Transactions Logs</li>
             </ul>
         </div>
     </div>

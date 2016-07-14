@@ -16,9 +16,6 @@
     <!-- CSS Page Style -->
     <link rel="stylesheet" href="/service-console/resources/assets/css/pages/profile.css">
 
-    <link rel="stylesheet" href="/service-console/resources/plugins/select2/select2.css">
-    <script type="text/javascript" src="/service-console/resources/plugins/select2/select2.js"/>
-
 </head>
 
 
@@ -28,10 +25,10 @@
     <!--=== Breadcrumbs ===-->
     <div class="breadcrumbs">
         <div class="container">
-            <h1 class="pull-left">Policy</h1>
+            <h1 class="pull-left">Simple Wrappers</h1>
             <ul class="pull-right breadcrumb">
                 <li><a href="/service-console/index">HOME</a></li>
-                <li class="active">Policy</li>
+                <li class="active">Simple Wrappers</li>
             </ul>
         </div>
     </div>
@@ -46,14 +43,14 @@
                 <form action="/service-console/policy/update" class="form-horizontal"
                       role="form"
                       id="policyForm" method="post">
-                    <h4>Edit Policy </h4>
+                    <h4>Edit Simple Wrapper </h4>
 
                     <c:choose>
                         <c:when test="${duplicate}">
-                            <h4 style="color: #ff0000">Policy Name already exist. </h4>
+                            <h4 style="color: #ff0000">Wrapper Name already exist. </h4>
                         </c:when>
                         <c:when test="${failed}">
-                            <h4 style="color: #ff0000">Policy create failed. </h4>
+                            <h4 style="color: #ff0000">Simple Wrapper create failed. </h4>
                         </c:when>
                     </c:choose>
 
@@ -103,10 +100,10 @@
                         </div>
                     </div>
 
-                    <h4 name="customForm">Proxy Option</h4>
+                    <h4 name="customForm">Target Option</h4>
 
                     <div class="form-group">
-                        <label class="col-md-2 control-label">Proxy Uri <span
+                        <label class="col-md-2 control-label">Target URI <span
                                 class="color-red">*</span></label>
 
                         <div class="col-md-6">
@@ -116,7 +113,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-md-2 control-label">Prefix Uri <span
+                        <label class="col-md-2 control-label">Prefix URI <span
                                 class="color-red">*</span></label>
 
                         <div class="col-md-2">
@@ -169,6 +166,9 @@
 </div>
 <!--/wrapper-->
 
+<link rel="stylesheet" href="/service-console/resources/plugins/select2/select2.css">
+<script type="text/javascript" src="/service-console/resources/plugins/select2/select2.js"/>
+
 <%@include file="../template/footer_js.jsp" %>
 
 <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -180,7 +180,7 @@
                 <h4 class="modal-title">Caution</h4>
             </div>
             <div class="modal-body">
-                <p style="text-align: center" name="content">Are you sure delete policy?</p>
+                <p style="text-align: center" name="content">Are you sure delete Simple Wrapper?</p>
             </div>
             <div class="modal-footer">
                 <button class="btn-u" type="button" name="delete">Delete</button>

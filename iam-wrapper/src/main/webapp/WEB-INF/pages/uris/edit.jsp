@@ -16,9 +16,6 @@
     <!-- CSS Page Style -->
     <link rel="stylesheet" href="/service-console/resources/assets/css/pages/profile.css">
 
-    <link rel="stylesheet" href="/service-console/resources/plugins/select2/select2.css">
-    <script type="text/javascript" src="/service-console/resources/plugins/select2/select2.js"/>
-
 </head>
 
 
@@ -28,16 +25,14 @@
     <!--=== Breadcrumbs ===-->
     <div class="breadcrumbs">
         <div class="container">
-            <h1 class="pull-left">Uri Mapping</h1>
+            <h1 class="pull-left">URI Mapping</h1>
             <ul class="pull-right breadcrumb">
                 <li><a href="/service-console/index">HOME</a></li>
-                <li class="active">Uri Mapping</li>
+                <li class="active">URI Mapping</li>
             </ul>
         </div>
     </div>
     <!--/breadcrumbs-->
-
-    <%--<%@include file="./banner.jsp" %>--%>
 
     <!--=== Profile ===-->
     <div class="container content profile">
@@ -46,14 +41,14 @@
                 <form action="/service-console/uris/update" class="form-horizontal"
                       role="form"
                       id="resourceUriForm" method="post">
-                    <h4>Edit Uri Mapping </h4>
+                    <h4>Edit URI Mapping </h4>
 
                     <c:choose>
                         <c:when test="${duplicate}">
-                            <h4 style="color: #ff0000">Uri Mapping Order already exist. </h4>
+                            <h4 style="color: #ff0000">URI Mapping Order already exist. </h4>
                         </c:when>
                         <c:when test="${failed}">
-                            <h4 style="color: #ff0000">Uri Mapping create failed. </h4>
+                            <h4 style="color: #ff0000">URI Mapping create failed. </h4>
                         </c:when>
                     </c:choose>
 
@@ -97,20 +92,20 @@
                         <div class="col-md-6">
                             <select name="runWith" class="form-control">
                                 <option value="class"
-                                        <c:if test="${resourceUri.runWith == 'class'}">selected</c:if>>Class
+                                        <c:if test="${resourceUri.runWith == 'class'}">selected</c:if>>Class Wrapper
                                 </option>
                                 <option value="policy"
-                                        <c:if test="${resourceUri.runWith == 'policy'}">selected</c:if>>Policy
+                                        <c:if test="${resourceUri.runWith == 'policy'}">selected</c:if>>Composite Wrapper
                                 </option>
                                 <option value="workflow"
-                                        <c:if test="${resourceUri.runWith == 'workflow'}">selected</c:if>>Workflow
+                                        <c:if test="${resourceUri.runWith == 'workflow'}">selected</c:if>>Simple Wrapper
                                 </option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group" id="classNameForm">
-                        <label class="col-md-2 control-label">Class Name <span class="color-red">*</span></label>
+                        <label class="col-md-2 control-label">Class Wrapper <span class="color-red">*</span></label>
 
                         <div class="col-md-6">
                             <input name="className" type="text" class="form-control" value="${resourceUri.className}">
@@ -118,7 +113,7 @@
                     </div>
 
                     <div class="form-group" id="policyForm">
-                        <label class="col-md-2 control-label">Policy <span
+                        <label class="col-md-2 control-label">Simple Wrapper <span
                                 class="color-red">*</span></label>
 
                         <div class="col-md-6">
@@ -133,7 +128,7 @@
                     </div>
 
                     <div class="form-group" id="widForm">
-                        <label class="col-md-2 control-label">Workflow <span
+                        <label class="col-md-2 control-label">Composite Wrapper <span
                                 class="color-red">*</span></label>
 
                         <div class="col-md-6">
@@ -168,6 +163,8 @@
 </div>
 <!--/wrapper-->
 
+<link rel="stylesheet" href="/service-console/resources/plugins/select2/select2.css">
+<script type="text/javascript" src="/service-console/resources/plugins/select2/select2.js"/>
 <%@include file="../template/footer_js.jsp" %>
 
 <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"

@@ -15,24 +15,6 @@
 <head>
     <%@include file="../template/header_js.jsp" %>
 
-    <link rel="stylesheet" href="/service-console/resources/plugins/codemirror/codemirror.css">
-    <script type="text/javascript" src="/service-console/resources/plugins/codemirror/codemirror.js"></script>
-    <script type="text/javascript" src="/service-console/resources/plugins/codemirror/javascript.js"></script>
-
-    <link rel="stylesheet" href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/css/sky-forms.css">
-    <link rel="stylesheet"
-          href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css">
-    <!--[if lt IE 9]>
-    <link rel="stylesheet"
-          href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/css/sky-forms-ie8.css"><![endif]-->
-
-
-    <link rel="stylesheet" type="text/css"
-          href="/service-console/resources/opengraph/contextmenu/jquery.contextMenu.css"/>
-    <script type="text/javascript"
-            src="/service-console/resources/opengraph/contextmenu/jquery.contextMenu-min.js"></script>
-    <script type="text/javascript" src="/service-console/resources/opengraph/OpenGraph-0.1.1-SNAPSHOT.js"/>
-
 </head>
 
 <div class="wrapper">
@@ -42,10 +24,10 @@
     <!--=== Breadcrumbs ===-->
     <div class="breadcrumbs">
         <div class="container">
-            <h1 class="pull-left">Workflow</h1>
+            <h1 class="pull-left">Composite Wrappers</h1>
             <ul class="pull-right breadcrumb">
                 <li><a href="/service-console/index">HOME</a></li>
-                <li class="active">Workflow</li>
+                <li class="active">Composite Wrappers</li>
             </ul>
         </div>
     </div>
@@ -58,14 +40,14 @@
                 <form action="/service-console/workflow/update" class="form-horizontal"
                       role="form"
                       id="workflowForm" method="post">
-                    <h4>Edit Workflow </h4>
+                    <h4>Edit Composite Wrapper </h4>
 
                     <c:choose>
                         <c:when test="${duplicate}">
-                            <h4 style="color: #ff0000">Workflow Name already exist. </h4>
+                            <h4 style="color: #ff0000">Wrapper Name already exist. </h4>
                         </c:when>
                         <c:when test="${failed}">
-                            <h4 style="color: #ff0000">Policy create failed. </h4>
+                            <h4 style="color: #ff0000">Composite Wrapper create failed. </h4>
                         </c:when>
                     </c:choose>
 
@@ -110,7 +92,7 @@
                                     </c:forEach>
                                 </div>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-9">
                                 <div id="canvas"></div>
                             </div>
                         </div>
@@ -125,6 +107,20 @@
     <%@include file="../template/footer.jsp" %>
 </div>
 <!--/wrapper-->
+
+<link rel="stylesheet" href="/service-console/resources/plugins/codemirror/codemirror.css">
+<script type="text/javascript" src="/service-console/resources/plugins/codemirror/codemirror.js"></script>
+<script type="text/javascript" src="/service-console/resources/plugins/codemirror/javascript.js"></script>
+
+<link rel="stylesheet" href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/css/sky-forms.css">
+<link rel="stylesheet" href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css">
+<!--[if lt IE 9]>
+<link rel="stylesheet" href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/css/sky-forms-ie8.css"><![endif]-->
+
+<link rel="stylesheet" type="text/css" href="/service-console/resources/opengraph/contextmenu/jquery.contextMenu.css"/>
+<script type="text/javascript" src="/service-console/resources/opengraph/contextmenu/jquery.contextMenu-min.js"></script>
+<script type="text/javascript" src="/service-console/resources/opengraph/OpenGraph-0.1.1-SNAPSHOT.js"/>
+
 <%@include file="../template/footer_js.jsp" %>
 
 <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -136,7 +132,7 @@
                 <h4 class="modal-title">Caution</h4>
             </div>
             <div class="modal-body">
-                <p style="text-align: center" name="content">Are you sure delete workflow?</p>
+                <p style="text-align: center" name="content">Are you sure delete Composite Wrapper?</p>
             </div>
             <div class="modal-footer">
                 <button class="btn-u" type="button" name="delete">Delete</button>

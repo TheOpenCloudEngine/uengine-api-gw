@@ -50,18 +50,18 @@
                             transactionHistories.data[i]._id = '<a href=/service-console/analysis/info?_id=' + transactionHistories.data[i]._id + '>Detail</a>';
                             if (transactionHistories.data[i].runWith == 'workflow') {
                                 transactionHistories.data[i].runWith = '' +
-                                        '<button class="btn btn-xs rounded btn-primary">workflow</button>  ' +
+                                        '<button class="btn btn-xs rounded btn-primary">Composite Wrapper</button>  ' +
                                         '<a href=/service-console/workflow-edit?_id=' + transactionHistories.data[i].wid + '>' +
                                         transactionHistories.data[i].workflowName + '</a>';
                             }
                             if (transactionHistories.data[i].runWith == 'class') {
                                 transactionHistories.data[i].runWith = '' +
-                                        '<button class="btn btn-xs rounded btn-primary">class</button>  ' +
+                                        '<button class="btn btn-xs rounded btn-primary">Class Wrapper</button>  ' +
                                         resourceUris.data[i].className
                             }
                             if (transactionHistories.data[i].runWith == 'policy') {
                                 transactionHistories.data[i].runWith = '' +
-                                        '<button class="btn btn-xs rounded btn-primary">policy</button>  ' +
+                                        '<button class="btn btn-xs rounded btn-primary">Simple Wrapper</button>  ' +
                                         '<a href=/service-console/policy/edit?_id=' + transactionHistories.data[i].policyId + '>' +
                                         transactionHistories.data[i].policyName + '</a>';
                             }
@@ -109,10 +109,10 @@
     <!--=== Breadcrumbs ===-->
     <div class="breadcrumbs">
         <div class="container">
-            <h1 class="pull-left">Transactions analysis</h1>
+            <h1 class="pull-left">Transactions Logs</h1>
             <ul class="pull-right breadcrumb">
                 <li><a href="/service-console/index">HOME</a></li>
-                <li class="active">Transactions analysis</li>
+                <li class="active">Transactions Logs</li>
             </ul>
         </div>
     </div>
@@ -122,7 +122,7 @@
     <div class="container content profile">
         <div class="row">
             <div class="col-md-12">
-                <div class="headline margin-bottom-10"><h4>Transactions analysis </h4></div>
+                <div class="headline margin-bottom-10"><h4>Transactions Logs </h4></div>
 
                 <div class="margin-bottom-10">
                     <div class="table-responsive">

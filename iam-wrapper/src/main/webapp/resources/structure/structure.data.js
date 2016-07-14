@@ -12,28 +12,28 @@ structure.data = {
          Uris
          */
         {
-            title: 'Uris',
+            title: 'URI Mappings',
             href: '/service-console/uris'
         },
         /*
          Policy
          */
         {
-            title: 'Policy',
+            title: 'Simple Wrappers',
             href: '/service-console/policy'
         },
         /*
          Workflow
          */
         {
-            title: 'Workflow',
+            title: 'Composite Wrappers',
             href: '/service-console/workflow'
         },
         /*
          Analysis
          */
         {
-            title: 'Analysis',
+            title: 'Logs',
             href: '/service-console/analysis'
         },
         /*
