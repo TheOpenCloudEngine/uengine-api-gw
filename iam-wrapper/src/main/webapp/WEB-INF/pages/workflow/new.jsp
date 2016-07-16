@@ -15,6 +15,19 @@
 <head>
     <%@include file="../template/header_js.jsp" %>
 
+    <link rel="stylesheet" href="/service-console/resources/plugins/codemirror/codemirror.css">
+    <script type="text/javascript" src="/service-console/resources/plugins/codemirror/codemirror.js"></script>
+    <script type="text/javascript" src="/service-console/resources/plugins/codemirror/javascript.js"></script>
+
+    <link rel="stylesheet" href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/css/sky-forms.css">
+    <link rel="stylesheet" href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css">
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/css/sky-forms-ie8.css"><![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/service-console/resources/opengraph/contextmenu/jquery.contextMenu.css"/>
+    <script type="text/javascript" src="/service-console/resources/opengraph/contextmenu/jquery.contextMenu-min.js"></script>
+    <script type="text/javascript" src="/service-console/resources/opengraph/OpenGraph-0.1.1-SNAPSHOT.js"/>
+
 </head>
 
 <div class="wrapper">
@@ -108,19 +121,6 @@
 </div>
 <!--/wrapper-->
 
-<link rel="stylesheet" href="/service-console/resources/plugins/codemirror/codemirror.css">
-<script type="text/javascript" src="/service-console/resources/plugins/codemirror/codemirror.js"></script>
-<script type="text/javascript" src="/service-console/resources/plugins/codemirror/javascript.js"></script>
-
-<link rel="stylesheet" href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/css/sky-forms.css">
-<link rel="stylesheet" href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css">
-<!--[if lt IE 9]>
-<link rel="stylesheet" href="/service-console/resources/assets/plugins/sky-forms-pro/skyforms/css/sky-forms-ie8.css"><![endif]-->
-
-
-<link rel="stylesheet" type="text/css" href="/service-console/resources/opengraph/contextmenu/jquery.contextMenu.css"/>
-<script type="text/javascript" src="/service-console/resources/opengraph/contextmenu/jquery.contextMenu-min.js"></script>
-<script type="text/javascript" src="/service-console/resources/opengraph/OpenGraph-0.1.1-SNAPSHOT.js"/>
 <%@include file="../template/footer_js.jsp" %>
 
 
