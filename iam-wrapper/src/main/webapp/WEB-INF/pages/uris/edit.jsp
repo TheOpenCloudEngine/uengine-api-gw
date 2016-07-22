@@ -16,6 +16,8 @@
     <!-- CSS Page Style -->
     <link rel="stylesheet" href="/service-console/resources/assets/css/pages/profile.css">
 
+    <link rel="stylesheet" href="/service-console/resources/plugins/select2/select2.css">
+    <script type="text/javascript" src="/service-console/resources/plugins/select2/select2.js"/>
 </head>
 
 
@@ -95,10 +97,10 @@
                                         <c:if test="${resourceUri.runWith == 'class'}">selected</c:if>>Class Wrapper
                                 </option>
                                 <option value="policy"
-                                        <c:if test="${resourceUri.runWith == 'policy'}">selected</c:if>>Composite Wrapper
+                                        <c:if test="${resourceUri.runWith == 'policy'}">selected</c:if>>Simple Wrapper
                                 </option>
                                 <option value="workflow"
-                                        <c:if test="${resourceUri.runWith == 'workflow'}">selected</c:if>>Simple Wrapper
+                                        <c:if test="${resourceUri.runWith == 'workflow'}">selected</c:if>>Composite Wrapper
                                 </option>
                             </select>
                         </div>
@@ -163,8 +165,6 @@
 </div>
 <!--/wrapper-->
 
-<link rel="stylesheet" href="/service-console/resources/plugins/select2/select2.css">
-<script type="text/javascript" src="/service-console/resources/plugins/select2/select2.js"/>
 <%@include file="../template/footer_js.jsp" %>
 
 <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"

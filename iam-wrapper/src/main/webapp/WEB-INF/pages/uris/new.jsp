@@ -15,6 +15,9 @@
 
     <!-- CSS Page Style -->
     <link rel="stylesheet" href="/service-console/resources/assets/css/pages/profile.css">
+
+    <link rel="stylesheet" href="/service-console/resources/plugins/select2/select2.css">
+    <script type="text/javascript" src="/service-console/resources/plugins/select2/select2.js"/>
 </head>
 
 
@@ -147,8 +150,6 @@
 </div>
 <!--/wrapper-->
 
-<link rel="stylesheet" href="/service-console/resources/plugins/select2/select2.css">
-<script type="text/javascript" src="/service-console/resources/plugins/select2/select2.js"/>
 <%@include file="../template/footer_js.jsp" %>
 
 
