@@ -122,14 +122,12 @@
                                         <input type="hidden" name="flow">
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Flow <span
-                                                    class="color-red">*</span></label>
+                                            <label class="col-md-3 control-label">Flow <span class="color-red">*</span></label>
 
                                             <div class="col-md-9">
                                                 <div class="row" style="margin-bottom: 10px;display: none" id="flow_template" name="flow_template">
                                                     <div class="col-md-8 col-sm-8">
-                                                        <input type="text" name="flow_value" class="form-control"
-                                                               placeholder="value">
+                                                        <input type="text" name="flow_value" class="form-control" placeholder="value">
                                                     </div>
                                                     <div class="col-md-1 col-sm-1">
                                                         <button type="button" name="flow_del" class="btn-u btn-u-primary pull-right">Del

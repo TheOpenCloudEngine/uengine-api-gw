@@ -11,4 +11,4 @@ OG.shape.router.Response = function (label) {
 OG.shape.router.Response.prototype = new OG.shape.ImageShape();
 OG.shape.router.Response.superclass = OG.shape.ImageShape;
 OG.shape.router.Response.prototype.constructor = OG.shape.router.Response;
-OG.Authentication = OG.shape.router.Response;
+OG.Response = OG.shape.router.Response;

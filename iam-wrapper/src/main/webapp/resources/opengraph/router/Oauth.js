@@ -11,4 +11,4 @@ OG.shape.router.Oauth = function (label) {
 OG.shape.router.Oauth.prototype = new OG.shape.ImageShape();
 OG.shape.router.Oauth.superclass = OG.shape.ImageShape;
 OG.shape.router.Oauth.prototype.constructor = OG.shape.router.Oauth;
-OG.Authentication = OG.shape.router.Oauth;
+OG.Oauth = OG.shape.router.Oauth;

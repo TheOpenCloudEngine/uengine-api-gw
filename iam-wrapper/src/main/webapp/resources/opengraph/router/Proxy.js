@@ -11,4 +11,4 @@ OG.shape.router.Proxy = function (label) {
 OG.shape.router.Proxy.prototype = new OG.shape.ImageShape();
 OG.shape.router.Proxy.superclass = OG.shape.ImageShape;
 OG.shape.router.Proxy.prototype.constructor = OG.shape.router.Proxy;
-OG.Authentication = OG.shape.router.Proxy;
+OG.Proxy = OG.shape.router.Proxy;

@@ -19,6 +19,8 @@ public class OauthClient extends CouchDAO {
     private String authorizedGrantTypes;
     private String webServerRedirectUri;
     private String refreshTokenValidity;
+    private String autoDeletionToken;
+    private String requiredContext;
     private Integer codeLifetime;
     private Integer refreshTokenLifetime;
     private Integer accessTokenLifetime;
@@ -122,6 +124,22 @@ public class OauthClient extends CouchDAO {
         this.refreshTokenValidity = refreshTokenValidity;
     }
 
+    public String getAutoDeletionToken() {
+        return autoDeletionToken;
+    }
+
+    public void setAutoDeletionToken(String autoDeletionToken) {
+        this.autoDeletionToken = autoDeletionToken;
+    }
+
+    public String getRequiredContext() {
+        return requiredContext;
+    }
+
+    public void setRequiredContext(String requiredContext) {
+        this.requiredContext = requiredContext;
+    }
+
     public Integer getCodeLifetime() {
         return codeLifetime;
     }
@@ -185,6 +203,8 @@ public class OauthClient extends CouchDAO {
                 ", authorizedGrantTypes='" + authorizedGrantTypes + '\'' +
                 ", webServerRedirectUri='" + webServerRedirectUri + '\'' +
                 ", refreshTokenValidity='" + refreshTokenValidity + '\'' +
+                ", autoDeletionToken='" + autoDeletionToken + '\'' +
+                ", requiredContext='" + requiredContext + '\'' +
                 ", codeLifetime=" + codeLifetime +
                 ", refreshTokenLifetime=" + refreshTokenLifetime +
                 ", accessTokenLifetime=" + accessTokenLifetime +
