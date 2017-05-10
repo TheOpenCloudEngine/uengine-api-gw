@@ -3,16 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>oceIAM-service-wrapper</artifactId>
-        <groupId>org.opencloudengine.garuda</groupId>
-        <version>0.0.1-SNAPSHOT</version>
+        <groupId>org.uengine.garuda</groupId>
+        <artifactId>uengine-api-gw</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>iam-wrapper</artifactId>
+    <artifactId>gw-web</artifactId>
     <packaging>war</packaging>
-    <version>1.0.0-SNAPSHOT</version>
-    <name>OCE IAM - Wrapper</name>
+    <version>1.0.1-SNAPSHOT</version>
+    <name>uengine api gw web</name>
 
 
     <dependencies>
@@ -46,9 +46,9 @@
         <!-- ================== -->
 
         <dependency>
-            <groupId>org.opencloudengine.garuda</groupId>
-            <artifactId>iam-common</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <groupId>org.uengine.garuda</groupId>
+            <artifactId>gw-common</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
 
         <!-- ================== -->
@@ -565,9 +565,9 @@
         </dependency>
 
         <dependency>
-            <groupId>jaf</groupId>
+            <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
-            <version>${jaf.version}</version>
+            <version>${activation.version}</version>
         </dependency>
 
         <!-- ======================= -->

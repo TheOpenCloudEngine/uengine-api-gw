@@ -2,18 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.opencloudengine.garuda</groupId>
-    <artifactId>oceIAM-service-wrapper</artifactId>
+    <groupId>org.uengine.garuda</groupId>
+    <artifactId>uengine-api-gw</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
 
-    <name>OCE IAM Package</name>
+    <name>uengine api gw package</name>
     <url>http://www.uengine.org/</url>
 
     <modules>
         <module>uengine-bpm</module>
-        <module>iam-common</module>
-        <module>iam-wrapper</module>
+        <module>gw-common</module>
+        <module>gw-web</module>
     </modules>
 
     <properties>
@@ -104,7 +104,7 @@
         <tablibs.version>1.1.2</tablibs.version>
         <javamail.version>1.4.7</javamail.version>
         <jta.version>1.1</jta.version>
-        <jaf.version>1.0.2</jaf.version>
+        <activation.version>1.1</activation.version>
         <javax.validation.version>1.1.0.Final</javax.validation.version>
 
         <!-- Velocity -->
@@ -121,8 +121,11 @@
     <repositories>
         <repository>
             <id>central</id>
-            <name>Open Cloud Engine Maven Repository</name>
-            <url>http://maven.opencloudengine.org/content/groups/public/</url>
+            <url>https://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <id>oss-rh</id>
+            <url>https://oss.sonatype.org/content/groups/public</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -142,6 +145,17 @@
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <issueManagement>
         <system>Github</system>
