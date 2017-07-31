@@ -12,7 +12,6 @@ public class OauthClient extends CouchDAO {
     private String description;
     private String clientKey;
     private String clientSecret;
-    private String clientJwtSecret;
     private String clientTrust;
     private String clientType;
     private String activeClient;
@@ -21,6 +20,7 @@ public class OauthClient extends CouchDAO {
     private String refreshTokenValidity;
     private String autoDeletionToken;
     private String requiredContext;
+    private String jwtAlgorithm;
     private Integer codeLifetime;
     private Integer refreshTokenLifetime;
     private Integer accessTokenLifetime;
@@ -66,14 +66,6 @@ public class OauthClient extends CouchDAO {
 
     public void setClientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
-    }
-
-    public String getClientJwtSecret() {
-        return clientJwtSecret;
-    }
-
-    public void setClientJwtSecret(String clientJwtSecret) {
-        this.clientJwtSecret = clientJwtSecret;
     }
 
     public String getClientTrust() {
@@ -140,6 +132,14 @@ public class OauthClient extends CouchDAO {
         this.requiredContext = requiredContext;
     }
 
+    public String getJwtAlgorithm() {
+        return jwtAlgorithm;
+    }
+
+    public void setJwtAlgorithm(String jwtAlgorithm) {
+        this.jwtAlgorithm = jwtAlgorithm;
+    }
+
     public Integer getCodeLifetime() {
         return codeLifetime;
     }
@@ -196,7 +196,6 @@ public class OauthClient extends CouchDAO {
                 ", description='" + description + '\'' +
                 ", clientKey='" + clientKey + '\'' +
                 ", clientSecret='" + clientSecret + '\'' +
-                ", clientJwtSecret='" + clientJwtSecret + '\'' +
                 ", clientTrust='" + clientTrust + '\'' +
                 ", clientType='" + clientType + '\'' +
                 ", activeClient='" + activeClient + '\'' +
@@ -205,6 +204,7 @@ public class OauthClient extends CouchDAO {
                 ", refreshTokenValidity='" + refreshTokenValidity + '\'' +
                 ", autoDeletionToken='" + autoDeletionToken + '\'' +
                 ", requiredContext='" + requiredContext + '\'' +
+                ", jwtAlgorithm='" + jwtAlgorithm + '\'' +
                 ", codeLifetime=" + codeLifetime +
                 ", refreshTokenLifetime=" + refreshTokenLifetime +
                 ", accessTokenLifetime=" + accessTokenLifetime +
